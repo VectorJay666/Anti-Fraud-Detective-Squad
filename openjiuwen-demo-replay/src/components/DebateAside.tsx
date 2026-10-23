@@ -4,6 +4,7 @@ import { humanLabel } from "../lib/humanLabels";
 import {
   latestEventForNode,
   officerLabel,
+  officerRole,
   verdictLabel,
 } from "../lib/debateGraph";
 
@@ -73,6 +74,9 @@ export function DebateAside({
           <span className="da-dot" aria-hidden />
           <div>
             <h3>{officerLabel(selectedId)}</h3>
+        {officerRole(selectedId) ? (
+          <p className="da-role">{officerRole(selectedId)}</p>
+        ) : null}
             <p className="da-ts">{formatTs(ev.ts)}</p>
           </div>
         </div>
@@ -108,6 +112,12 @@ export function DebateAside({
           ← 返回本轨概览
         </button>
         <h3>{officerLabel(selectedId)}</h3>
+        {officerRole(selectedId) ? (
+          <p className="da-role">{officerRole(selectedId)}</p>
+        ) : null}
+        {officerRole(selectedId) ? (
+          <p className="da-role">{officerRole(selectedId)}</p>
+        ) : null}
         <p className="da-dim">该官尚未在本轮发言</p>
       </aside>
     );

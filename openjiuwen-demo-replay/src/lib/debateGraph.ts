@@ -6,6 +6,7 @@ export type GraphNodeStatus = "idle" | "done" | "active";
 export interface GraphNode {
   id: string;
   label: string;
+  role?: string;
   status: GraphNodeStatus;
 }
 
@@ -43,6 +44,23 @@ export function officerLabel(id: string): string {
   return NODE_LABEL[id] || id;
 }
 
+const ROLE_BLURB: Record<string, string> = {
+  特征官: "抽话术特征",
+  证据官: "核验证据",
+  风险官: "评风险等级",
+  合规官: "对规则条款",
+  反方官: "反方质证",
+  用户保护官: "护用户权益",
+  审判官: "综合裁定",
+  human_confirm: "人工拍板",
+};
+
+/** Short role purpose shown beside the officer name */
+export function officerRole(id: string): string {
+  return ROLE_BLURB[id] || "";
+}
+
+
 export function verdictLabel(v: string): string {
   const m: Record<string, string> = {
     convict: "定罪建议",
@@ -73,6 +91,7 @@ export function buildDebateGraph(
   const nodes: GraphNode[] = order.map((id) => ({
     id,
     label: officerLabel(id),
+    role: officerRole(id),
     status:
       activeNode === id ? "active" : spoken.has(id) ? "done" : "idle",
   }));

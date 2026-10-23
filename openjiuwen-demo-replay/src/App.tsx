@@ -33,6 +33,8 @@ import { LayerTabs } from "./components/LayerTabs";
 import { CasePicker } from "./components/CasePicker";
 import { TeachingMeta } from "./components/TeachingMeta";
 import { LiveForm, type LiveSubmitOpts } from "./components/LiveForm";
+import { ApiSettings } from "./components/ApiSettings";
+import { fetchServerModelSettings } from "./lib/llmSettings";
 import {
   ProgressTimeline,
   type ProgressLine,
@@ -44,8 +46,7 @@ import {
 
 const PLAY_MS = 1000;
 
-const FOOTER_TEACHING =
-  "典型事例展示 · 回放（可含确定性注入对照）· 非完整平台交付 · 不宣称 SwarmFlow";
+const FOOTER_TEACHING = "典型事例展示 · 回放 · SwarmFlow";
 
 interface SideState {
   events: DebateEvent[];
@@ -185,6 +186,23 @@ async function loadFixturePair(
 }
 
 export default function App() {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [llmReady, setLlmReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchServerModelSettings()
+      .then((s) => {
+        if (!cancelled) setLlmReady(Boolean(s.configured));
+      })
+      .catch(() => {
+        if (!cancelled) setLlmReady(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const [layer, setLayer] = useState<ProductLayer>("teaching");
   const [selectedCaseId, setSelectedCaseId] = useState(
     TEACHING_CASES[0].case_id
@@ -621,9 +639,7 @@ export default function App() {
       setProgressLines([]);
       progressSeqRef.current = 0;
       setActualStatus(
-        opts.useSwarm
-          ? "会商中…（走 Swarm 轨，边开边推）"
-          : "会商中…（旁路 live，非 SwarmFlow）"
+        opts.useSwarm ? "会商中…（SwarmFlow）" : "会商中…"
       );
       const empty = emptySide();
       setLiveSide(empty);
@@ -728,33 +744,9 @@ export default function App() {
           : body;
 
         const result = opts.useSwarm
-          ? await streamSwarmDebate(
-              swarmBody,
-              {
-                ...bindHandlers(),
-                onDowngrade: (info) => {
-                  // 清掉失败半成品，诚实降级（不宣称 Swarm 成功）
-                  const cleared = emptySide();
-                  setLiveSide(cleared);
-                  liveSideRef.current = cleared;
-                  setLiveBanner(null);
-                  setProgressLines([]);
-                  progressSeqRef.current = 0;
-                  setLiveSwarmflow(false);
-                  setLiveFooter(FOOTER_TEAMRUNTIME);
-                  setLiveEnginePath("/v1/debate/live");
-                  setActualStatus(
-                    "平台 Swarm 轨失败，正在自动改走旁路会商…"
-                  );
-                  setActualError(
-                    info.hint ||
-                      info.message ||
-                      "Swarm 轨失败，未完成 SwarmFlow；已自动回退旁路会商"
-                  );
-                },
-              },
-              { signal: ac.signal }
-            )
+          ? await streamSwarmDebate(swarmBody, bindHandlers(), {
+              signal: ac.signal,
+            })
           : await streamTeamruntimeDebate(body, bindHandlers(), {
               signal: ac.signal,
             });
@@ -762,13 +754,10 @@ export default function App() {
         setLiveSwarmflow(result.swarmflow);
         setLiveFooter(result.footer);
         setLiveEnginePath(result.path);
-        if (result.downgraded) {
-          setActualError(null);
-          setActualStatus("旁路会商已完成（本次非 SwarmFlow）");
-        } else {
-          setActualError(null);
-          setActualStatus(null);
-        }
+        setActualError(null);
+        setActualStatus(
+          result.swarmflow ? "SwarmFlow 会商已完成" : null
+        );
       } catch (e) {
         setActualError(formatLiveUserError(e));
         setLiveSwarmflow(false);
@@ -842,18 +831,29 @@ export default function App() {
       }`}
     >
       <header className="top">
-        <p className="eyebrow">
-          {phase === "final"
-            ? "openJiuwen · 最终交付"
-            : "openJiuwen · Demo Act 2"}
-        </p>
-        <h1>
-          {phase === "final"
-            ? "反诈侦探团 · 风险条与结论"
-            : "反诈侦探团 · 典型事例展示 / 真实使用"}
-        </h1>
-        <p className="tagline">「连 AI 自己都会骗，所以要有审判官」</p>
+        <div className="top-main">
+          <p className="eyebrow">SwarmFlow · 最终版</p>
+          <h1>反诈侦探团 · 转账前，先开庭</h1>
+          <p className="tagline">「连 AI 自己都会骗，所以要有审判官」</p>
+        </div>
+        <div className="top-actions">
+          <span className={`llm-pill ${llmReady ? "ok" : "warn"}`}>
+            {llmReady ? "API 已配置" : "未配置 API"}
+          </span>
+          <button
+            type="button"
+            className="btn settings-trigger"
+            onClick={() => setSettingsOpen(true)}
+          >
+            设置
+          </button>
+        </div>
       </header>
+      <ApiSettings
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onSaved={setLlmReady}
+      />
 
       <LayerTabs
         layer={layer}
@@ -888,7 +888,7 @@ export default function App() {
             liveFinalVerdict,
             liveSide.meta
           )}
-          enginePath={liveEnginePath}
+          enginePath={liveEnginePath || undefined}
           swarmflow={liveSwarmflow}
           onReviewProcess={() => setPhase("process")}
           onRestart={() => {
@@ -967,7 +967,7 @@ export default function App() {
         </>
       ) : (
         <div className="live-layer">
-          <LiveForm running={actualRunning} onSubmit={startActualLive} />
+          <LiveForm running={actualRunning} onSubmit={startActualLive} onOpenSettings={() => setSettingsOpen(true)} />
           {liveSoftHint ? (
             <div className="form-hint centered">{liveSoftHint}</div>
           ) : null}
@@ -993,12 +993,10 @@ export default function App() {
               subtitle={[
                 `gate:${String(liveSide.meta.gate_verdict ?? liveSide.meta.gate ?? "—")}`,
                 `case:${liveSide.meta.case_id || "—"}`,
-                liveEnginePath
-                  ? `path:${liveEnginePath}`
-                  : null,
+                liveEnginePath ? `path:${liveEnginePath}` : null,
                 liveSwarmflow
                   ? "swarmflow:true"
-                  : actualRunning
+                  : actualRunning && liveEnginePath === SWARM_PATH
                     ? "swarmflow:…"
                     : "swarmflow:false",
               ]

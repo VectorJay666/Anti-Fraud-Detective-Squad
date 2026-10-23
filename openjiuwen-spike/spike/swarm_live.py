@@ -28,6 +28,7 @@ from llm_debate import (
     build_live_dossier,
     build_ungated_payload,
     force_refuse_empty_evidence,
+    risk_level_for_gate,
 )
 
 SPIKE_DIR = Path(__file__).resolve().parent
@@ -953,4 +954,6 @@ async def iter_swarm_debate(
     final["mid_events_emitted"] = mid_event_count
     final["first_progress_ts"] = first_progress_ts
     final["first_event_ts"] = first_event_ts
+    if "risk_level" not in final or not final.get("risk_level"):
+        final["risk_level"] = risk_level_for_gate(final.get("gate_verdict"))
     yield ("final", final)

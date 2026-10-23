@@ -4,6 +4,7 @@ import {
   validateLiveForm,
   type LiveFormInput,
 } from "../lib/validateLive";
+import { fetchServerModelSettings } from "../lib/llmSettings";
 
 export type LiveSubmitOpts = {
   /** 默认 true：走 POST /v1/swarm/debate；false → 旁路 /v1/debate/live */
@@ -12,6 +13,8 @@ export type LiveSubmitOpts = {
 
 interface Props {
   running: boolean;
+  /** 打开顶栏 API 设置 */
+  onOpenSettings?: () => void;
   onSubmit: (
     body: LiveDebateBody,
     softHint: string | undefined,
@@ -30,7 +33,7 @@ const DEFAULT: LiveFormInput = {
   user_note: "",
 };
 
-export function LiveForm({ running, onSubmit }: Props) {
+export function LiveForm({ running, onSubmit, onOpenSettings }: Props) {
   const [form, setForm] = useState<LiveFormInput>(DEFAULT);
   const [useSwarm, setUseSwarm] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,8 +54,22 @@ export function LiveForm({ running, onSubmit }: Props) {
       setError(null);
     };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    try {
+      const s = await fetchServerModelSettings();
+      if (!s.configured) {
+        setError("请先去设置");
+        setHint(null);
+        onOpenSettings?.();
+        return;
+      }
+    } catch {
+      setError("读不到 API 设置，请确认 5180 已启动，或先去设置");
+      setHint(null);
+      onOpenSettings?.();
+      return;
+    }
     const result = validateLiveForm(form);
     if (!result.ok) {
       setError(result.error);
@@ -61,6 +78,7 @@ export function LiveForm({ running, onSubmit }: Props) {
     }
     setError(null);
     setHint(result.softHint ?? null);
+    // Key 由 5180 model.env 热加载提供，开庭 body 不再塞 llm
     onSubmit(result.body, result.softHint, { useSwarm });
   };
 
@@ -122,30 +140,18 @@ export function LiveForm({ running, onSubmit }: Props) {
 
       <div className="field-row">
         <label className="field">
-          <span className="field-label">可选案卷 id</span>
+          <span className="field-label">可选案例 id</span>
           <input
             className="field-input"
             type="text"
-            placeholder="空则服务端发 LIVE-…"
+            placeholder="可空；勿手写 LIVE-"
             value={form.case_id}
             onChange={set("case_id")}
             disabled={running}
           />
         </label>
         <label className="field field-check">
-          <span className="field-label">本地 rule_gate</span>
-          <label className="check-line">
-            <input
-              type="checkbox"
-              checked={form.gate}
-              onChange={set("gate")}
-              disabled={running}
-            />
-            gate（默认开）
-          </label>
-        </label>
-        <label className="field field-check">
-          <span className="field-label">平台 Swarm 展示</span>
+          <span className="field-label">SwarmFlow</span>
           <label className="check-line">
             <input
               type="checkbox"
@@ -153,9 +159,19 @@ export function LiveForm({ running, onSubmit }: Props) {
               onChange={(e) => setUseSwarm(e.target.checked)}
               disabled={running}
             />
-            {useSwarm
-              ? "开 · POST /v1/swarm/debate"
-              : "关 · 旁路 /v1/debate/live"}
+            {useSwarm ? "开 · POST /v1/swarm/debate" : "关 · /v1/debate/live"}
+          </label>
+        </label>
+        <label className="field field-check">
+          <span className="field-label">启用 rule_gate</span>
+          <label className="check-line">
+            <input
+              type="checkbox"
+              checked={form.gate}
+              onChange={set("gate")}
+              disabled={running}
+            />
+            gate（默认开启）
           </label>
         </label>
       </div>
@@ -188,21 +204,25 @@ export function LiveForm({ running, onSubmit }: Props) {
       {error ? (
         <div className="form-error" role="alert">
           {error}
+          {onOpenSettings ? (
+            <>
+              {" "}
+              <button type="button" className="linkish" onClick={onOpenSettings}>
+                打开设置
+              </button>
+            </>
+          ) : null}
         </div>
       ) : null}
       {hint ? <div className="form-hint">{hint}</div> : null}
 
       <div className="form-actions">
-        <button
-          type="submit"
-          className="btn btn-live"
-          disabled={running}
-        >
-          {running ? "会商中…" : "开始裁定"}
+        <button type="submit" className="btn btn-live" disabled={running}>
+          {running ? "会商中…" : "开始开庭"}
         </button>
         <span className="form-hint-inline">
-          只发会话原文 · 不宣称接通 SwarmFlow
-          {useSwarm ? " · 失败自动改走旁路会商" : ""}
+          模型配置在顶栏「设置」；保存后 5180 热加载，开庭不再带 Key
+          {useSwarm ? " · SwarmFlow" : ""}
         </span>
       </div>
     </form>

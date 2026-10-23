@@ -1,8 +1,11 @@
-import type { LiveDebateBody, Urgency } from "../types";
+import type { LiveDebateBody, LiveLlmConfig, Urgency } from "../types";
 
 const CARD_RE = /\d{12,19}/;
 const MAX_TRANSCRIPT = 8000;
 const MIN_TRANSCRIPT = 20;
+
+export const DEFAULT_API_BASE = "https://open.bigmodel.cn/api/paas/v4";
+export const DEFAULT_MODEL = "glm-5.3-flash";
 
 export type LiveFormInput = {
   transcript: string;
@@ -85,4 +88,12 @@ export function validateLiveForm(input: LiveFormInput): ValidateResult {
   };
 
   return softHint ? { ok: true, body, softHint } : { ok: true, body };
+}
+
+/** Attach LLM config from settings panel after form validation. */
+export function withLlm(
+  body: LiveDebateBody,
+  llm: LiveLlmConfig
+): LiveDebateBody {
+  return { ...body, llm };
 }

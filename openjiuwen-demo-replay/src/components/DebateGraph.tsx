@@ -334,9 +334,14 @@ export function DebateGraph({
               <text className="dg-glyph" dy="0.35em">
                 {officerGlyph(n.id)}
               </text>
-              <text className="dg-label" y={NODE_R + 16}>
+              <text className="dg-label" y={NODE_R + 14}>
                 {n.label}
               </text>
+              {n.role ? (
+                <text className="dg-role" y={NODE_R + 28}>
+                  {n.role}
+                </text>
+              ) : null}
             </g>
           );
         })}

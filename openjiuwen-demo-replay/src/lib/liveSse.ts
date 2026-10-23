@@ -260,9 +260,7 @@ export type SwarmHandlers = LiveSseHandler & {
 };
 
 /**
- * 实际层展示轨：默认 `POST /v1/swarm/debate`（body 同 04，只发 transcript）。
- * 收到 `swarm_debate_failed` → 自动降级 `POST /v1/debate/live`（不带 engine）。
- * 别名 `debate/live`+`engine:"swarm"` 不在此函数使用；主 URL 写死为 SWARM_PATH。
+ * 实际层：`POST /v1/swarm/debate`。失败就停在 SwarmFlow，不改走 `/v1/debate/live`。
  */
 export async function streamSwarmDebate(
   body: LiveDebateBody,
@@ -287,49 +285,20 @@ export async function streamSwarmDebate(
     onError: h.onError,
   });
 
-  try {
-    const done = await streamLiveDebate(body, wrapHandlers(handlers), {
-      signal: opts?.signal,
-      timeoutMs,
-      path: SWARM_PATH,
-    });
-    const swarmflow = asBool(done.swarmflow) || sawSwarmflowTrue;
-    // 契约：仅成功完成且 swarmflow true 才标 SwarmFlow 页脚
-    const okSwarm = swarmflow === true;
-    return {
-      done,
-      swarmflow: okSwarm,
-      downgraded: false,
-      footer: pickFooter(okSwarm, done),
-      path: SWARM_PATH,
-    };
-  } catch (e) {
-    const isSwarmFail =
-      e instanceof LiveSseError && e.code === "swarm_debate_failed";
-    if (!isSwarmFail) throw e;
-
-    const fail = e as LiveSseError;
-    handlers.onDowngrade?.({
-      message: fail.message,
-      code: fail.code,
-      hint: fail.hint,
-    });
-
-    // 降级：旁路 TeamRuntime，不带 engine；页脚回诚实 live 句
-    sawSwarmflowTrue = false;
-    const done = await streamLiveDebate(body, wrapHandlers(handlers), {
-      signal: opts?.signal,
-      timeoutMs,
-      path: LIVE_PATH,
-    });
-    return {
-      done,
-      swarmflow: false,
-      downgraded: true,
-      footer: FOOTER_TEAMRUNTIME,
-      path: LIVE_PATH,
-    };
-  }
+  const done = await streamLiveDebate(body, wrapHandlers(handlers), {
+    signal: opts?.signal,
+    timeoutMs,
+    path: SWARM_PATH,
+  });
+  const swarmflow = asBool(done.swarmflow) || sawSwarmflowTrue;
+  const okSwarm = swarmflow === true;
+  return {
+    done,
+    swarmflow: okSwarm,
+    downgraded: false,
+    footer: pickFooter(okSwarm, done),
+    path: SWARM_PATH,
+  };
 }
 
 /** 实际层也可显式关 Swarm，直打旁路 live */
@@ -380,7 +349,7 @@ export function formatLiveUserError(e: unknown): string {
       return (
         hint ||
         msg ||
-        "平台 Swarm 轨失败，未完成 SwarmFlow。可重试，或改走旁路会商。"
+        "SwarmFlow 会商失败。请查看 5180 日志后重试。"
       );
     case "abort":
       return `${msg}。若不是手动取消，请确认 5180 正常后重试。`;

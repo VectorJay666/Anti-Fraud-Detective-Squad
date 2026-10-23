@@ -1,4 +1,5 @@
 import { NODES } from "../types";
+import { officerRole } from "../lib/debateGraph";
 
 interface Props {
   seen: Set<string>;
@@ -18,6 +19,7 @@ export function NodeRail({ seen, active, tone, onSelect }: Props) {
         const on = seen.has(name);
         const isActive = Boolean(active && active === name);
         const clickable = Boolean(on && onSelect);
+        const role = officerRole(name);
         const cls = [
           "node",
           on ? "on" : "",
@@ -33,14 +35,23 @@ export function NodeRail({ seen, active, tone, onSelect }: Props) {
               type="button"
               className={cls}
               data-node={name}
-              title={clickable ? `查看${name}发言` : name}
+              title={
+                clickable
+                  ? `查看${name}发言${role ? ` · ${role}` : ""}`
+                  : role
+                    ? `${name} · ${role}`
+                    : name
+              }
               disabled={!clickable}
               onClick={() => {
                 if (clickable) onSelect?.(name);
               }}
             >
               <span className="dot" />
-              <span className="label">{name}</span>
+              <span className="label-stack">
+                <span className="label">{name}</span>
+                {role ? <span className="role">{role}</span> : null}
+              </span>
             </button>
           </div>
         );
