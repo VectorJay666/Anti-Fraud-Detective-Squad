@@ -1,0 +1,68 @@
+# enable_swarmflow team config for party_planner phase-gate fail-fast.
+# Env: API_BASE / LEADER_API_KEY / TEAMMATE_API_KEY / MODEL_NAME from model.env.
+# Intentionally shorter completion_timeout than official e2e (600s) — fail-fast
+# owns the ceiling; agent calls should not outlive a phase gate.
+
+team_name: spike_swarm_party_failfast
+lifecycle: persistent
+spawn_mode: inprocess
+enable_swarmflow: true
+
+leader:
+  member_name: team_leader
+  display_name: TeamLeader
+  persona: "工作流编排负责人。收到用户请求后立刻只调用一次 swarmflow 工具，不要自行拆解任务。"
+
+x-model-template: &model_template
+  model_client_config:
+    client_provider: OpenAI
+    api_base: "${API_BASE}"
+    api_key: "${LEADER_API_KEY}"
+    timeout: 90
+    rate_limit: 2.0
+    verify_ssl: false
+  model_request_config:
+    model: "${MODEL_NAME}"
+    temperature: 0.1
+    top_p: 0.9
+
+x-shared-agent-spec: &shared_agent_spec
+  language: cn
+  max_iterations: 30
+  completion_timeout: 300.0
+  enable_task_planning: false
+  restrict_to_sandbox: false
+
+agents:
+  leader:
+    <<: *shared_agent_spec
+    model:
+      <<: *model_template
+      model_client_config:
+        client_provider: OpenAI
+        api_base: "${API_BASE}"
+        api_key: "${LEADER_API_KEY}"
+        timeout: 90
+        rate_limit: 2.0
+        verify_ssl: false
+
+  teammate:
+    <<: *shared_agent_spec
+    model:
+      <<: *model_template
+      model_client_config:
+        client_provider: OpenAI
+        api_base: "${API_BASE}"
+        api_key: "${TEAMMATE_API_KEY}"
+        timeout: 90
+        rate_limit: 2.0
+        verify_ssl: false
+
+transport:
+  type: inprocess
+
+storage:
+  type: sqlite
+
+runtime:
+  session_id: spike_swarm_party_failfast_session

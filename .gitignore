@@ -1,0 +1,11 @@
+﻿.venv/
+**/node_modules/
+**/dist/
+**/__pycache__/
+**/*.pyc
+**/.DS_Store
+openjiuwen-spike/spike/model.env
+openjiuwen-spike/spike/swarm_live_home/
+openjiuwen-spike/spike/logs/
+openjiuwen-spike/logs/
+*.log

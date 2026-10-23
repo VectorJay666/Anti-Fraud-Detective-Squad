@@ -1,0 +1,28 @@
+# Derived from agent-core/tests/log_config.yaml for D0 P2P smoke evidence.
+# Difference: level INFO + multi_agent logger INFO so Planner/Coder/Reviewer lines appear.
+logging:
+  backend: default
+  level: INFO
+
+  structured_output_format: json
+  format: "%(asctime)s | %(log_type)s | %(trace_id)s | %(levelname)s | %(message)s"
+
+  output: [console]
+  interface_output: [console]
+  performance_output: [console]
+
+  log_path: "./logs/"
+  log_file: "run/jiuwen.log"
+  interface_log_file: "interface/jiuwen_interface.log"
+  prompt_builder_interface_log_file: "interface/jiuwen_prompt_builder_interface.log"
+  performance_log_file: "performance/jiuwen_performance.log"
+
+  backup_count: 20
+  max_bytes: 20971520
+  propagate: true
+
+  loggers:
+    common:
+      level: INFO
+    multi_agent:
+      level: INFO

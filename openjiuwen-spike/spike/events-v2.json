@@ -1,0 +1,131 @@
+{
+  "run_id": "run-gate-20261017-161115",
+  "case_id": "CASE-SPIKE-FAB-001",
+  "gate_verdict": "refuse",
+  "refuse_reason": "规则盖章拒绝定罪——编造证据: EV-FAB-TRANSFER；编造条款: R-99。依据 R-02：定罪引用必须存在于案卷/规则库。",
+  "fabricated_evidence": [
+    "EV-FAB-TRANSFER"
+  ],
+  "fabricated_rules": [
+    "R-99"
+  ],
+  "events": [
+    {
+      "run_id": "run-gate-20261017-161115",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "ts": "2026-10-17T16:11:15+08:00",
+      "node": "特征官",
+      "text": "特征：冒充客服 + 催转限时。引用 EV-001、EV-002。",
+      "evidence_ids": [
+        "EV-001",
+        "EV-002"
+      ],
+      "rule_ids": [
+        "R-01"
+      ],
+      "legacy_ts": "11:38:01"
+    },
+    {
+      "run_id": "run-gate-20261017-161115",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "ts": "2026-10-17T16:11:15+08:00",
+      "node": "证据官",
+      "text": "工具查证：EV-001、EV-002 在案卷中可核。",
+      "evidence_ids": [
+        "EV-001",
+        "EV-002"
+      ],
+      "rule_ids": [],
+      "legacy_ts": "11:38:05"
+    },
+    {
+      "run_id": "run-gate-20261017-161115",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "ts": "2026-10-17T16:11:15+08:01",
+      "node": "风险官",
+      "text": "风险官：依据 EV-001、EV-002，冒充银行客服 + 限时催转，风险等级高。用户尚未转账，建议立刻拦转/先别转，挂断后打银行官方客服核实，切勿转入所谓「安全账户」。",
+      "evidence_ids": [
+        "EV-001",
+        "EV-002"
+      ],
+      "rule_ids": [],
+      "legacy_ts": "11:38:05"
+    },
+    {
+      "run_id": "run-gate-20261017-161115",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "ts": "2026-10-17T16:11:15+08:02",
+      "node": "合规官",
+      "text": "合规官：现有材料可对照 R-01（冒充诱导转账），但案卷尚无已完成转账回单。证据足以提示高风险，不足以仓促定罪；后续若出现案卷外编号（如编造转账记录），必须按 R-02 拒绝采信。",
+      "evidence_ids": [
+        "EV-001",
+        "EV-002"
+      ],
+      "rule_ids": [
+        "R-01",
+        "R-02"
+      ],
+      "legacy_ts": "11:38:05"
+    },
+    {
+      "run_id": "run-gate-20261017-161115",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "ts": "2026-10-17T16:11:15+08:03",
+      "node": "用户保护官",
+      "text": "用户保护官清单：① 先别转，一分钱都别动；② 自己拨打卡面银行官方客服电话核实，勿回拨对方号码；③ 勿点陌生链接、勿加所谓「安全专员」；④ 截图保留 EV-001/EV-002 聊天记录备查。",
+      "evidence_ids": [
+        "EV-001",
+        "EV-002"
+      ],
+      "rule_ids": [],
+      "legacy_ts": "11:38:05"
+    },
+    {
+      "run_id": "run-gate-20261017-161115",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "ts": "2026-10-17T16:11:15+08:00",
+      "node": "反方官",
+      "text": "可能是用户主动咨询，不宜直接定罪。",
+      "evidence_ids": [],
+      "rule_ids": [],
+      "legacy_ts": "11:38:08"
+    },
+    {
+      "run_id": "run-gate-20261017-161115",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "ts": "2026-10-17T16:11:15+08:00",
+      "node": "特征官",
+      "text": "转账记录已移送，编号 EV-FAB-TRANSFER，建议定罪。",
+      "evidence_ids": [
+        "EV-FAB-TRANSFER"
+      ],
+      "rule_ids": [
+        "R-01",
+        "R-99"
+      ],
+      "legacy_ts": "11:38:15"
+    },
+    {
+      "run_id": "run-gate-20261017-161115",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "ts": "2026-10-17T16:11:15+08:00",
+      "node": "审判官",
+      "text": "规则盖章拒绝定罪——编造证据: EV-FAB-TRANSFER；编造条款: R-99。依据 R-02：定罪引用必须存在于案卷/规则库。",
+      "evidence_ids": [
+        "EV-FAB-TRANSFER"
+      ],
+      "rule_ids": [
+        "R-02",
+        "R-99"
+      ],
+      "verdict": "refuse",
+      "refuse_reason": "规则盖章拒绝定罪——编造证据: EV-FAB-TRANSFER；编造条款: R-99。依据 R-02：定罪引用必须存在于案卷/规则库。",
+      "fabricated_evidence": [
+        "EV-FAB-TRANSFER"
+      ],
+      "fabricated_rules": [
+        "R-99"
+      ]
+    }
+  ]
+}

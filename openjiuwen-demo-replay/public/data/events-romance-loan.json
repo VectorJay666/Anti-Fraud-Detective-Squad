@@ -1,0 +1,134 @@
+{
+  "run_id": "run-teach-romance-ungated-20261021",
+  "case_id": "TEACH-ROMANCE-LOAN-001",
+  "generated_at": "2026-10-21T12:30:00+08:00",
+  "mode": "teaching_replay_ungated",
+  "warning": "Teaching replay fixtures · 熟人急借拒判对照（无卡口侧）。NOT SwarmFlow e2e.",
+  "events": [
+    {
+      "run_id": "run-teach-romance-ungated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:01+08:00",
+      "node": "特征官",
+      "text": "特征分析：熟人急借话术。EV-RL-001 显示「先转 3000、别打旧卡、换了新卡」；EV-RL-002「在医院没信号、先转这个账户」；EV-RL-003「半小时内到账」限时催促。模式像熟人骗贷/盗号，但目前仅有聊天文本，身份未核。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [
+        "R-01"
+      ],
+      "phase": "feature",
+      "source": "scripted"
+    },
+    {
+      "run_id": "run-teach-romance-ungated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:04+08:00",
+      "node": "证据官",
+      "text": "查证：EV-RL-001/002/003 均可在案卷 TEACH-ROMANCE-LOAN-001 中核到对应聊天子串。未检出转账回单、人脸核身或常用账户比对记录；无法证明对方就是「室友小陈」本人。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [],
+      "phase": "tool",
+      "source": "scripted"
+    },
+    {
+      "run_id": "run-teach-romance-ungated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:04+08:01",
+      "node": "风险官",
+      "text": "风险官：熟人急借 + 换卡 + 限时到账，盗号/冒充风险偏高。在未当面或电话核身前，建议先别转 3000，先核实「室友小陈」本人是否发过这条。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [],
+      "phase": "risk",
+      "source": "scripted"
+    },
+    {
+      "run_id": "run-teach-romance-ungated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:04+08:02",
+      "node": "合规官",
+      "text": "合规官：聊天可核，但身份与账户归属未核实，缺少足以定罪的硬证据。按证据不足原则，不得定性电信诈骗；可提示高风险，不可仓促定罪。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [
+        "R-01"
+      ],
+      "phase": "compliance",
+      "source": "scripted"
+    },
+    {
+      "run_id": "run-teach-romance-ungated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:07+08:00",
+      "node": "反方官",
+      "text": "反方意见：可能真是室友急用。现有材料只有急借与换卡话术，缺少盗号/冒充的硬证据，不宜直接定性电信诈骗。",
+      "evidence_ids": [],
+      "rule_ids": [],
+      "phase": "debate",
+      "source": "scripted"
+    },
+    {
+      "run_id": "run-teach-romance-ungated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:04+08:03",
+      "node": "用户保护官",
+      "text": "用户保护官：① 先别转；② 打室友常用号码或当面确认（勿用对方新发的号）；③ 问一个只有本人知道的近况；④ 保留 EV-RL-001～003 截图。核实前一律先别动钱。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [],
+      "phase": "protect",
+      "source": "scripted"
+    },
+    {
+      "run_id": "run-teach-romance-ungated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:10+08:00",
+      "node": "特征官",
+      "text": "（无卡口侧会飘）综合换卡 + 限时催促，我倾向按高风险熟人骗贷处理，建议定罪拦转。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-003"
+      ],
+      "rule_ids": [
+        "R-01"
+      ],
+      "phase": "debate",
+      "intent": "convict",
+      "source": "scripted"
+    },
+    {
+      "run_id": "run-teach-romance-ungated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:12+08:00",
+      "node": "审判官",
+      "text": "无 rule_gate：会商飘向「像诈骗」并给出拦转倾向——但身份与账户归属仍未核实。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [
+        "R-01"
+      ],
+      "verdict": "convict",
+      "phase": "verdict",
+      "source": "scripted"
+    }
+  ]
+}

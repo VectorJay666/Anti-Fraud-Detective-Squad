@@ -1,0 +1,133 @@
+{
+  "run_id": "run-teach-romance-gated-20261021",
+  "case_id": "TEACH-ROMANCE-LOAN-001",
+  "generated_at": "2026-10-21T12:30:20+08:00",
+  "mode": "teaching_replay_gated",
+  "gate_verdict": "refuse",
+  "refuse_reason": "证据不足不定性诈骗——仅有急借/换卡话术，无法核实对方身份与收款账户归属。依据 R-02：定罪引用须证据可核；建议先别转、先当面或视频核实。",
+  "checklist": [
+    "当面或视频核实对方身份",
+    "确认收款账户是否本人常用卡",
+    "勿在催促下转入陌生账户"
+  ],
+  "warning": "Teaching replay fixtures · 熟人急借拒判高光（有卡口）。NOT SwarmFlow e2e.",
+  "events": [
+    {
+      "run_id": "run-teach-romance-gated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:21+08:00",
+      "node": "特征官",
+      "text": "特征分析：熟人急借话术。EV-RL-001 显示「先转 3000、别打旧卡、换了新卡」；EV-RL-002「在医院没信号、先转这个账户」；EV-RL-003「半小时内到账」限时催促。模式像熟人骗贷/盗号，但目前仅有聊天文本，身份未核。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [
+        "R-01"
+      ],
+      "legacy_ts": "2026-10-21T12:30:01+08:00"
+    },
+    {
+      "run_id": "run-teach-romance-gated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:21+08:00",
+      "node": "证据官",
+      "text": "查证：EV-RL-001/002/003 均可在案卷中核到。未检出转账回单、人脸核身或常用账户比对；无法证明对方就是「室友小陈」本人。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [],
+      "legacy_ts": "2026-10-21T12:30:04+08:00"
+    },
+    {
+      "run_id": "run-teach-romance-gated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:21+08:01",
+      "node": "风险官",
+      "text": "风险官：熟人急借 + 换卡 + 限时到账，盗号/冒充风险偏高。在未当面或电话核身前，建议先别转 3000，先核实「室友小陈」本人是否发过这条。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [],
+      "legacy_ts": "2026-10-21T12:30:04+08:00"
+    },
+    {
+      "run_id": "run-teach-romance-gated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:21+08:02",
+      "node": "合规官",
+      "text": "合规官：聊天可核，但身份与账户归属未核实，缺少足以定罪的硬证据。按证据不足原则，不得定性电信诈骗；可提示高风险，不可仓促定罪。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [
+        "R-01"
+      ],
+      "legacy_ts": "2026-10-21T12:30:04+08:00"
+    },
+    {
+      "run_id": "run-teach-romance-gated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:21+08:00",
+      "node": "反方官",
+      "text": "反方意见：可能真是室友急用。现有材料缺少盗号/冒充硬证据，不宜直接定性电信诈骗。",
+      "evidence_ids": [],
+      "rule_ids": [],
+      "legacy_ts": "2026-10-21T12:30:07+08:00"
+    },
+    {
+      "run_id": "run-teach-romance-gated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:21+08:03",
+      "node": "用户保护官",
+      "text": "用户保护官：① 先别转；② 打室友常用号码或当面确认（勿用对方新发的号）；③ 问一个只有本人知道的近况；④ 保留 EV-RL-001～003 截图。核实前一律先别动钱。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [],
+      "legacy_ts": "2026-10-21T12:30:04+08:00"
+    },
+    {
+      "run_id": "run-teach-romance-gated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:21+08:00",
+      "node": "特征官",
+      "text": "（会飘）综合换卡 + 限时催促，倾向按高风险熟人骗贷定罪拦转。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-003"
+      ],
+      "rule_ids": [
+        "R-01"
+      ],
+      "legacy_ts": "2026-10-21T12:30:10+08:00"
+    },
+    {
+      "run_id": "run-teach-romance-gated-20261021",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "ts": "2026-10-21T12:30:21+08:00",
+      "node": "审判官",
+      "text": "规则盖章拒绝定罪——证据不足不定性诈骗。仅有急借/换卡话术，身份与账户归属未核。依据 R-02。建议：证据不足 · 先别转。",
+      "evidence_ids": [
+        "EV-RL-001",
+        "EV-RL-002",
+        "EV-RL-003"
+      ],
+      "rule_ids": [
+        "R-02"
+      ],
+      "verdict": "refuse",
+      "refuse_reason": "证据不足不定性诈骗——仅有急借/换卡话术，无法核实对方身份与收款账户归属。依据 R-02：定罪引用须证据可核；建议先别转、先当面或视频核实。"
+    }
+  ],
+  "risk_level": "mid"
+}

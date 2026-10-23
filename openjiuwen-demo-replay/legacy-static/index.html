@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>转账前保镖 · 第二幕对照</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <h1>转账前保镖 · 第二幕对照</h1>
+    <p class="tagline">「连 AI 自己都会骗，所以要有审判官」</p>
+  </header>
+
+  <div class="toolbar">
+    <button id="btn-play" type="button">Play</button>
+    <button id="btn-step" type="button">Step</button>
+    <button id="btn-reset" type="button">Reset</button>
+    <span id="step-label" class="step-label">0 / 0</span>
+  </div>
+
+  <main class="cols">
+    <section class="col" id="col-left" data-side="left">
+      <h2>无卡口</h2>
+      <p class="sub">events-platform.json · HITL 可放行编造</p>
+      <div class="nodes" id="nodes-left"></div>
+      <div class="feed" id="feed-left"></div>
+      <div class="banner" id="banner-left" hidden></div>
+    </section>
+    <section class="col" id="col-right" data-side="right">
+      <h2>有卡口（规则盖章）</h2>
+      <p class="sub">events-platform-v2.json · gate refuse</p>
+      <div class="nodes" id="nodes-right"></div>
+      <div class="feed" id="feed-right"></div>
+      <div class="banner" id="banner-right" hidden></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    平台会商事件流 · TeamRuntime 脚本辩论 + 本地 rule_gate · 非 SwarmFlow / 非现场 LLM
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

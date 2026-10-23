@@ -1,0 +1,247 @@
+:root {
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --ink: #1d1d1f;
+  --muted: #86868b;
+  --line: #d2d2d7;
+  --ok: #1d1d1f;
+  --bad: #ff3b30;
+  --dim: #c7c7cc;
+  --radius: 14px;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+.top {
+  text-align: center;
+  padding: 28px 16px 8px;
+}
+.top h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.tagline {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px 20px;
+}
+.toolbar button {
+  appearance: none;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #fff;
+  border-radius: 980px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+.toolbar button:hover { opacity: 0.85; }
+.toolbar button:active { transform: scale(0.97); }
+#btn-step, #btn-reset {
+  background: #fff;
+  color: var(--ink);
+}
+.step-label {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 0 16px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+}
+@media (max-width: 760px) {
+  .cols { grid-template-columns: 1fr; }
+}
+
+.col {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+}
+.col h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.sub {
+  margin: 4px 0 14px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 14px;
+}
+.node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  opacity: 0.35;
+  transition: opacity 0.25s ease;
+}
+.node.on { opacity: 1; }
+.node .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--dim);
+  background: transparent;
+  flex-shrink: 0;
+  position: relative;
+}
+.node.on .dot {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+.node .label {
+  font-size: 13px;
+  font-weight: 500;
+}
+.node-rail {
+  width: 10px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.node-rail::after {
+  content: "";
+  width: 1px;
+  height: 10px;
+  background: var(--line);
+  display: block;
+  margin: -2px 0;
+}
+.nodes .node:last-child + .node-rail,
+.nodes .node-rail:last-child { display: none; }
+
+.feed {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: 280px;
+  padding-right: 2px;
+}
+.card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fafafa;
+  animation: fadein 0.28s ease;
+}
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.card .meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.card .text {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.ids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.chip {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.chip.bad {
+  border-color: var(--bad);
+  color: var(--bad);
+  background: #fff5f5;
+}
+.chip.bad::after {
+  content: " 无据";
+  font-weight: 600;
+}
+
+.banner {
+  margin-top: 12px;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  border: 1.5px solid var(--ink);
+}
+.banner.ok {
+  background: var(--ink);
+  color: #fff;
+}
+.banner.refuse {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--bad);
+  box-shadow: inset 0 0 0 1px var(--bad);
+}
+.banner .title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+.banner.refuse .title { color: var(--bad); }
+
+.foot {
+  text-align: center;
+  padding: 16px;
+  font-size: 11px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  background: #fff;
+}

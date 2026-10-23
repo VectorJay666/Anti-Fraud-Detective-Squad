@@ -1,0 +1,58 @@
+{
+  "run_id": "run-fixture-fab-pregate",
+  "case_id": "CASE-SPIKE-FAB-001",
+  "note": "脚本回放：模拟控方编造「转账记录已移送」后被 human_confirm 放行。非现场 LLM 日志；用于 rule_gate 打回对照。",
+  "events": [
+    {
+      "ts": "11:38:01",
+      "role": "accuser",
+      "text": "特征：冒充客服 + 催转限时。引用 EV-001、EV-002。",
+      "evidence_ids": [
+        "EV-001",
+        "EV-002"
+      ],
+      "rule_ids": [
+        "R-01"
+      ]
+    },
+    {
+      "ts": "11:38:05",
+      "role": "evidence",
+      "text": "工具查证：EV-001、EV-002 在案卷中可核。",
+      "evidence_ids": [
+        "EV-001",
+        "EV-002"
+      ],
+      "rule_ids": []
+    },
+    {
+      "ts": "11:38:08",
+      "role": "defender",
+      "text": "可能是用户主动咨询，不宜直接定罪。",
+      "evidence_ids": [],
+      "rule_ids": []
+    },
+    {
+      "ts": "11:38:15",
+      "role": "accuser",
+      "text": "转账记录已移送，编号 EV-FAB-TRANSFER，建议定罪。",
+      "evidence_ids": [
+        "EV-FAB-TRANSFER"
+      ],
+      "rule_ids": [
+        "R-01",
+        "R-99"
+      ]
+    },
+    {
+      "ts": "11:38:20",
+      "role": "human_confirm",
+      "text": "approved true",
+      "approved": true,
+      "evidence_ids": [
+        "EV-FAB-TRANSFER"
+      ],
+      "rule_ids": []
+    }
+  ]
+}

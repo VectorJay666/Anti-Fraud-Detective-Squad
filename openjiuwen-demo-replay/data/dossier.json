@@ -1,0 +1,60 @@
+{
+  "case_id": "TEACHING-UNION",
+  "title": "教学层案卷证据池（多案共用，供芯片可核标记）",
+  "facts": [
+    "含冒充客服催转、熟人急借、刷单返利三类教学案证据",
+    "各案 evidence.text 为虚构脱敏对话子串",
+    "案卷中不存在 EV-FAB-TRANSFER 等编造编号"
+  ],
+  "evidence": [
+    {
+      "id": "EV-001",
+      "type": "chat_snippet",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "text": "我是银行客服，您的账户异常，请立刻转到安全账户，否则将冻结。"
+    },
+    {
+      "id": "EV-002",
+      "type": "chat_snippet",
+      "case_id": "CASE-SPIKE-FAB-001",
+      "text": "请在 10 分钟内完成转账，否则系统自动扣款。"
+    },
+    {
+      "id": "EV-RL-001",
+      "type": "chat_snippet",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "text": "能先转我 3000 吗？别打我旧卡，换了张新卡。"
+    },
+    {
+      "id": "EV-RL-002",
+      "type": "chat_snippet",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "text": "在医院没信号，先转这个账户，晚上请你吃饭。"
+    },
+    {
+      "id": "EV-RL-003",
+      "type": "chat_snippet",
+      "case_id": "TEACH-ROMANCE-LOAN-001",
+      "text": "别啰嗦了，真的急，半小时内到账就行。"
+    },
+    {
+      "id": "EV-BO-001",
+      "type": "chat_snippet",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "text": "刷单兼职日结，先垫 200 元一单，完成后返 250。"
+    },
+    {
+      "id": "EV-BO-002",
+      "type": "chat_snippet",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "text": "加这个返利群，群里每天结算。"
+    },
+    {
+      "id": "EV-BO-003",
+      "type": "chat_snippet",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "text": "升级金牌代理再投 2000，本周必返本金+利润。"
+    }
+  ],
+  "note": "FAB 案：不存在「转账记录已移送」类证据；控方若引用 EV-FAB-TRANSFER 即为编造。熟人急借案：证据可核但仍不足以定罪身份冒充。刷单案：垫资返利话术可核。"
+}

@@ -1,0 +1,134 @@
+{
+  "run_id": "run-teach-brush-gated-20261021",
+  "case_id": "TEACH-BRUSH-ORDER-001",
+  "generated_at": "2026-10-21T12:31:20+08:00",
+  "mode": "teaching_replay_gated",
+  "gate_verdict": "pass",
+  "refuse_reason": "有卡口核验：刷单/返利话术存疑，但未形成可核硬卡口引用（R-03 未盖章）。结论：暂未触发硬拦截，演示低风险放行条——仍建议人工核实后再转。",
+  "checklist": [
+    "仍建议核实对方真实身份",
+    "小额试水不等于安全",
+    "可先打官方客服核对"
+  ],
+  "warning": "低风险对照 · 有卡口放行",
+  "events": [
+    {
+      "run_id": "run-teach-brush-gated-20261021",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "ts": "2026-10-21T12:31:21+08:00",
+      "node": "特征官",
+      "text": "特征：垫资刷单返利。EV-BO-001「先垫 200 一单、完成后返 250」；EV-BO-002 诱导加返利群；EV-BO-003「再投 2000 升级金牌代理、本周必返本金+利润」。属持续加码诱导转账。",
+      "evidence_ids": [
+        "EV-BO-001",
+        "EV-BO-002",
+        "EV-BO-003"
+      ],
+      "rule_ids": [
+        "R-03"
+      ],
+      "legacy_ts": "2026-10-21T12:31:01+08:00"
+    },
+    {
+      "run_id": "run-teach-brush-gated-20261021",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "ts": "2026-10-21T12:31:21+08:00",
+      "node": "证据官",
+      "text": "查证：EV-BO-001/002/003 均可核。链接为脱敏占位，无第三方订单回执；加码话术与 R-03 垫资返利特征吻合。",
+      "evidence_ids": [
+        "EV-BO-001",
+        "EV-BO-002",
+        "EV-BO-003"
+      ],
+      "rule_ids": [
+        "R-03"
+      ],
+      "legacy_ts": "2026-10-21T12:31:04+08:00"
+    },
+    {
+      "run_id": "run-teach-brush-gated-20261021",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "ts": "2026-10-21T12:31:21+08:01",
+      "node": "风险官",
+      "text": "风险官：垫资刷单 + 加群 + 加码升级，是典型持续转账诱导。风险等级高，建议停止继续垫资，尤其不要再投「金牌代理」那 2000。",
+      "evidence_ids": [
+        "EV-BO-001",
+        "EV-BO-002",
+        "EV-BO-003"
+      ],
+      "rule_ids": [],
+      "legacy_ts": "2026-10-21T12:31:04+08:00"
+    },
+    {
+      "run_id": "run-teach-brush-gated-20261021",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "ts": "2026-10-21T12:31:21+08:02",
+      "node": "合规官",
+      "text": "合规官：话术符合刷单返利诱导特征（可参照 R-03 学习口径），但无平台订单回执、无监管资质核验。足够出具风险提示与劝阻继续转账；刑事定罪仍需更多实锤，不宜无卡口硬定罪。",
+      "evidence_ids": [
+        "EV-BO-001",
+        "EV-BO-002",
+        "EV-BO-003"
+      ],
+      "rule_ids": [
+        "R-03"
+      ],
+      "legacy_ts": "2026-10-21T12:31:04+08:00"
+    },
+    {
+      "run_id": "run-teach-brush-gated-20261021",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "ts": "2026-10-21T12:31:21+08:00",
+      "node": "反方官",
+      "text": "反方：用户自愿试水、或有小额返还口述；但仍符合持续诱导转账模式。",
+      "evidence_ids": [],
+      "rule_ids": [],
+      "legacy_ts": "2026-10-21T12:31:07+08:00"
+    },
+    {
+      "run_id": "run-teach-brush-gated-20261021",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "ts": "2026-10-21T12:31:21+08:03",
+      "node": "用户保护官",
+      "text": "用户保护官：① 立刻停止垫资和加群；② 不要再点返利链接；③ 已转出的小额保留转账凭证；④ 向平台官方客服/110 反诈咨询，勿听群内「再投一笔就返本」。",
+      "evidence_ids": [
+        "EV-BO-001",
+        "EV-BO-002",
+        "EV-BO-003"
+      ],
+      "rule_ids": [],
+      "legacy_ts": "2026-10-21T12:31:04+08:00"
+    },
+    {
+      "run_id": "run-teach-brush-gated-20261021",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "ts": "2026-10-21T12:31:21+08:00",
+      "node": "特征官",
+      "text": "（会飘对照）无卡口时可能偏放行；本案有可核证据，应交盖章。",
+      "evidence_ids": [
+        "EV-BO-001",
+        "EV-BO-003"
+      ],
+      "rule_ids": [
+        "R-03"
+      ],
+      "legacy_ts": "2026-10-21T12:31:10+08:00"
+    },
+    {
+      "run_id": "run-teach-brush-gated-20261021",
+      "case_id": "TEACH-BRUSH-ORDER-001",
+      "ts": "2026-10-21T12:31:21+08:00",
+      "node": "审判官",
+      "text": "有卡口核验完成——垫资返利话术存疑，但证据未达硬卡口盖章标准。结论：放行（低风险对照）。仍请自行核实。",
+      "evidence_ids": [
+        "EV-BO-001",
+        "EV-BO-002",
+        "EV-BO-003"
+      ],
+      "rule_ids": [
+        "R-03"
+      ],
+      "verdict": "pass"
+    }
+  ],
+  "risk_level": "low"
+}
