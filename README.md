@@ -1,47 +1,78 @@
-# openJiuwen 本机部署与后端导读
+# 转账前保镖：本机部署
 
-这是一套「转账前保镖」演示：多个角色对一段催转聊天做会商，本地规则再盖章，决定放行还是打回。仓库里有两块，可以分开跑。
+按本文可以从一台新机器启动演示。不需要其他聊天记录或内部笔记。
 
-| 目录 | 角色 | 默认地址 |
+演示只监听本机 `127.0.0.1`。换机器是在那台机器上重新安装并启动，不是把服务暴露到局域网或公网。
+
+仓库里有两个目录：
+
+| 目录 | 作用 | 默认地址 |
 | --- | --- | --- |
-| `openjiuwen-spike` | 后端。现场会商 HTTP 服务，以及它依赖的 openJiuwen 框架源码 | `http://127.0.0.1:5180` |
-| `openjiuwen-demo-replay` | 前端。回放已经录好的事件；打开「现场会商」后才连后端 | `http://127.0.0.1:5174` |
+| `openjiuwen-spike` | 后端。现场会商 HTTP 服务，以及它使用的 openJiuwen 源码 | `http://127.0.0.1:5180` |
+| `openjiuwen-demo-replay` | 前端。回放已录好的事件；「真实使用」才会请求后端 | `http://127.0.0.1:5174` |
 
-只想看界面、不调模型：装好 Node.js 后只跑前端即可。要看模型真的发言，再按下面把后端拉起来。
+默认端口是 **5174**（页面）和 **5180**（后端）。不设置任何变量时就是这两个端口。如果被占用，按下文「端口被占用」改两个变量后重启，不要改源码。
 
-后端服务只监听本机（`127.0.0.1` / `localhost` / `::1`）。换一台电脑是「在那台电脑上自己起一份」，不是把它暴露到公网。
+只看回放、不调用模型：完成「环境」和「前端依赖」，然后只执行「启动前端」。现场裁定需要后端和模型 Key。
 
 ---
 
 ## 环境
 
-| 软件 | 版本 | 用来做什么 |
-| --- | --- | --- |
-| Python | **3.11、3.12 或 3.13**（不要用 3.14 及以上） | 后端。框架声明见 `openjiuwen-spike/agent-core/pyproject.toml` 的 `requires-python` |
-| Node.js | **18 及以上**（建议 20 LTS） | 前端 Vite |
-| 一个 OpenAI 兼容接口的 Key | 现场会商才需要 | 默认示例指向智谱 GLM |
+| 项目 | 要求 |
+| --- | --- |
+| 操作系统 | Windows 10/11、macOS 或 Linux。无 GPU 要求 |
+| Git | 能 `git clone` |
+| Python | **3.11、3.12 或 3.13**。不要用 3.14 及以上。框架声明是 `>=3.11,<3.14`（`openjiuwen-spike/agent-core/pyproject.toml`） |
+| Node.js | **18 或更高**，建议 20 LTS。自带 `npm` |
+| 网络 | 安装依赖需要访问 PyPI 和 npm。现场裁定还要能访问你填写的模型接口 |
+| 模型 Key | 仅现场裁定需要。接口须兼容 OpenAI。示例默认指向智谱 GLM，可改成自己的网关 |
 
-先确认版本：
+检查版本：
 
 ```bash
-python --version
+python3 --version
 node --version
 npm --version
 ```
 
-Windows 上如果 `python` 指向了商店占位符，改用 `py -3.13 --version`，后面的 `python` 也换成 `py -3.13`。
+Windows 上如果 `python` 打开的是商店占位程序，改用已安装的 3.11–3.13，例如 `py -3.12 --version`。后文的 `python3` 在 Windows 上换成同一个启动器。
 
-**不要拷贝别人的虚拟环境。** `openjiuwen-spike/.venv` 和 `openjiuwen-demo-replay/node_modules` 跟操作系统、CPU 绑在一起。Linux 上建的 `.venv` 拿到 Windows 不能用。每台机器自己创建。
+不要拷贝别人机器上的 `openjiuwen-spike/.venv` 或 `openjiuwen-demo-replay/node_modules`。虚拟环境和依赖目录跟操作系统、CPU 绑在一起，每台机器自己创建。
 
-**不要提交、不要外传** `openjiuwen-spike/spike/model.env`。里面是模型 Key。日志里出现 Key 时，服务会打成 `<REDACTED_API_KEY>`。
+不要提交、不要外传 `openjiuwen-spike/spike/model.env`。该文件里是模型 Key。
 
 ---
 
-## 第一次安装
+## 1. 取得代码
 
-在仓库根目录操作。下面的根目录就是同时包含 `openjiuwen-spike` 和 `openjiuwen-demo-replay` 的这一层。
+可运行的演示在分支 `openjiuwen-final`。GitHub 默认分支 `main` 不是这份演示。
 
-### 1. 后端虚拟环境
+```bash
+git clone https://github.com/VectorJay666/openjiuwen-fraud-detectives.git
+cd openjiuwen-fraud-detectives
+git checkout openjiuwen-final
+```
+
+确认当前目录就是仓库根（同时能看到下面两个路径）：
+
+```bash
+test -f openjiuwen-spike/spike/live_server.py && test -f openjiuwen-demo-replay/package.json && echo OK
+```
+
+Windows PowerShell：
+
+```powershell
+if ((Test-Path openjiuwen-spike\spike\live_server.py) -and (Test-Path openjiuwen-demo-replay\package.json)) { "OK" }
+```
+
+输出不是 `OK` 时，先 `git checkout openjiuwen-final`，不要在 `main` 上继续安装。
+
+后文命令都以这个根目录为起点。写到 `cd` 的地方，都是从根目录进入。
+
+---
+
+## 2. 安装后端
 
 macOS / Linux：
 
@@ -53,39 +84,42 @@ python -m pip install -U pip
 python -m pip install -r spike/requirements-p2p-smoke.txt
 ```
 
-Windows PowerShell：
+Windows PowerShell（把 `py -3.12` 换成你本机的 3.11–3.13）：
 
 ```powershell
 cd openjiuwen-spike
-py -3.13 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -U pip
-python -m pip install -r spike\requirements-p2p-smoke.txt
-```
-
-如果 PowerShell 禁止运行脚本，不必改系统策略，直接用虚拟环境里的解释器：
-
-```powershell
+py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -U pip
 .\.venv\Scripts\python.exe -m pip install -r spike\requirements-p2p-smoke.txt
 ```
 
-`requirements-p2p-smoke.txt` 是这条演示链路实际用到的依赖（HTTP、OpenAI SDK、TeamRuntime / SwarmFlow 会碰到的库）。框架本体 **不** 从 PyPI 安装：启动时 `llm_debate.py` 里的 `_bootstrap_openjiuwen()` 把旁边的 `agent-core` 目录插到 `sys.path` 最前面，然后 `import openjiuwen`。这样读到的就是本仓库里的源码。
+如果激活脚本被 PowerShell 拦住，不必改执行策略。后面启动也直接用 `.venv\Scripts\python.exe`。
 
-同一环境里不要再 `pip install openjiuwen`。PyPI 上的包和这份源码不是同一份，混装后很难判断自己改的是哪一棵树。
+不要再执行 `pip install openjiuwen`。后端启动时会把旁边的 `agent-core` 放到导入路径最前面，用的是仓库里的源码。再装一份 PyPI 包会和这份源码混在一起。
 
-### 2. 模型配置
+---
+
+## 3. 填写模型配置
+
+回放不需要这一步。要点「真实使用」做现场裁定，必须做。
+
+在仓库根目录：
+
+macOS / Linux：
 
 ```bash
-cd openjiuwen-spike/spike
+cp openjiuwen-spike/spike/model.env.example openjiuwen-spike/spike/model.env
 ```
 
-macOS / Linux：`cp model.env.example model.env`  
-Windows：`copy model.env.example model.env`
+Windows：
 
-打开 `model.env`，填这几项（名字以 `model.env.example` 为准）：
-
+```powershell
+copy openjiuwen-spike\spike\model.env.example openjiuwen-spike\spike\model.env
 ```
+
+用编辑器打开 `openjiuwen-spike/spike/model.env`，至少填入 Key。其余行保持与示例一致，或改成你自己的兼容接口：
+
+```text
 OPENJIUWEN_LLM_API_KEY=你的key
 OPENJIUWEN_LLM_API_BASE=https://open.bigmodel.cn/api/paas/v4
 OPENJIUWEN_LLM_MODEL=glm-5.3-flash
@@ -93,290 +127,301 @@ OPENJIUWEN_LLM_PROVIDER=openai
 OPENJIUWEN_LLM_CLIENT_ID=glm-flash
 ```
 
-`PROVIDER=openai` 表示「走 OpenAI 兼容协议」，不是必须用 OpenAI 的模型。智谱、DeepSeek 以及其他兼容网关都填自己的 `API_BASE` 和 `MODEL`。文件必须放在 `spike/model.env`，和 `live_server.py` 同级。`load_model_env()` 只读这个路径。
+`OPENJIUWEN_LLM_PROVIDER=openai` 表示走 OpenAI 兼容协议，不表示必须使用 OpenAI 的模型。文件名必须是 `model.env`，并且和 `live_server.py` 在同一目录 `openjiuwen-spike/spike/`。Key 那一行不能空。
 
-### 3. 前端依赖
+---
+
+## 4. 安装前端
 
 新开一个终端，回到仓库根目录：
 
 ```bash
 cd openjiuwen-demo-replay
-npm install
+npm ci
 ```
+
+`npm ci` 按 `package-lock.json` 安装。若该命令不可用，在同一目录执行 `npm install`。
 
 ---
 
-## 启动
+## 5. 启动
 
-两个进程，各占一个终端。
+两个进程，两个终端。先启动后端，再启动前端。
 
-**后端**（已激活 `openjiuwen-spike/.venv`）：
+默认不设置端口变量。页面是 `http://127.0.0.1:5174/`，后端是 `http://127.0.0.1:5180`。5174 或 5180 已被占用时，先做下一节，再回到这里启动。
+
+### 后端
+
+macOS / Linux（在已激活 `.venv` 的终端）：
 
 ```bash
 cd openjiuwen-spike/spike
 python live_server.py
 ```
 
-Windows 未激活虚拟环境时：
+未激活虚拟环境时：
+
+```bash
+cd openjiuwen-spike/spike
+../.venv/bin/python live_server.py
+```
+
+Windows：
 
 ```powershell
 cd openjiuwen-spike\spike
 ..\.venv\Scripts\python.exe live_server.py
 ```
 
-看到类似一行即表示在听端口：
+成功时终端打印一行，默认类似：
 
 ```text
 live debate API on http://127.0.0.1:5180  CORS=http://127.0.0.1:5174
 ```
 
-另开终端做健康检查。
+`live debate API on` 后面的地址是后端。`CORS=` 后面的地址必须和浏览器地址栏一致（含 `127.0.0.1` 和端口）。这一行没有出现、或进程马上退出，按「常见问题」处理。保持这个终端开着。
 
-macOS / Linux：
+### 前端
 
-```bash
-curl -sS http://127.0.0.1:5180/health
-```
-
-Windows PowerShell：
-
-```powershell
-Invoke-RestMethod http://127.0.0.1:5180/health
-```
-
-返回 JSON 里应有 `"ok": true`、`"live": true`、`"fabricate": null`。`"swarmflow": false` 表示健康检查这条默认口径是 TeamRuntime；SwarmFlow 在另一个路径上，见下文。`"engines"` 里同时列出 `teamruntime` 和 `swarmflow`。
-
-**前端：**
+另一个终端，仓库根目录：
 
 ```bash
 cd openjiuwen-demo-replay
 npm run dev
 ```
 
-浏览器打开 <http://127.0.0.1:5174/>。
-
-- **Play / Pause / Step / Reset**：回放 `public/data/` 里已经生成好的事件，不访问 5180。
-- **现场会商**：页面向 `http://127.0.0.1:5180` 发请求，会消耗模型额度。前端把这个地址写在 `openjiuwen-demo-replay/src/lib/liveSse.ts` 的 `LIVE_BASE`。保持默认端口时不用改代码。
-
-可选的静态构建：
-
-```bash
-npm run build
-npm run preview
-```
-
-`preview` 同样是 `127.0.0.1:5174`。
-
----
-
-## 后端是怎么搭起来的
-
-HTTP 层很薄。真正的框架是旁边的 Python 包 `openjiuwen`（源码在 `openjiuwen-spike/agent-core/openjiuwen`，版本见该目录 `pyproject.toml`，当前为 0.1.19）。本演示没有用 Django / FastAPI 做应用骨架，入口是 `aiohttp` 写的 `spike/live_server.py`。
+成功时终端有一行 `Local:`，默认是：
 
 ```text
-浏览器 127.0.0.1:5174
-        │  POST + SSE（text/event-stream）
-        ▼
-live_server.py          aiohttp，只绑本机 :5180
-        │
-        ├── POST /v1/debate/live     默认会商
-        │         llm_debate.py
-        │         TeamRuntime        框架：core/multi_agent/team_runtime
-        │         Model.invoke       框架：core/foundation/llm
-        │
-        └── POST /v1/swarm/debate    展示轨
-                  swarm_live.py
-                  run_swarmflow      框架：agent_teams/workflow/runner.py
-                  脚本 swarm_scripts/guard_schema_live.py
-        │
-        ▼
-rule_gate.py            本仓库自己的盖章，不进模型
-        │
-        ▼
-SSE：schema → meta → event* → done | error
+Local:   http://127.0.0.1:5174/
 ```
 
-一次请求进来后，`live_server.py` 做四件事：校验 body、调用上面两条引擎之一、把每个角色的发言收成统一事件、用 SSE 推给前端。同一时刻只跑一路会商（进程里有一把锁）。
-
-### 框架在源码里的位置
-
-`agent-core/openjiuwen/` 是 SDK。和这次演示直接相关的是这几块，其余目录（演进、检索、可观测、各种 harness）可以先当库，用到再翻。
-
-| 路径 | 这次演示里它干什么 |
-| --- | --- |
-| `core/foundation/llm` | 模型客户端。`Model` + `ModelClientConfig` + `ModelRequestConfig`。Provider 写成 `OpenAI` 时走兼容协议 |
-| `core/single_agent` | 单个智能体的基类 `BaseAgent`、名片 `AgentCard`、会话 `Session` |
-| `core/multi_agent/team_runtime` | `TeamRuntime`。登记多个智能体，用消息总线做点对点 `send` |
-| `agent_teams/workflow` | SwarmFlow。`run_swarmflow()` 装载一份 Python 脚本，交给 worker 后端执行，并用 `WorkflowObserver` 往外推进度 |
-| `core/runner`、`core/workflow`、`core/application` | SDK 自带的另一条用法：用 `Runner` 跑 `WorkflowAgent`。`agent-core/README.zh.md` 的示例走的是这条。**本演示的 5180 服务不经过 `Runner.run_agent`** |
-
-SDK 说明以 `openjiuwen-spike/agent-core/README.zh.md` 为准。下面只讲 5180 这条进程实际怎么把框架用起来。
-
-### 默认会商：TeamRuntime
-
-代码在 `openjiuwen-spike/spike/llm_debate.py`。
-
-1. `load_model_env()` 读取 `model.env`，缺 `OPENJIUWEN_LLM_API_KEY` 就直接失败。
-2. `_build_model()` 组装 `ModelClientConfig` / `ModelRequestConfig`，得到一个 `Model`。超时 120 秒，`temperature=0.3`。
-3. `build_agents()` 在函数内部定义 7 个类，都继承框架的 `CommunicableAgent` 和 `BaseAgent`：特征官、证据官、风险官、合规官、用户保护官、反方官、`human_confirm`。每个类实现 `invoke()`，里面调用 `Model`，再把结果收成一条事件。
-4. 为每个角色建一张 `AgentCard`（`id` 如 `feature`，`name` 如「特征官」）。
-5. `runtime = TeamRuntime()`，然后 `runtime.register_agent(card, lambda: SomeAgent(card=card))`。注册的是工厂，不是已经构造好的实例。
-6. `await runtime.start()` 拉起这个团队自己的消息总线。
-7. 业务代码按固定顺序 `await runtime.send(message, recipient="feature", sender="user")`，下一跳把上一跳的结果当 message 再发给下一个 `recipient`。顺序是：特征官 → 证据官 → 风险官 → 合规官 → 反方官，以及保护官、人工确认。`recipient` 必须等于某张名片的 `id`。
-
-`TeamRuntime` 本身不管「保镖业务」。它只管：这张名片对应哪个工厂、消息发给谁、超时多久。角色提示词、案卷摘录、事件字段都写在 `spike/` 里。
-
-案卷和规则是普通 JSON：
-
-- `spike/case/dossier.json`：演示案 `CASE-SPIKE-FAB-001`，只有 `EV-001`、`EV-002`
-- `spike/rules/base.json`：`R-01` 催转话术，`R-02` 证据编号必须在案卷里
-
-### 盖章：rule_gate
-
-`spike/rule_gate.py` 不调用模型。它扫描各角色发言里的 `evidence_ids` / `rule_ids`，跟案卷和规则库做集合比对。编号不在库里，就记为编造。编造编号不能支撑定罪，盖章结果可以是 `refuse`。
-
-所以模型可以在发言里胡说一个证据号，最终裁定仍由这段本地代码决定。页脚口径是「真 LLM 现场会商 + 本地 rule_gate」。
-
-### 展示轨：SwarmFlow
-
-`POST /v1/swarm/debate` 进入 `spike/swarm_live.py`，调用框架的 `run_swarmflow()`，脚本是 `spike/swarm_scripts/guard_schema_live.py`。
-
-这份脚本的写法和服务里的 Agent 类不同。它向加载器要的名字是：
-
-```python
-from swarmflow import agent, log, phase
-```
-
-文件顶上有 `META`（流程名 `guard-schema-live`、五个 phase：特征、查证、风险、合规、保护），以及每个角色要返回的 JSON Schema。`run_swarmflow` 用 `TeamWorkerBackend` 起真实模型 worker，用 `WorkflowObserver` 在整次跑完之前就把进度和事件推出来。只有这条路径的 SSE 里 `swarmflow` 为 `true`，页脚是「SwarmFlow 现场会商 + 本地 rule_gate」。
-
-Swarm 跑起来会在 `spike/swarm_live_home/` 下写团队工作区（会话、日志、各 worker 的工作目录）。那是运行产物，换机器时不用拷。
-
-脚本目录至少要留着这三个文件，缺了展示轨会失败并降级回 TeamRuntime：
-
-- `swarm_scripts/guard_schema_live.py`
-- `swarm_scripts/guard_schema_mini.py`
-- `swarm_scripts/mini_theme.py`
-
-### HTTP 契约（后端同学够用的部分）
-
-| 方法 | 路径 | 行为 |
-| --- | --- | --- |
-| `GET` | `/health` | 存活检查。不调模型 |
-| `GET` | `/v1/showcase` | 展示用的静态说明 |
-| `POST` | `/v1/debate/live` | 默认引擎 TeamRuntime。也接受 `GET`，用查询参数 `?gate=true` |
-| `POST` | `/v1/swarm/debate` | SwarmFlow。body 里要有 `transcript` |
-
-SSE 事件名：`schema`（字段约定）、`meta`（本次是否盖章、模型名，不含 key）、`event`（一个角色一句）、`done`（终局 `gate_verdict`）、`error`。
-
-两种 body：
-
-- **回放演示体**：可以不带 `transcript`，例如 `{"gate": true, "case_id": "CASE-SPIKE-FAB-001"}`。走预制案卷。
-- **现场粘贴体**：带 `transcript`（也认旧字段 `chat_transcript`）。去空白后短于 20 字返回 `transcript_too_short`，不调模型；长于 8000 字截断。可带 `amount`、`payee`、`urgency`（`low` / `mid` / `high`，非法则回落 `mid`）、`suspect_links`、`user_note`。
-
-`gate: true` 时会跑本地盖章。现场粘贴这条路径使用证据号 `EV-LIVE-001`，规则仍是 `R-01`、`R-02`。
-
-更细的字段表在 `openjiuwen-spike/spike/LIVE.md`。前端和 Swarm 的降级约定在 `openjiuwen-spike/spike/FE_SWARM_CONTRACT.md`。
-
-跨域只放行一个来源，默认 `http://127.0.0.1:5174`。服务启动时若 `OPENJIUWEN_LIVE_HOST` 不是本机地址，进程会直接退出。
-
-| 环境变量 | 默认 | 作用 |
-| --- | --- | --- |
-| `OPENJIUWEN_LIVE_HOST` | `127.0.0.1` | 只允许本机 |
-| `OPENJIUWEN_LIVE_PORT` | `5180` | 后端端口。改了之后还要改前端 `LIVE_BASE`，否则页面仍打 5180 |
-| `OPENJIUWEN_LIVE_CORS` | `http://127.0.0.1:5174` | 允许的前端源，要和浏览器地址栏一致 |
+用这一行里的地址打开浏览器，不要改成 `localhost`，除非你同时把 CORS 配成同一个来源。页面标题是「反诈侦探团 · 第二幕对照」。
 
 ---
 
-## 自己打一发请求
+## 6. 怎样算启动成功
 
-健康检查通过之后。下面这条走默认 TeamRuntime，会调用模型。
+把下面地址里的端口换成你实际使用的端口。默认就是 5174 和 5180。
+
+### 6.1 后端健康检查（不调用模型）
 
 macOS / Linux：
 
 ```bash
-curl -sS -N -X POST http://127.0.0.1:5180/v1/debate/live \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: text/event-stream' \
-  -d '{"gate":true,"case_id":"CASE-SPIKE-FAB-001"}'
+curl -sS http://127.0.0.1:5180/health
+curl -sS http://127.0.0.1:5180/v1/showcase
 ```
 
-Windows PowerShell 把 JSON 交给 `curl.exe` 时，引号容易被吃掉，用文件更稳：
+Windows PowerShell：
 
 ```powershell
-Set-Content -Encoding utf8 body.json '{"gate":true,"case_id":"CASE-SPIKE-FAB-001"}'
-curl.exe -N -X POST http://127.0.0.1:5180/v1/debate/live `
-  -H "Content-Type: application/json" `
-  -H "Accept: text/event-stream" `
-  --data-binary "@body.json"
+Invoke-RestMethod http://127.0.0.1:5180/health
+Invoke-RestMethod http://127.0.0.1:5180/v1/showcase
 ```
 
-现场粘贴（Swarm 展示轨）需要一段不少于 20 字的聊天记录，例如：
+`/health` 的 JSON 里要有 `"ok": true` 和 `"live": true`。`"swarmflow": false` 是健康检查的正常值，不表示服务启动失败。
 
-```json
-{"gate":true,"transcript":"对方自称客服催我立刻转到安全账户，金额五千，说不转就冻结。"}
-```
+`/v1/showcase` 里：
 
-把上面的 URL 换成 `http://127.0.0.1:5180/v1/swarm/debate`。
+- `url` 是页面地址，默认 `http://127.0.0.1:5174/`
+- `live_base` 是后端地址，默认 `http://127.0.0.1:5180`
 
-不烧模型、只核对参数校验：
+这两个字段必须和你打开的页面、后端启动行一致。不一致就不要继续做现场裁定，先改端口配置并同时重启两个进程。
+
+不调用模型的接口检查（后端已在运行，且当前终端能看到同一组端口变量）：
 
 ```bash
 cd openjiuwen-spike/spike
 python run_live_actual_layer_smoke.py
 ```
 
-期望输出里有 `PASS_MARKER live_actual_layer`。这条默认不请求模型。
+Windows 把 `python` 换成 `..\.venv\Scripts\python.exe`。输出里要有 `PASS_MARKER live_actual_layer`。
+
+### 6.2 回放（不需要后端，不消耗模型额度）
+
+1. 浏览器打开前端 `Local:` 那一行的地址。
+2. 确认顶部在「典型事例展示」。
+3. 点击 **Play**。
+
+左右两侧会按已录好的事件逐步出现文字。这一步没有请求 5180。
+
+### 6.3 现场裁定（消耗模型额度）
+
+后端终端仍在运行，并且 `model.env` 里已填写 Key。
+
+1. 点击顶部 **真实使用**。
+2. 在「会话原文」粘贴下面这段（不少于 20 字）：
+
+```text
+对方自称客服，催我立刻转到安全账户，金额五千，说不转就冻结银行卡。
+```
+
+3. 其余输入可以留空。保持「本地 rule_gate」和「平台 Swarm 展示」的默认勾选。
+4. 点击 **开始裁定**。
+
+成功：几十秒到两分钟内出现角色发言（特征官、证据官等），页脚有裁定结果。这一步会请求你配置的模型接口。
+
+失败且页面写「连不上本机 …」：后端没在听，或页面请求的端口不是后端那一个。看下一节和「常见问题」。
 
 ---
 
-## 建议阅读顺序
+## 端口被占用
 
-按这个顺序读，能从「请求从哪进来」走到「框架类在哪」：
+5174 或 5180 已被别的程序使用时，进程会退出并提示 `Port ... is already in use` 或 `address already in use`。它不会自动改绑到下一个端口。自动换端口会让浏览器地址和后端允许的来源对不上，现场裁定会失败。
 
-1. `openjiuwen-spike/spike/live_server.py` — 路由、CORS、SSE、两套入口怎么分支。
-2. `openjiuwen-spike/spike/llm_debate.py` — `TeamRuntime` 的注册和 `send` 顺序；`_bootstrap_openjiuwen()` 如何挂上源码。
-3. `openjiuwen-spike/spike/rule_gate.py` — 盖章规则，纯函数，没有模型。
-4. `openjiuwen-spike/spike/event_schema.py` — 推给前端的事件长什么样。
-5. `openjiuwen-spike/agent-core/openjiuwen/core/multi_agent/team_runtime/team_runtime.py` — `register_agent` / `start` / `send` 的实现。
-6. `openjiuwen-spike/spike/swarm_live.py` 和 `spike/swarm_scripts/guard_schema_live.py` — 展示轨如何把脚本交给框架。
-7. `openjiuwen-spike/agent-core/openjiuwen/agent_teams/workflow/runner.py` — `run_swarmflow` 的入口说明。
-8. `openjiuwen-spike/agent-core/openjiuwen/core/foundation/llm/model.py` — `Model` 怎么发 HTTP。
-9. `openjiuwen-spike/agent-core/README.zh.md` — SDK 自己的 WorkflowAgent / ReActAgent 用法。那是框架的另一条产品路径，和 5180 进程并列，方便以后对照。
+选两个空闲端口。下面用页面 **18080**、后端 **18081** 举例。换成任意 1–65535 的空闲端口即可。
 
-`spike/run_*_smoke.py` 是一条条验收脚本，适合在读完对应模块后跑，用来确认自己的理解和现有行为一致。
+### 推荐做法：写一个 `.env`
+
+在仓库根目录执行：
+
+macOS / Linux：
+
+```bash
+cp openjiuwen-demo-replay/.env.example openjiuwen-demo-replay/.env
+```
+
+Windows：
+
+```powershell
+copy openjiuwen-demo-replay\.env.example openjiuwen-demo-replay\.env
+```
+
+编辑 `openjiuwen-demo-replay/.env`，只改这两行：
+
+```text
+OPENJIUWEN_DEMO_PORT=18080
+OPENJIUWEN_LIVE_PORT=18081
+```
+
+保存后，**两个终端都重新启动**（先停掉已退出或仍占用旧端口的进程）：
+
+```bash
+cd openjiuwen-spike/spike
+python live_server.py
+```
+
+```bash
+cd openjiuwen-demo-replay
+npm run dev
+```
+
+Windows 后端仍用 `..\.venv\Scripts\python.exe live_server.py`。
+
+前端和后端都会读这个文件。已经在 shell 里导出的同名变量优先于文件。
+
+启动行应变成：
+
+```text
+live debate API on http://127.0.0.1:18081  CORS=http://127.0.0.1:18080
+```
+
+```text
+Local:   http://127.0.0.1:18080/
+```
+
+浏览器打开 `http://127.0.0.1:18080/`。健康检查改为：
+
+```bash
+curl -sS http://127.0.0.1:18081/health
+curl -sS http://127.0.0.1:18081/v1/showcase
+```
+
+`showcase.url` 应为 `http://127.0.0.1:18080/`，`showcase.live_base` 应为 `http://127.0.0.1:18081`。然后按第 6 节做回放和现场裁定。
+
+### 页面怎样知道后端端口
+
+不需要改 `src` 里的地址。`npm run dev`、`npm run build`、`npm run preview` 启动时读取环境，并按下面顺序决定页面请求的基址：
+
+1. `VITE_LIVE_BASE`，若设置了完整 URL
+2. 否则 `OPENJIUWEN_LIVE_BASE`，若设置了完整 URL
+3. 否则 `http://127.0.0.1:<OPENJIUWEN_LIVE_PORT>`，端口默认 5180
+
+后端监听的是 `OPENJIUWEN_LIVE_PORT`，不是 `VITE_LIVE_BASE`。因此正常换端口只改 `OPENJIUWEN_DEMO_PORT` 和 `OPENJIUWEN_LIVE_PORT`。页面会去请求 `http://127.0.0.1:` 加上你写的后端端口。
+
+后端允许的浏览器来源默认是 `http://127.0.0.1:<OPENJIUWEN_DEMO_PORT>`。所以页面端口一改，后端也要重启，CORS 才会跟着变。
+
+只改其中一个端口也可以：
+
+- 只改页面、后端仍用 5180：只设置 `OPENJIUWEN_DEMO_PORT`
+- 只改后端、页面仍用 5174：只设置 `OPENJIUWEN_LIVE_PORT`
+
+改完必须同时重启前端和后端。使用 `npm run build` 后再 `npm run preview` 时，改端口后要重新 build，基址在构建时写入页面。
+
+`VITE_LIVE_BASE` 只在页面要请求的完整地址不是 `http://127.0.0.1:<后端端口>` 时才填，而且必须和后端实际监听的地址一致。后端拒绝绑定 `127.0.0.1`、`localhost`、`::1` 以外的地址。
+
+| 变量 | 默认 | 作用 |
+| --- | --- | --- |
+| `OPENJIUWEN_DEMO_PORT` | `5174` | 前端 dev / preview 端口。未另设 CORS 时，后端用它组成允许的来源 |
+| `OPENJIUWEN_LIVE_PORT` | `5180` | 后端监听端口。也是页面默认请求的端口 |
+| `VITE_LIVE_BASE` | `http://127.0.0.1:<OPENJIUWEN_LIVE_PORT>` | 可选。页面请求的完整基址，覆盖上一行的推导 |
+| `OPENJIUWEN_LIVE_BASE` | 与后端绑定地址相同 | 可选。检查脚本的请求基址；页面在没设 `VITE_LIVE_BASE` 时也认它。不改变后端监听端口 |
+| `OPENJIUWEN_LIVE_CORS` | `http://127.0.0.1:<OPENJIUWEN_DEMO_PORT>` | 可选。允许的浏览器来源，必须和地址栏的协议、主机、端口一致 |
+| `OPENJIUWEN_LIVE_HOST` | `127.0.0.1` | 后端绑定地址。不要改成局域网 IP |
+
+也可以不写 `.env`，而在**每个**要启动的终端里先导出再启动。两个终端不会共享另一次导出的变量。
+
+macOS / Linux：
+
+```bash
+export OPENJIUWEN_DEMO_PORT=18080
+export OPENJIUWEN_LIVE_PORT=18081
+```
+
+Windows PowerShell：
+
+```powershell
+$env:OPENJIUWEN_DEMO_PORT = "18080"
+$env:OPENJIUWEN_LIVE_PORT = "18081"
+```
+
+路径 `/health`、`/v1/showcase`、`/v1/debate/live`、`/v1/swarm/debate` 不随端口改变。
 
 ---
 
-## 换机器时要带什么
-
-要带：
-
-- `openjiuwen-spike/agent-core/`（框架源码）
-- `openjiuwen-spike/spike/` 下的 `.py`、`swarm_scripts/`、`case/`、`rules/`、`model.env.example`、`requirements-p2p-smoke.txt`、`log_config_p2p.yaml`、`config_*.yaml`
-- `openjiuwen-demo-replay/` 里除 `node_modules` 和 `dist` 以外的源码（至少 `package.json`、`package-lock.json`、`src/`、`public/`、`index.html`、`vite.config.ts`、`tsconfig*.json`）
-
-可以不带，到新机器会自己长出来：
-
-- `openjiuwen-spike/.venv`
-- `openjiuwen-demo-replay/node_modules`
-- `openjiuwen-demo-replay/dist`（`npm run build` 再生）
-- `openjiuwen-spike/spike/swarm_live_home/`
-- `openjiuwen-spike/spike/logs/`
-- `model.env`（在新机器上从 example 复制，自己填 Key）
-
----
-
-## 碰到这些情况
+## 常见问题
 
 | 现象 | 处理 |
 | --- | --- |
-| `No module named aiohttp` 或别的第三方包 | 确认用的是 `openjiuwen-spike/.venv` 里的解释器，并且已经 `pip install -r spike/requirements-p2p-smoke.txt` |
-| `missing model env` 或 `OPENJIUWEN_LLM_API_KEY missing` | `spike/model.env` 不存在，或 Key 那一行是空的 |
-| 页面提示连不上 5180 | 后端终端还在跑；地址是 `127.0.0.1` 不是局域网 IP；前端源和 `OPENJIUWEN_LIVE_CORS` 一致 |
-| `refusing non-local bind` | `OPENJIUWEN_LIVE_HOST` 被设成了非本机地址。改回 `127.0.0.1` |
-| 浏览器能开页面，现场会商一直转圈后报错 | 看后端终端。模型 `API_BASE`、Key、模型名是否匹配；公司网络是否拦了 HTTPS |
-| `swarm_debate_failed` 然后仍有结果 | 展示轨失败后服务会降级到 `/v1/debate/live`。先确认 `swarm_scripts/guard_schema_live.py` 还在 |
-| `npm install` 失败 | Node 版本低于 18，或当前目录不是 `openjiuwen-demo-replay` |
-| 激活 venv 时 PowerShell 报脚本无法加载 | 改用 `..\.venv\Scripts\python.exe live_server.py`，从 `spike` 目录执行 |
+| 根目录没有 `openjiuwen-spike` 或 `openjiuwen-demo-replay` | 当前在 `main`。执行 `git checkout openjiuwen-final` |
+| `No module named aiohttp` 或其他第三方模块找不到 | 用 `openjiuwen-spike/.venv` 里的解释器。确认已执行 `pip install -r spike/requirements-p2p-smoke.txt`。不要用系统里另一个 `python` |
+| 从别的电脑拷来的 `.venv` 无法运行 | 删掉该 `.venv`，按第 2 节在本机重建 |
+| `missing model env` 或 `OPENJIUWEN_LLM_API_KEY missing` | `openjiuwen-spike/spike/model.env` 不存在，或 Key 那一行是空的。从 `model.env.example` 复制后再填 |
+| `Port 5174 is already in use` 或 `address already in use` | 按「端口被占用」换端口，写入 `.env`，然后同时重启前端和后端。不要只改一边 |
+| 页面能开，点击「开始裁定」后提示连不上 | 后端终端仍在运行。启动行里的端口等于页面正在请求的端口。浏览器用 `127.0.0.1`，不要用 `localhost`，除非 `OPENJIUWEN_LIVE_CORS` 也写成 `http://localhost:<页面端口>` |
+| `refusing non-local bind` | `OPENJIUWEN_LIVE_HOST` 不是本机地址。改回 `127.0.0.1` 或删掉这一行 |
+| 页面一直转圈后报错，但不是「连不上」 | 看后端终端。检查 `OPENJIUWEN_LLM_API_BASE`、Key、`OPENJIUWEN_LLM_MODEL` 是否匹配，以及本机能否访问该 HTTPS 地址 |
+| `npm ci` 或 `npm install` 失败 | 确认 Node 不低于 18，当前目录是 `openjiuwen-demo-replay` |
+| PowerShell 禁止运行 `Activate.ps1` | 不要激活。安装和启动都用 `openjiuwen-spike\.venv\Scripts\python.exe` |
+| 改了 `.env` 但页面仍请求旧端口 | 停掉 `npm run dev` 后重新运行。若使用的是 build 产物，重新执行 `npm run build` |
 
-前端页面怎么操作，见 `openjiuwen-demo-replay/README.md`。接口字段的冻结说明见 `openjiuwen-spike/spike/LIVE.md`。
+---
+
+## 附录：代码位置
+
+部署不必阅读本节。
+
+HTTP 入口是 `openjiuwen-spike/spike/live_server.py`（aiohttp）。框架源码在 `openjiuwen-spike/agent-core/openjiuwen`，由 `llm_debate.py` 在启动路径上加入 `sys.path`，不从 PyPI 安装。
+
+```text
+浏览器  127.0.0.1:<OPENJIUWEN_DEMO_PORT>
+        │  POST，响应为 text/event-stream
+        ▼
+live_server.py     127.0.0.1:<OPENJIUWEN_LIVE_PORT>
+        ├── POST /v1/debate/live      默认会商
+        └── POST /v1/swarm/debate     另一条会商路径
+        ▼
+本地规则比对（spike/rule_gate.py）后，把角色发言推给页面
+```
+
+| 方法 | 路径 | 行为 |
+| --- | --- | --- |
+| `GET` | `/health` | 存活检查，不调用模型 |
+| `GET` | `/v1/showcase` | 返回当前页面地址和后端地址 |
+| `POST` | `/v1/debate/live` | 默认会商。也可以 `GET ?gate=true` |
+| `POST` | `/v1/swarm/debate` | 需要正文里的 `transcript` |
+
+现场粘贴的 `transcript` 去掉空白后短于 20 字会直接返回错误，不调用模型；长于 8000 字会被截断。
+
+更细的字段说明在 `openjiuwen-spike/spike/LIVE.md`。前端目录 `openjiuwen-demo-replay/README.md` 只说明回放数据，启动命令以本文为准。

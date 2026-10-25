@@ -21,7 +21,9 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-BASE = os.environ.get("OPENJIUWEN_LIVE_BASE", "http://127.0.0.1:5180")
+from ports_env import live_base
+
+BASE = live_base()
 PASS_MARKER = "swarm_live_progress"
 SPIKE = Path(__file__).resolve().parent
 SHANGHAI = ZoneInfo("Asia/Shanghai")
@@ -107,7 +109,7 @@ def main() -> int:
         with urllib.request.urlopen(f"{BASE}/health", timeout=10) as r:
             health = json.loads(r.read().decode())
     except Exception as e:
-        return fail(f"5180 not up: {e}", lines)
+        return fail(f"{BASE} not up: {e}", lines)
     log(f"health ok swarm_path={health.get('swarm_path')!r}")
 
     skip = os.environ.get("SWARM_PROGRESS_SKIP_LLM", "").strip() in ("1", "true", "yes")

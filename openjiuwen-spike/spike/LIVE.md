@@ -15,10 +15,12 @@
 
 | 服务 | 绑定 | 说明 |
 | --- | --- | --- |
-| Live API | `127.0.0.1:5180` | 本文件 |
-| Demo Vite | `127.0.0.1:5174` | Frontend；CORS 已放行该源 |
+| Live API | `127.0.0.1:5180` | 本文件。`OPENJIUWEN_LIVE_PORT` 可改 |
+| Demo Vite | `127.0.0.1:5174` | Frontend。`OPENJIUWEN_DEMO_PORT` 可改；CORS 默认放行该源 |
 
-环境变量（可选）：`OPENJIUWEN_LIVE_HOST` / `OPENJIUWEN_LIVE_PORT` / `OPENJIUWEN_LIVE_CORS`
+不设变量时就是上表这两个端口。换端口、示例命令和「前端必须打到同一个后端端口」见仓库根 `README.md`「端口被占用时」，样例文件是 `openjiuwen-demo-replay/.env.example`。
+
+环境变量（可选）：`OPENJIUWEN_DEMO_PORT` / `OPENJIUWEN_LIVE_HOST` / `OPENJIUWEN_LIVE_PORT` / `OPENJIUWEN_LIVE_CORS` / `VITE_LIVE_BASE` / `OPENJIUWEN_LIVE_BASE`
 
 ## 启动
 

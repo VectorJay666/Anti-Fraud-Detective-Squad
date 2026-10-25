@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # coding: utf-8
-"""D5 Demo↔live e2e smoke: 5174 reachable + 5180 health/showcase + gated live SSE.
+"""D5 Demo↔live e2e smoke: demo reachable + live health/showcase + gated live SSE.
+
+Defaults: demo http://127.0.0.1:5174 and live http://127.0.0.1:5180.
+OPENJIUWEN_DEMO_PORT / OPENJIUWEN_LIVE_PORT / OPENJIUWEN_LIVE_BASE override.
 
 CASE-SPIKE-FAB-001 → SCHEMA events + gate_verdict=refuse (EV-FAB-TRANSFER).
 NOT SwarmFlow attribution. Never prints API keys. Never claims 已接 Swarm.
@@ -15,8 +18,11 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-BASE = "http://127.0.0.1:5180"
-DEMO = "http://127.0.0.1:5174"
+from ports_env import demo_origin, live_base, live_bind_url
+
+BASE = live_base()
+DEMO = demo_origin()
+BIND = live_bind_url()
 CASE_ID = "CASE-SPIKE-FAB-001"
 PASS_MARKER = "demo_live_bodyguard_e2e"
 SPIKE = Path(__file__).resolve().parent
@@ -83,11 +89,11 @@ def main() -> int:
     print(f"case_id={CASE_ID} demo={DEMO} live={BASE}")
 
     # --- Demo Vite ---
-    print("=== GET Demo 5174/ ===")
+    print(f"=== GET Demo {DEMO}/ ===")
     try:
         st, html = _get(DEMO + "/")
     except urllib.error.URLError as e:
-        return fail(f"Demo 5174 not up: {e}")
+        return fail(f"Demo {DEMO} not up: {e}")
     if st != 200:
         return fail(f"Demo status {st}")
     if "已接 Swarm" in html:
@@ -99,7 +105,7 @@ def main() -> int:
     try:
         st, text = _get(f"{BASE}/health")
     except urllib.error.URLError as e:
-        return fail(f"5180 not up: {e} — start: ../.venv/bin/python live_server.py")
+        return fail(f"{BASE} not up: {e} — start: ../.venv/bin/python live_server.py")
     if st != 200:
         return fail(f"health status {st}")
     health = json.loads(text)
@@ -124,8 +130,10 @@ def main() -> int:
         return fail(f"showcase status {st} (restart live_server.py if 404)")
     showcase = json.loads(text)
     print(f"showcase={json.dumps(showcase, ensure_ascii=False)}")
-    if "5174" not in str(showcase.get("url", "")):
-        return fail("showcase.url must point at Demo 5174")
+    if str(showcase.get("url", "")).rstrip("/") != DEMO.rstrip("/"):
+        return fail(f"showcase.url must point at Demo {DEMO}")
+    if str(showcase.get("live_base", "")).rstrip("/") != BIND.rstrip("/"):
+        return fail(f"showcase.live_base must be {BIND}")
     modes = showcase.get("modes") or []
     if "live" not in modes or "replay" not in modes:
         return fail(f"showcase.modes must include replay+live, got {modes}")
@@ -213,7 +221,7 @@ def main() -> int:
         f"PASS_MARKER {PASS_MARKER} gate_verdict=refuse live=true fabricate=null "
         f"case_id={CASE_ID} fab_ev={fab_ev} events={len(use_events)} "
         f"streamed_event_frames={len(streamed)} nodes={sorted(n for n in nodes_seen if n)} "
-        f"label={done.get('label')} demo=5174 showcase=ok swarmflow=false"
+        f"label={done.get('label')} demo={DEMO} live={BIND} showcase=ok swarmflow=false"
     )
     return 0
 

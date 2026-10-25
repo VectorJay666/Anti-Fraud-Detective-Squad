@@ -1,3 +1,5 @@
+import { liveServiceLabel } from "../lib/liveSse";
+
 export type UiMode = "replay" | "live";
 export type PlaySpeed = 1 | 2 | 4;
 
@@ -82,7 +84,7 @@ export function Toolbar({
         className="btn btn-live"
         onClick={onLive}
         disabled={liveRunning}
-        title="典型事例展示：顺序双轨调用 5180（非真实使用表单）"
+        title={`典型事例展示：顺序双轨调用 ${liveServiceLabel()}（非真实使用表单）`}
       >
         {liveRunning ? "会商中…" : "现场会商"}
       </button>

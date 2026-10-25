@@ -2,7 +2,33 @@
 
 import type { LiveDebateBody, LiveRequestBody } from "../types";
 
-export const LIVE_BASE = "http://127.0.0.1:5180";
+const DEFAULT_LIVE_BASE = "http://127.0.0.1:5180";
+
+function resolveLiveBase(): string {
+  const injected =
+    typeof __OPENJIUWEN_LIVE_BASE__ === "string" ? __OPENJIUWEN_LIVE_BASE__.trim() : "";
+  const fromMeta =
+    typeof import.meta.env.VITE_LIVE_BASE === "string"
+      ? import.meta.env.VITE_LIVE_BASE.trim()
+      : "";
+  return (injected || fromMeta || DEFAULT_LIVE_BASE).replace(/\/$/, "");
+}
+
+/** Live API origin. Default http://127.0.0.1:5180. Vite injects the override. */
+export const LIVE_BASE = resolveLiveBase();
+
+/** Short label for errors. Default copy stays「5180」. */
+export function liveServiceLabel(): string {
+  try {
+    const url = new URL(LIVE_BASE);
+    if ((url.hostname === "127.0.0.1" || url.hostname === "localhost") && url.port === "5180") {
+      return "5180";
+    }
+    return url.host || LIVE_BASE;
+  } catch {
+    return LIVE_BASE;
+  }
+}
 /** SwarmFlow 两 worker；契约建议 ≥180s */
 export const LIVE_TIMEOUT_MS = 300_000;
 
@@ -358,7 +384,7 @@ export function formatLiveUserError(e: unknown): string {
   if (!(e instanceof LiveSseError)) {
     const raw = e instanceof Error ? e.message : String(e);
     if (/failed to fetch|networkerror|load failed|fetch/i.test(raw)) {
-      return "连不上本机 5180 现场服务。请先启动 spike（live_server），再点「开始裁定」重试。";
+      return `连不上本机 ${liveServiceLabel()} 现场服务。请先启动 spike（live_server），再点「开始裁定」重试。`;
     }
     return raw.trim() || "会商失败，请重试。";
   }
@@ -370,7 +396,7 @@ export function formatLiveUserError(e: unknown): string {
     case "health":
       return (
         msg ||
-        "连不上本机 5180。请先启动 spike/live_server.py，再重试。"
+        `连不上本机 ${liveServiceLabel()}。请先启动 spike/live_server.py，再重试。`
       );
     case "busy":
       return "服务忙：另一路现场会商进行中，请稍后再点「开始裁定」。";
@@ -383,18 +409,18 @@ export function formatLiveUserError(e: unknown): string {
         "平台 Swarm 轨失败，未完成 SwarmFlow。可重试，或改走旁路会商。"
       );
     case "abort":
-      return `${msg}。若不是手动取消，请确认 5180 正常后重试。`;
+      return `${msg}。若不是手动取消，请确认 ${liveServiceLabel()} 正常后重试。`;
     case "http":
-      return `现场服务返回错误（${msg}）。请查看 5180 日志后重试。`;
+      return `现场服务返回错误（${msg}）。请查看 ${liveServiceLabel()} 日志后重试。`;
     case "network":
       if (/failed to fetch|networkerror|load failed/i.test(msg)) {
-        return "连不上本机 5180 现场服务。请确认已启动后再重试。";
+        return `连不上本机 ${liveServiceLabel()} 现场服务。请确认已启动后再重试。`;
       }
-      return `网络异常：${msg}。请检查 5180 后重试。`;
+      return `网络异常：${msg}。请检查 ${liveServiceLabel()} 后重试。`;
     case "no_body":
-      return "现场服务没有返回数据流。请重启 5180 后重试。";
+      return `现场服务没有返回数据流。请重启 ${liveServiceLabel()} 后重试。`;
     case "incomplete":
-      return "会商中断：未收到完成结果。请重试；仍失败则查看 5180 日志。";
+      return `会商中断：未收到完成结果。请重试；仍失败则查看 ${liveServiceLabel()} 日志。`;
     default:
       return hint || msg || "会商失败，请重试。";
   }

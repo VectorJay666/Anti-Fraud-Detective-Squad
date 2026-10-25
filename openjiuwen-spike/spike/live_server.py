@@ -36,6 +36,7 @@ from aiohttp import web
 SPIKE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SPIKE_DIR))
 
+from ports_env import cors_origin, demo_origin, live_bind_url, live_host, live_port  # noqa: E402
 from event_schema import SHANGHAI, now_iso  # noqa: E402
 from llm_debate import (  # noqa: E402
     LIVE_LABEL,
@@ -55,9 +56,11 @@ from swarm_live import (  # noqa: E402
     iter_swarm_debate,
 )
 
-HOST = os.environ.get("OPENJIUWEN_LIVE_HOST", "127.0.0.1")
-PORT = int(os.environ.get("OPENJIUWEN_LIVE_PORT", "5180"))
-CORS_ORIGIN = os.environ.get("OPENJIUWEN_LIVE_CORS", "http://127.0.0.1:5174")
+HOST = live_host()
+PORT = live_port()
+DEMO_ORIGIN = demo_origin()
+CORS_ORIGIN = cors_origin()
+LIVE_BIND = live_bind_url()
 
 TRANSCRIPT_MIN = 20
 TRANSCRIPT_MAX = 8000
@@ -197,11 +200,11 @@ async def handle_options(request: web.Request) -> web.Response:
 
 
 async def handle_showcase(request: web.Request) -> web.Response:
-    """Thin Demo entry pointer (replay 5174 / live 5180). Not Swarm attribution."""
+    """Thin Demo entry pointer. Defaults: replay 5174 / live 5180. Not Swarm attribution."""
     payload = {
-        "url": "http://127.0.0.1:5174/",
+        "url": f"{DEMO_ORIGIN}/",
         "modes": ["replay", "live"],
-        "live_base": "http://127.0.0.1:5180",
+        "live_base": LIVE_BIND,
         "swarmflow": False,
         "swarm_path": "/v1/swarm/debate",
         "note": "replay=对照回放；live=TeamRuntime SSE；swarm_path=SwarmFlow 展示轨。材料勿写已接 Swarm。",

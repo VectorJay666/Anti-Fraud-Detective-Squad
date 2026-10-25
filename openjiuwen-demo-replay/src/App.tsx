@@ -21,6 +21,7 @@ import {
   LiveSseError,
   SWARM_PATH,
   checkLiveHealth,
+  liveServiceLabel,
   formatLiveUserError,
   streamLiveDebate,
   streamSwarmDebate,
@@ -583,7 +584,7 @@ export default function App() {
       const ok = await checkLiveHealth();
       if (!ok) {
         throw new LiveSseError(
-          "连不上本机 5180。请先启动 spike/live_server.py，再重试。",
+          `连不上本机 ${liveServiceLabel()}。请先启动 spike/live_server.py，再重试。`,
           "health"
         );
       }
@@ -714,7 +715,7 @@ export default function App() {
         const ok = await checkLiveHealth();
         if (!ok) {
           throw new LiveSseError(
-            "连不上本机 5180。表单已通过本地校验；请先启动 spike/live_server.py，再重试。",
+            `连不上本机 ${liveServiceLabel()}。表单已通过本地校验；请先启动 spike/live_server.py，再重试。`,
             "health"
           );
         }

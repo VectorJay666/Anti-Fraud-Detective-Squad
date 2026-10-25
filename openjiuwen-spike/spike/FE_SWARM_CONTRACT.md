@@ -3,7 +3,7 @@
 ## URL
 - **主**：`POST http://127.0.0.1:5180/v1/swarm/debate`
 - **别名**：`POST /v1/debate/live` + body `"engine":"swarm"`
-- CORS：`http://127.0.0.1:5174`（同现网）
+- CORS：`http://127.0.0.1:5174`（同现网；端口可改，路径不改，见仓库根 README「端口被占用时」）
 - 超时建议 ≥ 300s（SwarmFlow 五 worker：特征/证据/风险/合规/用户保护）
 
 ## Body（冻结 04，transcript 必填）

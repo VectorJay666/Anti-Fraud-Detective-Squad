@@ -1,7 +1,17 @@
 # openJiuwen · Live API（5180）本机启动
 
 路径：`D:\GrokBot\projects\openjiuwen-spike\spike`  
-绑定：**127.0.0.1:5180**（CORS 放行 Demo `http://127.0.0.1:5174`）
+绑定默认：**127.0.0.1:5180**（CORS 默认放行 Demo `http://127.0.0.1:5174`）。
+
+5174 或 5180 被占用时不要改代码。两个进程使用同一组变量后再启动（说明见仓库根 `README.md`「端口被占用时」）：
+
+```powershell
+$env:OPENJIUWEN_DEMO_PORT = "18080"
+$env:OPENJIUWEN_LIVE_PORT = "18081"
+python live_server.py
+```
+
+前端在同一组变量下执行 `npm run dev`，浏览器打开你选的 Demo 端口。页面会请求你选的后端端口。下面的 `curl` 示例仍是默认 5180；改过端口就换成那个端口。
 
 ## 口径（必读）
 

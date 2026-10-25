@@ -22,7 +22,9 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-BASE = os.environ.get("OPENJIUWEN_LIVE_BASE", "http://127.0.0.1:5180")
+from ports_env import live_base
+
+BASE = live_base()
 PASS_MARKER = "live_three_officers_speak"
 SPIKE = Path(__file__).resolve().parent
 SHANGHAI = ZoneInfo("Asia/Shanghai")
@@ -110,7 +112,7 @@ def main() -> int:
     try:
         st, text = _get(f"{BASE}/health")
     except urllib.error.URLError as e:
-        return fail(f"5180 not up: {e} — restart live_server.py", lines)
+        return fail(f"{BASE} not up: {e} — restart live_server.py", lines)
 
     if st != 200:
         return fail(f"health status {st}", lines)

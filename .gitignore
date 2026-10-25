@@ -5,6 +5,10 @@
 **/*.pyc
 **/.DS_Store
 openjiuwen-spike/spike/model.env
+openjiuwen-spike/spike/.env
+openjiuwen-demo-replay/.env
+openjiuwen-demo-replay/.env.local
+openjiuwen-demo-replay/.env.*.local
 openjiuwen-spike/spike/swarm_live_home/
 openjiuwen-spike/spike/logs/
 openjiuwen-spike/logs/

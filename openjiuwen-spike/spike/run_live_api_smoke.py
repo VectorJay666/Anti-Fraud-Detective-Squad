@@ -2,7 +2,8 @@
 # coding: utf-8
 """Smoke: health 200 + POST gated live debate → gate_verdict=refuse.
 
-Never prints API keys. Expects live_server on 127.0.0.1:5180.
+Never prints API keys. Expects live_server on 127.0.0.1:5180
+unless OPENJIUWEN_LIVE_PORT / OPENJIUWEN_LIVE_BASE says otherwise.
 """
 from __future__ import annotations
 
@@ -12,7 +13,9 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-BASE = "http://127.0.0.1:5180"
+from ports_env import live_base
+
+BASE = live_base()
 SPIKE = Path(__file__).resolve().parent
 
 
