@@ -1,7 +1,11 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, useCurrentFrame} from 'remotion';
-import {BLUE, CAPTIONS, FPS, MOTION_FPS, FilmAssets, MUTED, RED, ROLES, ROLE_NOTES, SHOTS, STROKE, WHITE, progress} from './timeline';
+import {BLUE, FPS, MOTION_FPS, FilmAssets, MUTED, RED, ROLES, ROLE_NOTES, SHOTS, STROKE, WHITE, progress} from './timeline';
 import {Trace, tween, Rise} from './Motion';
+import {Incoming, Masks, Pressure, Brink, Pivot} from './ThreatScenes';
+import {CreativeTransitions} from './CreativeTransitions';
+import {CaseBarChart} from './CaseBarChart';
+import {EvidenceCheck,RiskOutput,UseCases,ProductImpact,Results} from './OutcomeScenes';
 import {Actions, Advice, Boundary, Intake, Journey, Local, Proof, Relay, Scenario} from './AnimationScenes';
 
 const font = '"Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif';
@@ -48,11 +52,11 @@ function Phone({frame,close}:{frame:number;close:boolean}) {
 }
 const TextBlue: React.FC<{children:React.ReactNode}> = ({children}) => <span style={{color:BLUE}}>{children}</span>;
 
-function TitleCard() {
+function TitleCard({frame}:{frame:number}) {
   return <>
-    <S><Path d="M880 305H1040" color={BLUE}/></S>
-    <Text x={960} y={380} size={119} weight={500} align="center" style={{whiteSpace:'nowrap'}}>转账前保镖</Text>
-    <Text x={960} y={565} size={47} align="center" color="#B4B4BB" style={{whiteSpace:'nowrap'}}>别急，先让保镖看一眼</Text>
+    <S><Path d="M880 305H1040" color={BLUE} p={progress(frame,0,22)}/></S>
+    <Rise frame={frame} distance={22}><Text x={960} y={380} size={119} weight={500} align="center" style={{whiteSpace:'nowrap'}}>转账前保镖</Text></Rise>
+    <Text x={960} y={565} size={47} align="center" color="#B4B4BB" style={{whiteSpace:'nowrap'}}>转账前的防骗核验助手</Text>
   </>;
 }
 
@@ -81,7 +85,7 @@ function Live({frame,src,detail}:{frame:number;src:string;detail:boolean}) {
 }
 
 function Council({frame}:{frame:number}) {
-  const active=Math.min(6,Math.max(0,Math.floor((frame-5)/12)));
+  const active=Math.min(6,Math.max(0,Math.floor(frame/(25*8/15))));
   return <>
     <Eyebrow>会商机制示意</Eyebrow>
     <Text x={180} y={173} size={78} weight={500}>七个角色。<TextBlue>一份建议。</TextBlue></Text>
@@ -89,11 +93,11 @@ function Council({frame}:{frame:number}) {
     <S>
       {ROLES.map((_,i)=>{const x=180+i*260;return <g key={i}>
         <Path d={`M${x-15} 347C${x-15} 326 ${x+15} 326 ${x+15} 347C${x+15} 367 ${x-15} 367 ${x-15} 347ZM${x-35} 407C${x-34} 369 ${x+34} 369 ${x+35} 407`} p={progress(frame,-5+i*2,22)} color={i===active?BLUE:WHITE}/>
-        <Trace d={`M${x} 520C${x} 625 960 580 960 674`} frame={frame} delay={i*9+7} duration={35} color={i===active?BLUE:'#808088'}/>
+        <Trace d={`M${x} 520C${x} 625 960 580 960 674`} frame={frame} delay={i*(25*8/15)} duration={23} color={i===active?BLUE:'#808088'}/>
       </g>})}
-      <Path d="M892 688H998L1028 718V802H892ZM998 688V718H1028M914 740H1004M914 766H975" p={progress(frame,22,30)}/>
-      <Trace d="M1056 746H1310" color={BLUE} frame={frame} delay={55} duration={32}/>
-      <Path d="M1298 735L1310 746L1298 757M1363 705V790M1542 705V790" p={progress(frame,71,20)}/>
+      <Path d="M892 688H998L1028 718V802H892ZM998 688V718H1028M914 740H1004M914 766H975" p={progress(frame,52,23)}/>
+      <Trace d="M1056 746H1310" color={BLUE} frame={frame} delay={78} duration={22}/>
+      <Path d="M1298 735L1310 746L1298 757M1363 705V790M1542 705V790" p={progress(frame,85,20)}/>
     </S>
     {ROLES.map((r,i)=><React.Fragment key={r}>
       <Text x={180+i*260} y={281} size={23} color={MUTED} align="center" style={{fontFamily:mono}}>0{i+1}</Text>
@@ -106,7 +110,7 @@ function Council({frame}:{frame:number}) {
 }
 
 function Gate({frame}:{frame:number}) {
-  const close=progress(frame,38,14);
+  const close=progress(frame,39.3,14);
   return <>
     <Eyebrow>确定性规则 · 机制示意</Eyebrow>
     <Text x={180} y={178} size={84} weight={500}>证据，<TextBlue>必须有据。</TextBlue></Text>
@@ -146,9 +150,9 @@ function Human({frame}:{frame:number}) {
   const p=progress(frame,5,35);
   return <>
     <Eyebrow>人工确认 · 本机审阅示意</Eyebrow>
-    <Text x={180} y={312} size={94} weight={500}>最后一步，<br/><TextBlue>由你确认。</TextBlue></Text>
+    <Text x={180} y={312} size={76} weight={500}>贴入可疑话术，<br/><TextBlue>查看核验结果。</TextBlue></Text>
     <AccentLine frame={frame} y={643}/>
-    <Text x={180} y={700} size={30} color={MUTED} style={{fontFamily:mono}}>human_confirm</Text>
+    <Text x={180} y={700} size={30} color={MUTED} style={{fontFamily:mono}}>风险结论 + 证据编号 + 行动建议</Text>
     <S>
       <Path d="M920 266H1438V590H920ZM1179 590V714M1088 714H1270M920 551H1438" p={progress(frame,-10,25)}/>
       <Path d="M1037 384H1307M1037 428H1243" opacity={0.32}/>
@@ -159,7 +163,7 @@ function Human({frame}:{frame:number}) {
       </g>
       <Path d="M1620 832H1772" opacity={0.3}/>
     </S>
-    <Text x={1179} y={856} size={25} color={MUTED} align="center" style={{whiteSpace:'nowrap'}}>最终动作，等待用户本人确认</Text>
+    <Text x={1179} y={856} size={25} color={MUTED} align="center" style={{whiteSpace:'nowrap'}}>不碰账户，不代替用户操作</Text>
   </>;
 }
 
@@ -175,56 +179,67 @@ function Replay({frame,src}:{frame:number;src:string}) {
   </>;
 }
 
-function EndCard() {
-  // Deliberately independent of frame: the entire last six seconds are still.
+function EndCard({frame}:{frame:number}) {
+  // Assemble the brand and public-interest mission, then hold the final 1.84s still.
+  const f=Math.min(frame,100);
   return <>
-    <Text x={960} y={200} size={43} align="center" style={{whiteSpace:'nowrap'}}>转账前保镖：</Text>
-    <Text x={960} y={330} size={106} weight={500} align="center" style={{whiteSpace:'nowrap'}}>把最后一道关，</Text>
-    <Text x={960} y={480} size={118} weight={500} align="center" style={{whiteSpace:'nowrap'}}>从运气变成<TextBlue>流程。</TextBlue></Text>
-    <S><Path d="M884 705H1036" color={BLUE}/></S>
-    <Text x={960} y={776} size={30} align="center" color="#A4A4AC" style={{whiteSpace:'nowrap'}}>七角色会商建议 + rule_gate规则卡口 + 人工确认</Text>
-    <Text x={960} y={877} size={24} align="center" color={MUTED} style={{whiteSpace:'nowrap'}}>基于 openJiuwen · 多智能体转账前防骗核验系统</Text>
+    <Text x={960} y={175} size={43} align="center" style={{whiteSpace:'nowrap'}}>转账前保镖</Text>
+    <Rise frame={f} delay={11} distance={24}><Text x={960} y={320} size={106} weight={500} align="center" style={{whiteSpace:'nowrap'}}>把最后一道关，</Text></Rise>
+    <Rise frame={f} delay={27} distance={24}><Text x={960} y={470} size={118} weight={500} align="center" style={{whiteSpace:'nowrap'}}>从运气变成<TextBlue>流程。</TextBlue></Text></Rise>
+    <S><Path d="M884 687H1036" color={BLUE} p={progress(f,35,30)}/></S>
+    <Rise frame={f} delay={52} distance={15}><Text x={960} y={751} size={29} align="center" color="#A4A4AC" style={{whiteSpace:'nowrap'}}>七角色会商建议 + rule_gate规则核验 + 人工确认</Text></Rise>
+    <Rise frame={f} delay={74} distance={18}><Text x={960} y={856} size={35} align="center" style={{whiteSpace:'nowrap'}}>致力于打造造福人民的反诈产品。</Text></Rise>
   </>;
+
 }
 
 export const Film: React.FC<{assets:FilmAssets}> = ({assets}) => {
   const f=useCurrentFrame();
-  const transition=Math.round(.48*FPS);
-  const caption=CAPTIONS.find(c=>f>=c.start&&f<c.end);
+  const transition=Math.round(.36*FPS);
   const scene=(kind:string,local:number,variant=0)=>{
     switch(kind){
       case 'phone':return <Phone frame={local} close={false}/>;
       case 'scenario':return <Scenario frame={local} variant={variant}/>;
-      case 'title':return <TitleCard/>;
-      case 'intake':return <Intake frame={local}/>;
+      case 'case-bars':return <CaseBarChart frame={f*MOTION_FPS/FPS}/>;
+      case 'incoming':return <Incoming frame={local}/>;
+      case 'masks':return <Masks frame={local}/>;
+      case 'pressure':return <Pressure frame={local}/>;
+      case 'brink':return <Brink frame={local}/>;
+      case 'pivot':return <Pivot frame={local}/>;
+      case 'title':return <TitleCard frame={local}/>;
+      case 'intake':return <UseCases frame={local}/>;
       case 'live':return <Live frame={local} src={assets.live} detail={false}/>;
       case 'relay':return <Relay frame={local}/>;
       case 'council':return <Council frame={local}/>;
-      case 'advice':return <Advice frame={local}/>;
+      case 'advice':return <RiskOutput frame={local}/>;
       case 'gate':return <Gate frame={local}/>;
       case 'proof':return <Proof frame={local}/>;
       case 'gate-result':return <GateResult src={assets.gate}/>;
-      case 'boundary':return <Boundary frame={local}/>;
+      case 'boundary':return <EvidenceCheck frame={local}/>;
       case 'human':return <Human frame={local}/>;
       case 'actions':return <Actions frame={local}/>;
       case 'replay':return <Replay frame={local} src={assets.replay}/>;
-      case 'local':return <Local frame={local}/>;
-      case 'journey':return <Journey frame={local}/>;
-      default:return <EndCard/>;
+      case 'results':return <Results frame={(f-SHOTS.find(s=>s.kind==='results')!.start)*MOTION_FPS/FPS}/>;
+      case 'product-impact':return <ProductImpact frame={local}/>;
+      case 'local':return <Local frame={local*1.2}/>;
+      case 'journey':return <Journey frame={local*1.5}/>;
+      default:return <EndCard frame={local}/>;
     }
   };
-  return <AbsoluteFill style={{background:'#000',fontFamily:font,color:WHITE,overflow:'hidden'}}>
+  return <AbsoluteFill style={{background:'#000',fontFamily:font,color:WHITE,overflow:'hidden',opacity:tween(f,0,Math.round(.65*FPS))}}>
     <Audio src={assets.sound} volume={1}/>
-    {SHOTS.map((s,i)=>{
-      const from=Math.max(0,s.start-transition);
-      const enter=i===0?1:tween(f,s.start-transition,transition);
-      const leave=i===SHOTS.length-1?0:tween(f,s.end-transition,transition);
-      return <Sequence key={s.name} name={`${s.name} ${s.title}`} from={from} durationInFrames={s.end-from} premountFor={transition}>
-        <AbsoluteFill style={{background:'#000',opacity:enter,transform:`translateX(${32*(1-enter)-18*leave}px)`}}>
-          {scene(s.kind,(f-s.start)*MOTION_FPS/FPS+(i===0?0:12),s.variant??0)}
+    <AbsoluteFill>{SHOTS.map((s,i)=>{
+      const impact=s.kind==='pivot'||s.kind==='end'||s.kind==='case-bars'||s.kind==='results';
+      const nextImpact=SHOTS[i+1]?.kind==='pivot'||SHOTS[i+1]?.kind==='end'||SHOTS[i+1]?.kind==='case-bars'||SHOTS[i+1]?.kind==='results';
+      const enter=i===0||impact?1:tween(f,s.start,transition);
+      const leave=tween(f,s.end,transition);
+      const end=s.end+(nextImpact||i===SHOTS.length-1?0:transition);
+      return <Sequence key={s.name} name={`${s.name} ${s.title}`} from={s.start} durationInFrames={end-s.start} premountFor={transition}>
+        <AbsoluteFill style={{background:'#000',opacity:enter,transform:impact?'none':`translateX(${24*(1-enter)-16*leave}px)`}}>
+          {scene(s.kind,(f-s.start)*MOTION_FPS/FPS)}
         </AbsoluteFill>
       </Sequence>;
-    })}
-    {f<54*FPS&&caption&&<Text x={960} y={979} size={38} align="center" style={{whiteSpace:'nowrap',lineHeight:1.2}}>{caption.text}</Text>}
+    })}</AbsoluteFill>
+    <CreativeTransitions frame={f}/>
   </AbsoluteFill>;
 };

@@ -16,4 +16,4 @@ const packetHashes=(file,stream)=>JSON.parse(execFileSync(bin+'ffprobe.exe',['-v
 assert.deepEqual(packetHashes(video,'v:0'),packetHashes(temp,'v:0'));
 assert.deepEqual(packetHashes('public/assets/soundtrack.m4a','a:0'),packetHashes(temp,'a:0'));
 await copyFile(temp,video);
-console.log('Music replaced: 2700 video frames preserved byte-for-byte; audio packets match the custom score.');
+console.log('Music replaced: 2700 video frames preserved byte-for-byte; audio packets match the reference excerpt.');

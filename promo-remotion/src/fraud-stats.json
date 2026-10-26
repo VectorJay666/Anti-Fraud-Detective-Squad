@@ -1,0 +1,12 @@
+{
+  "geography": "美国",
+  "publisher": "美国联邦贸易委员会 FTC",
+  "metric": "消费者报告的诈骗损失",
+  "unit": "亿美元",
+  "basis": "各年度数据发布的约数或下限；不是中国数据，不是诈骗案件数量，不外推为全部实际损失。",
+  "series": [
+    {"year":2022,"value":88,"display":"约88亿","source":"https://consumer.ftc.gov/consumer-alerts/2023/02/top-scams-2022"},
+    {"year":2023,"value":100,"display":"超100亿","source":"https://www.ftc.gov/news-events/news/press-releases/2024/02/nationwide-fraud-losses-top-10-billion-2023-ftc-steps-efforts-protect-public"},
+    {"year":2024,"value":125,"display":"超125亿","source":"https://consumer.ftc.gov/consumer-alerts/2025/03/top-scams-2024"}
+  ]
+}

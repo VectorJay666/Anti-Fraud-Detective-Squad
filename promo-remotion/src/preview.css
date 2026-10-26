@@ -4,3 +4,5 @@
 @media(max-width:900px){.workspace{padding:0 22px}.masthead{height:76px}.spec{font-size:9px}.spec span{margin:0 3px}.identity{gap:10px}.brand{font-size:17px}.edition{font-size:10px}.chapters{gap:13px}.chapter-title{font-size:11px}.chapter-top{font-size:9px}.shortcuts{display:none}}
 @media(max-width:600px){.workspace{padding:0 14px}.masthead{height:70px}.edition,.divider,.spec{display:none}.film-meta{margin-top:16px}.transport{gap:3px}.play-button,.icon-button{width:44px;height:44px;flex-basis:44px}.scrub{padding:0 5px}.timecode{font-size:9px}.chapters{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 18px;margin-top:19px}footer{font-size:8px;line-height:1.9}.footer-dot{margin:0 4px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.downloads{display:flex;justify-content:space-between;align-items:center;margin:18px 0 6px;font-size:11px;color:#85858e}.downloads>div{display:flex;gap:18px}.downloads a{color:#a8bdf8;text-decoration:none;border-bottom:1px solid #2b437e;padding-bottom:3px}.downloads a:hover{color:#fff}.export-pending{color:#72727b}

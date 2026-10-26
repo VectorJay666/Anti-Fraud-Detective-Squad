@@ -1,23 +1,36 @@
 import {bundle} from '@remotion/bundler';
 import {openBrowser,renderStill,selectComposition} from '@remotion/renderer';
-import {mkdir,readFile} from 'node:fs/promises';
+import {build} from 'esbuild';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+const {outputFiles}=await build({entryPoints:['src/timeline.ts'],bundle:true,write:false,platform:'node',format:'esm'});
+const {SHOTS,FPS,PIVOT_FRAME,DURATION}=await import('data:text/javascript;base64,'+Buffer.from(outputFiles[0].text).toString('base64'));
 await mkdir('delivery/stills',{recursive:true});
 const serveUrl=await bundle({entryPoint:path.resolve('src/index.tsx'),publicDir:path.resolve('public')});
 const browser=await openBrowser('chrome');
 try{
   const composition=await selectComposition({serveUrl,id:'TransferGuardian',puppeteerInstance:browser});
-  const frames=[32,84,134,184,214,280,330,430,532,580,681,762,810,881,953,1035,1132,1180,1322,1350].map(f=>Math.round(f*composition.fps/25)).concat(composition.durationInFrames-1);
-  for(let i=0;i<frames.length;i++){
-    await renderStill({serveUrl,composition,puppeteerInstance:browser,frame:frames[i],output:`delivery/stills/${String(i+1).padStart(2,'0')}-${frames[i]}.png`,imageFormat:'png',logLevel:'error'});
-    console.log(`Still ${i+1}/${frames.length}: ${frames[i]}`);
+  const shots=[];
+  for(let i=0;i<SHOTS.length;i++){
+    const s=SHOTS[i];
+    const frame=s.kind==='pivot'?PIVOT_FRAME+10:s.kind==='end'?59*FPS:Math.min(s.end-1,s.start+Math.round((s.end-s.start)*.8));
+    const file=`stills/music-${String(i+1).padStart(2,'0')}-${frame}.png`;
+    await renderStill({serveUrl,composition,puppeteerInstance:browser,frame,output:`delivery/${file}`,imageFormat:'png',logLevel:'error'});
+    shots.push({file,frame,label:`${s.name} / ${(frame/FPS).toFixed(2)}s / ${s.title}`});
+    console.log(`Still ${i+1}/${SHOTS.length}: ${frame}`);
   }
-  assert.deepEqual(await readFile(`delivery/stills/20-${54*composition.fps}.png`),await readFile(`delivery/stills/21-${composition.durationInFrames-1}.png`));
-  console.log('PASS: first and last frames of final 6s card are byte-identical PNGs.');
-  const transitions=[94,99,100,106,294,299,300,306,544,549,550,556,769,774,775,781,1344,1349,1350,1356].map(f=>Math.round(f*composition.fps/25));
-  for(const frame of transitions){
-    await renderStill({serveUrl,composition,puppeteerInstance:browser,frame,output:`delivery/stills/transition-${frame}.png`,imageFormat:'png',logLevel:'error'});
+  const last='stills/music-tail-2699.png';
+  await renderStill({serveUrl,composition,puppeteerInstance:browser,frame:DURATION-1,output:`delivery/${last}`,imageFormat:'png',logLevel:'error'});
+  assert.deepEqual(await readFile(`delivery/${shots.at(-1).file}`),await readFile(`delivery/${last}`));
+  console.log('PASS: final brand card is byte-identical at its first and last frames.');
+  const cuts=[0,9,45,189,284,380,572,740,PIVOT_FRAME-12,PIVOT_FRAME-1,PIVOT_FRAME,PIVOT_FRAME+1,PIVOT_FRAME+12,846,866,888,906,914,922,SHOTS.find(s=>s.kind==='gate').start+96,2436,2437,2610,2655,2699];
+  const transitions=[];
+  for(const frame of cuts){
+    const file=`stills/music-transition-${frame}.png`;
+    await renderStill({serveUrl,composition,puppeteerInstance:browser,frame,output:`delivery/${file}`,imageFormat:'png',logLevel:'error'});
+    transitions.push({file,frame,label:`${frame}f / ${(frame/FPS).toFixed(3)}s`});
   }
-  console.log('Saved 20 transition checkpoints.');
+  await writeFile('delivery/stills/manifest.json',JSON.stringify({shots,transitions},null,2));
+  console.log('Saved exact 18s pivot and phrase transition checkpoints.');
 }finally{await browser.close({silent:true});}

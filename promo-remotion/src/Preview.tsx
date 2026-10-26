@@ -5,7 +5,7 @@ import {Film} from './Film';
 import {BEATS, DURATION, FPS, FilmAssets, HEIGHT, SHOTS, WIDTH, shotAt} from './timeline';
 import './preview.css';
 
-declare global { interface Window {__FILM_ASSETS__: FilmAssets; __promo: {seek:(frame:number)=>void; frame:()=>number; player:()=>PlayerRef|null}} }
+declare global { interface Window {__FILM_ASSETS__: FilmAssets; __FILM_EXPORT_READY__: boolean; __promo: {seek:(frame:number)=>void; frame:()=>number; player:()=>PlayerRef|null}} }
 const assets=window.__FILM_ASSETS__;
 const Icon=({name}:{name:string})=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{
   name==='play'?<path d="M8 5L19 12L8 19Z" fill="currentColor" stroke="none"/>:
@@ -68,9 +68,14 @@ function App(){
         <button className="icon-button" onClick={mute} aria-label={muted?'打开声音':'静音'} title="M：声音"><Icon name={muted?'muted':'sound'}/></button>
         <button className="icon-button" onClick={()=>ref.current?.requestFullscreen()} aria-label="全屏播放" title="F：全屏"><Icon name="full"/></button>
       </div>
+      <div className="downloads" aria-label="保存影片">
+        <span>保存到电脑</span>
+        <div>{window.__FILM_EXPORT_READY__?<a href="./转账前保镖-60秒-45fps.mp4?download=1" download="转账前保镖-60秒-45fps.mp4">下载 MP4 视频</a>:<span className="export-pending">MP4 正在导出</span>}
+        <a href="./转账前保镖-60秒动画预览.html?download=1" download="转账前保镖-60秒动画预览.html">保存 HTML 预览</a></div>
+      </div>
       <nav className="chapters" aria-label="六段叙事">
         {BEATS.map((s,i)=><button key={s.start} className={`chapter ${frame>=s.start&&frame<s.end?'active':''}`} onClick={()=>seek(s.start)} aria-label={`跳转至${s.label}`} aria-current={frame>=s.start&&frame<s.end?'step':undefined}>
-          <span className="chapter-top"><span>{String(i+1).padStart(2,'0')}</span><span>{String(s.start/FPS).padStart(2,'0')}—{String(s.end/FPS).padStart(2,'0')}s</span></span>
+          <span className="chapter-top"><span>{String(i+1).padStart(2,'0')}</span><span>{String(Math.round(s.start/FPS)).padStart(2,'0')}—{String(Math.round(s.end/FPS)).padStart(2,'0')}s</span></span>
           <span className="chapter-title">{s.label}</span>
         </button>)}
       </nav>

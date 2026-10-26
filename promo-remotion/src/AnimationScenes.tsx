@@ -3,16 +3,16 @@ import {BLUE,MUTED,RED,WHITE} from './timeline';
 import {CHAT,CLOCK,DOC,Glyph,Ink,Label,Line,MONO,PERSON,Rise,Svg,T,Trace,Underline,settle,tween} from './Motion';
 
 const STORIES=[
- {title:'客服催核验。',note:'遇到催转，先核实身份。',sender:'自称客服',message:'请转账，完成核验',icon:'M-48 10V-17A48 48 0 0 1 48 -17V10M-48 -5H-62V28H-42V-5M48 -5H62V28H42V-5M48 28C48 52 25 55 6 55H-7'},
- {title:'返利要补款。',note:'承诺返还，也要查证依据。',sender:'返利通知',message:'再补一笔，才能返还',icon:'M-39 -44A60 60 0 1 1 -56 28M-64 -46H-34V-76M0 -31V32M-25 -15H20M-25 13H20M-24 -37L0 -12L24 -37'},
- {title:'熟人换号借钱。',note:'换个联系方式，再确认一次。',sender:'自称熟人',message:'我换号了，急用钱',icon:'M-25 -30C-25 -61 25 -61 25 -30C25 2 -25 2 -25 -30ZM-63 65C-61 8 61 8 63 65M45 -63H81V-12H45ZM55 -24H71'},
+ {title:'冒充客服。',note:'身份未核实，已经催你转账。',sender:'自称客服',message:'请转账，完成核验',icon:'M-48 10V-17A48 48 0 0 1 48 -17V10M-48 -5H-62V28H-42V-5M48 -5H62V28H42V-5M48 28C48 52 25 55 6 55H-7'},
+ {title:'返利补款。',note:'要拿回钱，却要不断补款。',sender:'返利通知',message:'再补一笔，才能返还',icon:'M-39 -44A60 60 0 1 1 -56 28M-64 -46H-34V-76M0 -31V32M-25 -15H20M-25 13H20M-24 -37L0 -12L24 -37'},
+ {title:'换号借钱。',note:'自称熟人，却拒绝电话核实。',sender:'自称熟人',message:'我换号了，急用钱',icon:'M-25 -30C-25 -61 25 -61 25 -30C25 2 -25 2 -25 -30ZM-63 65C-61 8 61 8 63 65M45 -63H81V-12H45ZM55 -24H71'},
 ];
 
 export function Scenario({frame,variant}:{frame:number;variant:number}){
  const s=STORIES[variant];const p=settle(frame);
  return <>
-  <Label>转账前的三种场景 · {String(variant+1).padStart(2,'0')}</Label>
-  <Rise frame={frame}><T x={180} y={300} size={85} weight={500}>{s.title}</T><T x={180} y={451} size={31} color={MUTED}>{s.note}</T></Rise>
+  <Label>情境示意 · {String(variant+1).padStart(2,'0')}</Label>
+  <Rise frame={frame}><T x={180} y={300} size={104} weight={600}>{s.title}</T><T x={180} y={469} size={31} color={MUTED}>{s.note}</T></Rise>
   <Svg>
    <Glyph d={s.icon} x={256} y={660} frame={frame} scale={1.1}/>
    <Trace d="M370 660H724C862 660 874 490 1049 490" frame={frame} delay={5} duration={40} color={BLUE}/>
@@ -36,7 +36,7 @@ export function Intake({frame}:{frame:number}){
  const p=settle(frame,30);
  return <>
   <Label>从一份聊天材料开始 · 填写材料示意</Label>
-  <Rise frame={frame}><T x={180} y={185} size={83} weight={500}>粘贴聊天，<Ink>说清缘由。</Ink></T></Rise>
+  <Rise frame={frame}><T x={180} y={185} size={83} weight={600}>贴入聊天，<Ink>开始核验。</Ink></T></Rise>
   <Svg>
    <Glyph d={CHAT} x={340} y={475} frame={frame}/>
    <Glyph d="M-66 -40H66V40H-66ZM-35 0H35M0 -22V22" x={340} y={710} frame={frame} delay={7}/>
@@ -44,8 +44,8 @@ export function Intake({frame}:{frame:number}){
    <Trace d="M475 710H780C940 710 920 594 1140 594" frame={frame} delay={16} duration={43}/>
    <g transform={`translate(1390 ${570+(1-p)*50}) scale(${1+.08*(1-p)})`}><Line d="M-125 -160H70L125 -105V160H-125ZM70 -160V-105H125M-75 -42H75M-75 13H75M-75 68H24" p={tween(frame,20,37)}/></g>
   </Svg>
-  <Rise frame={frame} delay={6}><T x={475} y={403} size={36}>聊天原文</T><T x={475} y={463} size={27} color={MUTED}>先打码卡号等敏感信息</T></Rise>
-  <Rise frame={frame} delay={13}><T x={475} y={641} size={36}>转账背景</T><T x={475} y={701} size={27} color={MUTED}>拟转金额 · 收款方 · 补充说明</T></Rise>
+  <Rise frame={frame} delay={6}><T x={475} y={403} size={36}>聊天原文</T><T x={475} y={506} size={27} color={MUTED}>先打码卡号等敏感信息</T></Rise>
+  <Rise frame={frame} delay={13}><T x={475} y={641} size={36}>转账背景</T><T x={475} y={744} size={27} color={MUTED}>拟转金额 · 收款方 · 补充说明</T></Rise>
   <Rise frame={frame} delay={34}><T x={1390} y={798} size={34} center>待核验案卷</T></Rise>
  </>;
 }
@@ -71,7 +71,7 @@ export function Advice({frame}:{frame:number}){
  const items=['风险等级','证据与条款依据','可执行的核验清单'];
  return <>
   <Label>会商输出 · 机制示意</Label>
-  <Rise frame={frame}><T x={180} y={280} size={93} weight={500}>给你的，<br/>是一份<Ink>建议。</Ink></T></Rise>
+  <Rise frame={frame}><T x={180} y={280} size={93} weight={600}>给出建议，<br/><Ink>等你确认。</Ink></T></Rise>
   <T x={180} y={702} size={29} color={MUTED}>最终动作仍由用户本人确认</T>
   <Svg>
    <Glyph d="M-130 -197H74L130 -141V197H-130ZM74 -197V-141H130" x={1165} y={530} frame={frame}/>
@@ -120,7 +120,7 @@ export function Actions({frame}:{frame:number}){
  const actions=[{title:'先别转',sub:'暂停，给核验留时间',d:'M-22 -52V52M22 -52V52'},{title:'官方核实',sub:'自己查找官方客服',d:'M-48 -50L-24 -64L3 -23L-15 -5C-3 15 11 28 30 37L46 18L77 47L62 67C24 77 -56 -5 -48 -50'},{title:'勿点陌生链接',sub:'不跟着对方的入口走',d:'M-14 22L-33 41A24 24 0 0 1 -67 7L-39 -21A24 24 0 0 1 -5 -21M14 -22L33 -41A24 24 0 0 1 67 -7L39 21A24 24 0 0 1 5 21M-31 0H31'},{title:'保留记录',sub:'留存聊天与核验结果',d:DOC}];
  return <>
   <Label>建议的实用价值 · 行动清单示意</Label>
-  <Rise frame={frame}><T x={180} y={184} size={83} weight={500}>让建议，<Ink>成为下一步。</Ink></T></Rise>
+  <Rise frame={frame}><T x={180} y={184} size={83} weight={600}>四条<Ink>行动建议。</Ink></T></Rise>
   <Svg>
    <Line d="M300 545H1620" p={tween(frame,6,70)} opacity={.22}/>
    {actions.map((a,i)=><g key={a.title}><Glyph d={a.d} x={300+i*440} y={494} frame={frame} delay={i*12} scale={.85}/><Trace d={`M${250+i*440} 809H${350+i*440}`} frame={frame} delay={i*12+20} duration={27} color={BLUE} trail={false}/></g>)}
@@ -132,7 +132,7 @@ export function Actions({frame}:{frame:number}){
 export function Local({frame}:{frame:number}){
  return <>
   <Label>本机部署 · 流程示意</Label>
-  <Rise frame={frame}><T x={180} y={290} size={91} weight={500}>核验留痕，<br/><Ink>就在本机。</Ink></T></Rise>
+  <Rise frame={frame}><T x={180} y={290} size={91} weight={500}>全部部署，<br/><Ink>就在本机。</Ink></T></Rise>
   <Underline frame={frame} y={647}/><T x={180} y={700} size={30} color={MUTED}>界面、规则、记录，有序衔接。</T>
   <Svg>
    <Line d="M916 251H1716V741H916ZM916 693H1716M1316 741V819M1195 819H1437" p={tween(frame,-5,38)}/>
@@ -148,7 +148,7 @@ export function Journey({frame}:{frame:number}){
  const path='M250 568C425 568 425 568 600 568S775 568 950 568S1125 568 1300 568S1475 568 1650 568';
  return <>
   <Label>转账前，多一次有据可查的核验</Label>
-  <Rise frame={frame}><T x={180} y={175} size={77} weight={500}>把临时判断，<br/><Ink>变成可追溯的流程。</Ink></T></Rise>
+  <Rise frame={frame}><T x={180} y={175} size={83} weight={600}>转账前，先核验。<br/><Ink>全程留痕，可回放。</Ink></T></Rise>
   <Svg>
    <Line d={path} opacity={.2}/><Trace d={path} frame={frame} delay={10} duration={104}/>
    {stages.map((s,i)=><g key={s.name}><circle cx={250+i*350} cy={568} r={70} fill="#000" strokeOpacity={.3}/><Glyph d={s.d} x={250+i*350} y={568} frame={frame} delay={i*20} scale={.65}/></g>)}
