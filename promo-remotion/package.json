@@ -1,0 +1,30 @@
+{
+  "name": "transfer-guardian-film",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "tsc --noEmit && node scripts/verify.mjs",
+    "studio": "remotion studio src/index.tsx",
+    "render": "remotion render src/index.tsx TransferGuardian delivery/转账前保镖-60秒-45fps.mp4 --codec=h264 --crf=18 --concurrency=2 --log=error",
+    "stills": "node scripts/stills.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.538",
+    "@remotion/player": "4.0.538",
+    "@remotion/paths": "4.0.538",
+    "@remotion/renderer": "4.0.538",
+    "@remotion/bundler": "4.0.538",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.538"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.0",
+    "esbuild": "0.25.12",
+    "playwright-core": "1.56.1",
+    "typescript": "5.7.3"
+  }
+}

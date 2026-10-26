@@ -1,0 +1,38 @@
+{
+  "type": "instrumental_music_only",
+  "voice_tracks": 0,
+  "title": "留一步",
+  "composer": "Original procedural score for Transfer Guardian",
+  "bpm": 96,
+  "seconds": 60,
+  "sample_rate": 48000,
+  "channels": 2,
+  "peak_dbfs": -1.51,
+  "sections": [
+    {
+      "time": "0—8",
+      "music": "Low pulse and spacious pad"
+    },
+    {
+      "time": "8—24",
+      "music": "Soft keys, curved stereo delays and restrained rhythm"
+    },
+    {
+      "time": "24—36",
+      "music": "Lower register; gate accent at 31s"
+    },
+    {
+      "time": "36—48",
+      "music": "Release, warm chord, light rhythm"
+    },
+    {
+      "time": "48—54",
+      "music": "Measured return of the motif"
+    },
+    {
+      "time": "54—60",
+      "music": "Stable F6/9 chord and gentle final release"
+    }
+  ],
+  "sources": "Synthesized tones only. No speech, samples, external music or network services."
+}

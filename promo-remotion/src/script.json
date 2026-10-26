@@ -1,0 +1,14 @@
+[
+  {"id":1,"start":0.16,"end":2.4,"original":true,"text":"转账前，先别急。"},
+  {"id":2,"start":2.5,"end":7.9,"original":false,"text":"客服催核验，返利要补款，熟人换号借钱。"},
+  {"id":3,"start":8.16,"end":10.1,"original":true,"text":"先让保镖看一眼。"},
+  {"id":4,"start":10.2,"end":13.9,"original":false,"text":"提交聊天材料，说清转账缘由。"},
+  {"id":5,"start":14.16,"end":18.4,"original":true,"text":"七个AI角色会商，只给建议，不越权拍板。"},
+  {"id":6,"start":18.5,"end":23.9,"original":false,"text":"查风险，核证据，听反方；给出可执行的核验清单。"},
+  {"id":7,"start":24.16,"end":28.0,"original":true,"text":"编造的证据，过不了确定性规则卡口。"},
+  {"id":8,"start":28.2,"end":35.9,"original":false,"text":"证据编号必须存在，条款引用必须可查。说得像真的，也不能跳过规则。"},
+  {"id":9,"start":36.16,"end":41.5,"original":true,"text":"人工确认，每步留痕，可回放。全部本机部署。"},
+  {"id":10,"start":41.6,"end":47.9,"original":false,"text":"先别转，联系官方客服，别点陌生链接，保留记录。"},
+  {"id":11,"start":48.16,"end":53.9,"original":false,"text":"看风险，核证据，留记录。让核验有迹可循。"},
+  {"id":12,"start":54.16,"end":59.9,"original":true,"text":"转账前保镖：把最后一道关，从运气变成流程。"}
+]

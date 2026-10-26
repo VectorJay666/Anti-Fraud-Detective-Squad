@@ -1,0 +1,17 @@
+{
+  "project_live.png": {
+    "sha256": "e68ad061308cdd21a78dc178ae60d3d798b358a5d1794f95b85338192fab3616",
+    "source": "assets/imported/promo-board/project_live.png",
+    "usage": "Original PNG; only proportional display and rectangular viewport cropping."
+  },
+  "project_gate_crop.png": {
+    "sha256": "5367f1c704e3f5eb1823aa6a7f91d7fa4c54325a3cec770ec358060e1b922663",
+    "source": "assets/imported/promo-board/project_gate_crop.png",
+    "usage": "Original PNG; only proportional display and rectangular viewport cropping."
+  },
+  "project_replay.png": {
+    "sha256": "517e15b0d8b280489752a6250e6a0ce6fc9a92e6670b89c6c6bc7d046eb847be",
+    "source": "assets/imported/promo-board/project_replay.png",
+    "usage": "Original PNG; only proportional display and rectangular viewport cropping."
+  }
+}

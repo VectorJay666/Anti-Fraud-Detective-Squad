@@ -1,0 +1,9 @@
+node_modules/
+.cache/
+delivery/*.mp4
+delivery/stills/
+delivery/qa-*.png
+delivery/转账前保镖-动画预览.html
+public/assets/voice-test.wav
+public/assets/music-master.wav
+delivery/archive/
