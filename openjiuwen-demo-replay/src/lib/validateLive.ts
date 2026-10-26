@@ -36,7 +36,7 @@ function parseLinks(raw: string): string[] {
 export function validateLiveForm(input: LiveFormInput): ValidateResult {
   let transcript = input.transcript.trim();
   if (!transcript || transcript.length < MIN_TRANSCRIPT) {
-    return { ok: false, error: "再多贴几句聊天，不然没法审" };
+    return { ok: false, error: "请至少填写 20 字的聊天内容，方便我们了解上下文。" };
   }
 
   let softHint: string | undefined;
@@ -46,7 +46,7 @@ export function validateLiveForm(input: LiveFormInput): ValidateResult {
   }
 
   if (CARD_RE.test(transcript)) {
-    return { ok: false, error: "请打码卡号后再贴" };
+    return { ok: false, error: "聊天中包含疑似银行卡号，请隐去卡号后再检查。" };
   }
 
   let amount: number | null = null;

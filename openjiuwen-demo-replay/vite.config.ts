@@ -75,6 +75,8 @@ export default defineConfig(({ mode }) => {
   if (!process.env.VITE_LIVE_BASE) process.env.VITE_LIVE_BASE = liveBase;
 
   return {
+    // Keep Rollup entry paths consistent when the checkout is opened via a Windows junction.
+    root: fs.realpathSync(process.cwd()),
     plugins: [react()],
     define: {
       __OPENJIUWEN_LIVE_BASE__: JSON.stringify(liveBase),

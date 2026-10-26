@@ -30,7 +30,7 @@ import {
 import { TEACHING_CASES, findTeachingCase } from "./data/teachingCases";
 import { Toolbar, type PlaySpeed, type UiMode } from "./components/Toolbar";
 import { Column } from "./components/Column";
-import { LayerTabs } from "./components/LayerTabs";
+import { CheckAside, ProductNav, SafetyNotes } from "./components/ProductChrome";
 import { CasePicker } from "./components/CasePicker";
 import { TeachingMeta } from "./components/TeachingMeta";
 import { LiveForm, type LiveSubmitOpts } from "./components/LiveForm";
@@ -186,7 +186,7 @@ async function loadFixturePair(
 }
 
 export default function App() {
-  const [layer, setLayer] = useState<ProductLayer>("teaching");
+  const [layer, setLayer] = useState<ProductLayer>("live");
   const [selectedCaseId, setSelectedCaseId] = useState(
     TEACHING_CASES[0].case_id
   );
@@ -842,25 +842,19 @@ export default function App() {
         phase === "final" ? " phase-final" : ""
       }`}
     >
-      <header className="top">
-        <p className="eyebrow">
-          {phase === "final"
-            ? "openJiuwen · 最终交付"
-            : "openJiuwen · Demo Act 2"}
-        </p>
-        <h1>
-          {phase === "final"
-            ? "反诈侦探团 · 风险条与结论"
-            : "反诈侦探团 · 典型事例展示 / 真实使用"}
-        </h1>
-        <p className="tagline">「连 AI 自己都会骗，所以要有审判官」</p>
-      </header>
-
-      <LayerTabs
+      <ProductNav
         layer={layer}
         onChange={onLayerChange}
         disabled={liveRunning || actualRunning}
       />
+      <main id="main-content" className="page-content" tabIndex={-1}>
+      <header className="top">
+        <h1>{phase === "final" ? "每一份安心，都有迹可循。" : layer === "live" ? <>少一点犹豫，<span className="hero-continuation">多一份安心。</span></> : "看懂套路，转账更从容。"}</h1>
+        <div className="intro-bottom">
+          <p className="tagline">{phase === "final" ? "查看本次检查结果，以及你可以采取的下一步。" : layer === "live" ? "转账之前，让 AI 帮你看清可疑信号。" : "从典型场景出发，看看可疑信号是怎样被发现的。"}</p>
+          <span className="intro-caption">聊天分析 <i>/</i> 证据核验 <i>/</i> 行动建议</span>
+        </div>
+      </header>
 
       {phase === "final" && layer === "teaching" && teachingFinalVerdict ? (
         <FinalShell
@@ -944,10 +938,10 @@ export default function App() {
 
               {hasFixtures ? (
                 /* Default UI: 有卡口 only. 无卡口 fixtures still load into `left` for logic/contrast data, but are not rendered. */
-                <main className="cols cols-single">
+                <div className="cols cols-single">
                   <Column
                     side="right"
-                    title="有卡口（规则盖章）"
+                    title="案例分析过程"
                     subtitle={rightSub}
                     events={right.events}
                     idx={right.idx}
@@ -956,7 +950,7 @@ export default function App() {
                     verdict={rightBanner}
                     meta={right.meta}
                   />
-                </main>
+                </div>
               ) : (
                 <div className="placeholder-panel">
                   本案例暂无事件流 fixtures，请先阅读上方学习要点；请选{" "}
@@ -968,7 +962,10 @@ export default function App() {
         </>
       ) : (
         <div className="live-layer">
-          <LiveForm running={actualRunning} onSubmit={startActualLive} />
+          <div className="check-layout">
+            <LiveForm running={actualRunning} onSubmit={startActualLive} />
+            <CheckAside onDemo={() => onLayerChange("teaching")} disabled={actualRunning} />
+          </div>
           {liveSoftHint ? (
             <div className="form-hint centered">{liveSoftHint}</div>
           ) : null}
@@ -987,10 +984,10 @@ export default function App() {
             compact
             waiting={actualRunning && progressLines.length === 0}
           />
-          <main className="cols cols-single cols-stage">
+          {(actualRunning || liveSide.events.length > 0) && <div className="cols cols-single cols-stage">
             <Column
               side="right"
-              title="现场裁定"
+              title="风险检查过程"
               subtitle={[
                 `gate:${String(liveSide.meta.gate_verdict ?? liveSide.meta.gate ?? "—")}`,
                 `case:${liveSide.meta.case_id || "—"}`,
@@ -1012,11 +1009,13 @@ export default function App() {
               verdict={liveBanner}
               meta={liveSide.meta}
             />
-          </main>
+          </div>}
+          <SafetyNotes />
         </div>
       )}
 
-      <footer className={`foot${layer === "live" && liveSwarmflow ? " foot-swarm" : ""}`}>{footer}</footer>
+      </main>
+      <footer className="foot"><span>openJiuwen · 转账前保镖</span><details className="service-details"><summary>服务信息</summary><p>{footer}</p></details></footer>
     </div>
   );
 }

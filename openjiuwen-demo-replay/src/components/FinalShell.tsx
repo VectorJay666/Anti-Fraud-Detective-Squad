@@ -75,9 +75,9 @@ export function FinalShell({
   return (
     <section className="final-shell" aria-label="最终裁定">
       <header className="final-shell-head">
-        <p className="final-eyebrow">P3 · 最终交付</p>
-        <h2 className="final-title">转账前结论</h2>
-        <p className="final-meta">
+        <p className="final-eyebrow">检查完成</p>
+        <h2 className="final-title">转账前，再确认一下。</h2>
+        <details className="result-details"><summary>查看检查记录</summary><p className="final-meta">
           case:{caseId}
           {" · "}
           gate:{gate}
@@ -85,7 +85,7 @@ export function FinalShell({
           {swarmflow != null
             ? ` · swarmflow:${swarmflow ? "true" : "false"}`
             : ""}
-        </p>
+        </p></details>
       </header>
 
       <div className={`risk-bar risk-${risk}`} role="status">
@@ -110,7 +110,7 @@ export function FinalShell({
       </div>
 
       <div className="final-card">
-        <h3 className="final-card-h">可执行下一步</h3>
+        <h3 className="final-card-h">接下来，你可以这样做</h3>
         <ul className="final-checklist">
           {checklist.map((item) => (
             <li key={item}>{item}</li>
@@ -131,7 +131,7 @@ export function FinalShell({
           回看会商过程
         </button>
         <button type="button" className="final-btn primary" onClick={onRestart}>
-          再审一单
+          重新检查
         </button>
       </div>
     </section>

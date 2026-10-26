@@ -8,28 +8,24 @@ interface Props {
 
 export function LayerTabs({ layer, onChange, disabled }: Props) {
   return (
-    <div className="layer-tabs" role="tablist" aria-label="产品层">
+    <div className="layer-tabs" aria-label="页面切换">
       <button
         type="button"
-        role="tab"
-        aria-selected={layer === "teaching"}
-        className={`layer-tab${layer === "teaching" ? " active" : ""}`}
-        disabled={disabled}
-        onClick={() => onChange("teaching")}
-      >
-        典型事例展示
-        <span className="layer-tab-sub">经典案 · 回放对照</span>
-      </button>
-      <button
-        type="button"
-        role="tab"
-        aria-selected={layer === "live"}
+        aria-pressed={layer === "live"}
         className={`layer-tab${layer === "live" ? " active" : ""}`}
         disabled={disabled}
         onClick={() => onChange("live")}
       >
-        真实使用
-        <span className="layer-tab-sub">粘贴原文 · 现场裁定</span>
+        风险检查
+      </button>
+      <button
+        type="button"
+        aria-pressed={layer === "teaching"}
+        className={`layer-tab${layer === "teaching" ? " active" : ""}`}
+        disabled={disabled}
+        onClick={() => onChange("teaching")}
+      >
+        案例演示
       </button>
     </div>
   );

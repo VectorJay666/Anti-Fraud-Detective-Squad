@@ -54,7 +54,7 @@ export function Toolbar({
         onClick={onStep}
         disabled={replayDisabled}
       >
-        步进
+        下一步
       </button>
       <button
         type="button"
