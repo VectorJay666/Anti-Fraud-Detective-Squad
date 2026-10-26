@@ -5,7 +5,6 @@ import {clamp,unit} from './Dust';
 type Point={x:number;y:number};
 export const BRIDGES=[
  {kind:'bars-to-check',cut:18*45,lead:23,tail:20},
- {kind:'dossier-to-council',cut:SHOTS.find(s=>s.kind==='council')!.start,lead:23,tail:20},
 ];
 
 export function CreativeTransitions({frame}:{frame:number}) {

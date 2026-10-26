@@ -7,8 +7,8 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 const {outputFiles}=await build({entryPoints:['src/timeline.ts'],bundle:true,write:false,platform:'node',format:'esm'});
 const {SHOTS,BEATS,CAPTIONS,ROLES,DURATION,FPS,STROKE,PIVOT_FRAME,MUSIC_OFFSET_FRAMES}=await import('data:text/javascript;base64,'+Buffer.from(outputFiles[0].text).toString('base64'));
-assert.equal(DURATION,2700);assert.equal(FPS,45);assert.equal(STROKE,2.5);
-assert.equal(SHOTS.length,20);assert.equal(SHOTS[0].start,0);assert.equal(SHOTS.at(-1).end,2700);
+assert.equal(DURATION,4050);assert.equal(FPS,45);assert.equal(STROKE,2.5);
+assert.equal(SHOTS.length,20);assert.equal(SHOTS[0].start,0);assert.equal(SHOTS.at(-1).end,4050);
 SHOTS.forEach((s,i)=>{assert(Number.isInteger(s.start)&&Number.isInteger(s.end));assert(s.end>s.start);if(i)assert.equal(s.start,SHOTS[i-1].end);});
 assert.equal(PIVOT_FRAME,810);assert.equal(MUSIC_OFFSET_FRAMES,0);
 assert.equal(SHOTS.find(s=>s.kind==='pivot').start,PIVOT_FRAME);
@@ -29,12 +29,13 @@ assert(stats.series.every(s=>new URL(s.source).hostname.endsWith('ftc.gov')));
 assert.equal(SHOTS[0].kind,'case-bars');
 const bridgesBundle=await build({entryPoints:['src/CreativeTransitions.tsx'],bundle:true,write:false,platform:'node',format:'esm'});
 const {BRIDGES}=await import('data:text/javascript;base64,'+Buffer.from(bridgesBundle.outputFiles[0].text).toString('base64'));
-assert.equal(BRIDGES.length,2);
+assert.equal(BRIDGES.length,1);
 assert(BRIDGES.every(bridge=>bridge.cut-bridge.lead>=0&&bridge.cut+bridge.tail<=DURATION));
 assert(BRIDGES.every(b=>b.cut<54*FPS));
 const pivotCopy=await readFile('src/ThreatScenes.tsx','utf8');assert(pivotCopy.includes('但在转账前'));assert(pivotCopy.includes('pivot-halo'));
 assert(film.includes('致力于打造造福人民的反诈产品'));
-assert.equal(SHOTS.filter(s=>s.kind==='results').length,2);
+assert.equal(SHOTS.filter(s=>s.kind==='flow').length,10);
+assert(film.includes('<ContinuousStory seconds={f/FPS}/>'));
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const provenance=JSON.parse(await readFile('public/assets/provenance.json','utf8'));
 for(const f of ['project_live.png','project_gate_crop.png','project_replay.png']){
@@ -44,7 +45,7 @@ for(const f of ['project_live.png','project_gate_crop.png','project_replay.png']
 const report=JSON.parse(await readFile('public/assets/audio-report.json','utf8'));
 assert.equal(report.voice_tracks,0);assert.equal(report.subtitle_tracks,0);
 assert.equal(report.type,'reference_instrumental_excerpt');assert.equal(report.title,'千年之后');
-assert.equal(report.seconds,60);assert.equal(report.channels,2);assert.equal(report.video_fps,FPS);
+assert.equal(report.seconds,90);assert.equal(report.channels,2);assert.equal(report.video_fps,FPS);
 assert.equal(report.transition_video_frame,PIVOT_FRAME);assert.equal(report.offset_frames,0);
 assert.equal(report.tempo_changed,false);assert.equal(report.tempo_scope,'original_speed_with_two_beat_pickup');assert(report.first_100ms_rms>.0001);assert(report.sample_peak_dbfs<0);
 assert(Math.abs(report.measured_transition_source_seconds-report.main_source_start)<1/FPS);
@@ -54,7 +55,9 @@ for(const cue of cues){const shot=SHOTS.find(s=>s.name===cue.scene);assert(shot)
 assert.equal(cues.find(c=>c.event==='但在转账前，还有核验这一步').frame,PIVOT_FRAME);
 assert.equal(cues.filter(c=>c.event.startsWith('角色：')).length,7);
 const media=JSON.parse(execFileSync('node_modules/@remotion/compositor-win32-x64-msvc/ffprobe.exe',['-v','error','-show_entries','stream=codec_name,sample_rate,channels:format=duration','-of','json','public/assets/soundtrack.m4a'],{encoding:'utf8'}));
-assert.equal(media.streams[0].channels,2);assert.equal(media.streams[0].sample_rate,'48000');assert(Math.abs(Number(media.format.duration)-60)<.03);
-console.log('PASS: 2700 frames, 45fps, 18s pivot, no subtitles, seven roles, original PNGs and reference music.');
+assert.equal(media.streams[0].channels,2);assert.equal(media.streams[0].sample_rate,'48000');assert(Math.abs(Number(media.format.duration)-90)<.03);
+console.log('PASS: 4050 frames, 45fps, 18s pivot, no subtitles, seven roles, original PNGs and reference music.');
 
-const outcomes=await readFile('src/OutcomeScenes.tsx','utf8');assert(outcomes.includes('66 / 84'));assert(outcomes.includes('私有合成评测'));assert(outcomes.includes('不代表真实用户防骗成功率'));assert(!BRIDGES.some(b=>b.kind==='workflow-to-brand'));
+const outcomes=await readFile('src/ContinuousStory.tsx','utf8');assert(outcomes.includes('66 / 84'));assert(outcomes.includes('私有合成评测'));assert(outcomes.includes('不代表真实用户防骗成功率'));assert(!BRIDGES.some(b=>b.kind==='workflow-to-brand'));
+
+assert(outcomes.includes('STORY_CUTS'));assert(outcomes.includes('Array.from({length:84}'));assert(outcomes.includes('Array.from({length:24}'));assert((await readFile('src/CaseBarChart.tsx','utf8')).includes('熟人借款'));

@@ -4,6 +4,7 @@ import {BLUE, FPS, MOTION_FPS, FilmAssets, MUTED, RED, ROLES, ROLE_NOTES, SHOTS,
 import {Trace, tween, Rise} from './Motion';
 import {Incoming, Masks, Pressure, Brink, Pivot} from './ThreatScenes';
 import {CreativeTransitions} from './CreativeTransitions';
+import {ContinuousStory,STORY_START} from './ContinuousStory';
 import {CaseBarChart} from './CaseBarChart';
 import {EvidenceCheck,RiskOutput,UseCases,ProductImpact,Results} from './OutcomeScenes';
 import {Actions, Advice, Boundary, Intake, Journey, Local, Proof, Relay, Scenario} from './AnimationScenes';
@@ -219,7 +220,7 @@ export const Film: React.FC<{assets:FilmAssets}> = ({assets}) => {
       case 'human':return <Human frame={local}/>;
       case 'actions':return <Actions frame={local}/>;
       case 'replay':return <Replay frame={local} src={assets.replay}/>;
-      case 'results':return <Results frame={(f-SHOTS.find(s=>s.kind==='results')!.start)*MOTION_FPS/FPS}/>;
+      case 'results':return <Results frame={local}/>;
       case 'product-impact':return <ProductImpact frame={local}/>;
       case 'local':return <Local frame={local*1.2}/>;
       case 'journey':return <Journey frame={local*1.5}/>;
@@ -229,6 +230,7 @@ export const Film: React.FC<{assets:FilmAssets}> = ({assets}) => {
   return <AbsoluteFill style={{background:'#000',fontFamily:font,color:WHITE,overflow:'hidden',opacity:tween(f,0,Math.round(.65*FPS))}}>
     <Audio src={assets.sound} volume={1}/>
     <AbsoluteFill>{SHOTS.map((s,i)=>{
+      if(s.kind==='flow')return null;
       const impact=s.kind==='pivot'||s.kind==='end'||s.kind==='case-bars'||s.kind==='results';
       const nextImpact=SHOTS[i+1]?.kind==='pivot'||SHOTS[i+1]?.kind==='end'||SHOTS[i+1]?.kind==='case-bars'||SHOTS[i+1]?.kind==='results';
       const enter=i===0||impact?1:tween(f,s.start,transition);
@@ -239,7 +241,7 @@ export const Film: React.FC<{assets:FilmAssets}> = ({assets}) => {
           {scene(s.kind,(f-s.start)*MOTION_FPS/FPS)}
         </AbsoluteFill>
       </Sequence>;
-    })}</AbsoluteFill>
+    })}<Sequence from={Math.round(STORY_START*FPS)} durationInFrames={SHOTS.at(-1)!.start-Math.round(STORY_START*FPS)} name="连续案卷与评测叙事"><ContinuousStory seconds={f/FPS}/></Sequence></AbsoluteFill>
     <CreativeTransitions frame={f}/>
   </AbsoluteFill>;
 };

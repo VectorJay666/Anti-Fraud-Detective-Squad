@@ -7,7 +7,7 @@
   "source_sha256": "3fe7e62dd92aeaf4d6f50d05b39f790fa1ab2233c2f43d1ec798b7fccbc85029",
   "credit_note": "曲名依据用户确认及参考视频简介；不将视频上传者认定为作曲者。",
   "source_excerpt_start": 0.8225,
-  "source_excerpt_end": 59.760000000000005,
+  "source_excerpt_end": 89.76,
   "offset_frames": 0,
   "audio_offset_seconds": 0,
   "intro_source_start": 0.8225,
@@ -27,10 +27,12 @@
   "end_fade_seconds": 1.1,
   "voice_tracks": 0,
   "subtitle_tracks": 0,
-  "seconds": 60,
+  "seconds": 90,
   "sample_rate": 48000,
   "channels": 2,
   "video_fps": 45,
+  "measured_beat_period_seconds": 0.5315,
+  "beat_anchor_video_seconds": 18.02,
   "sample_peak_dbfs": -5.0,
-  "rms_dbfs": -13.501100399224285
+  "rms_dbfs": -13.567359483800676
 }

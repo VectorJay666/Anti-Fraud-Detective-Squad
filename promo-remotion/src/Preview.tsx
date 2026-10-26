@@ -52,7 +52,7 @@ function App(){
 
   return <div className="workspace">
     <header className="masthead">
-      <div className="identity"><span className="brand">转账前保镖</span><span className="divider"/><span className="edition">60 秒产品短片</span></div>
+      <div className="identity"><span className="brand">转账前保镖</span><span className="divider"/><span className="edition">90 秒产品短片</span></div>
       <div className="spec">1920 × 1080 <span> / </span> 45 FPS <span> / </span> 16:9</div>
     </header>
     <main>
@@ -64,14 +64,14 @@ function App(){
         <button className="play-button" onClick={toggle} aria-label={playing?'暂停影片':'播放影片'} title="空格：播放 / 暂停"><Icon name={playing?'pause':'play'}/></button>
         <button className="icon-button" onClick={()=>{seek(0);ref.current?.play();}} aria-label="从头播放" title="从头播放"><Icon name="restart"/></button>
         <div className="scrub"><input type="range" min="0" max={DURATION-1} step="1" value={frame} onChange={e=>seek(Number(e.target.value))} aria-label="影片进度" style={{'--progress':`${frame/(DURATION-1)*100}%`} as React.CSSProperties}/></div>
-        <div className="timecode">{frame===DURATION-1?'01:00':time(frame)} <span>/ 01:00</span></div>
+        <div className="timecode">{frame===DURATION-1?'01:30':time(frame)} <span>/ 01:30</span></div>
         <button className="icon-button" onClick={mute} aria-label={muted?'打开声音':'静音'} title="M：声音"><Icon name={muted?'muted':'sound'}/></button>
         <button className="icon-button" onClick={()=>ref.current?.requestFullscreen()} aria-label="全屏播放" title="F：全屏"><Icon name="full"/></button>
       </div>
       <div className="downloads" aria-label="保存影片">
         <span>保存到电脑</span>
-        <div>{window.__FILM_EXPORT_READY__?<a href="./转账前保镖-60秒-45fps.mp4?download=1" download="转账前保镖-60秒-45fps.mp4">下载 MP4 视频</a>:<span className="export-pending">MP4 正在导出</span>}
-        <a href="./转账前保镖-60秒动画预览.html?download=1" download="转账前保镖-60秒动画预览.html">保存 HTML 预览</a></div>
+        <div>{window.__FILM_EXPORT_READY__?<a href="./转账前保镖-90秒-45fps.mp4?download=1" download="转账前保镖-90秒-45fps.mp4">下载 MP4 视频</a>:<span className="export-pending">MP4 正在导出</span>}
+        <a href="./转账前保镖-90秒动画预览.html?download=1" download="转账前保镖-90秒动画预览.html">保存 HTML 预览</a></div>
       </div>
       <nav className="chapters" aria-label="六段叙事">
         {BEATS.map((s,i)=><button key={s.start} className={`chapter ${frame>=s.start&&frame<s.end?'active':''}`} onClick={()=>seek(s.start)} aria-label={`跳转至${s.label}`} aria-current={frame>=s.start&&frame<s.end?'step':undefined}>

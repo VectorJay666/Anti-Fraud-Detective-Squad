@@ -14,19 +14,19 @@ try{
   const shots=[];
   for(let i=0;i<SHOTS.length;i++){
     const s=SHOTS[i];
-    const frame=s.kind==='pivot'?PIVOT_FRAME+10:s.kind==='end'?59*FPS:Math.min(s.end-1,s.start+Math.round((s.end-s.start)*.8));
+    const frame=s.kind==='pivot'?PIVOT_FRAME+10:s.kind==='end'?89*FPS:Math.min(s.end-1,s.start+Math.round((s.end-s.start)*.8));
     const file=`stills/music-${String(i+1).padStart(2,'0')}-${frame}.png`;
     await renderStill({serveUrl,composition,puppeteerInstance:browser,frame,output:`delivery/${file}`,imageFormat:'png',logLevel:'error'});
     shots.push({file,frame,label:`${s.name} / ${(frame/FPS).toFixed(2)}s / ${s.title}`});
     console.log(`Still ${i+1}/${SHOTS.length}: ${frame}`);
   }
-  const last='stills/music-tail-2699.png';
+  const last='stills/music-tail-4049.png';
   await renderStill({serveUrl,composition,puppeteerInstance:browser,frame:DURATION-1,output:`delivery/${last}`,imageFormat:'png',logLevel:'error'});
   assert.deepEqual(await readFile(`delivery/${shots.at(-1).file}`),await readFile(`delivery/${last}`));
   console.log('PASS: final brand card is byte-identical at its first and last frames.');
-  const cuts=[0,9,45,189,284,380,572,740,PIVOT_FRAME-12,PIVOT_FRAME-1,PIVOT_FRAME,PIVOT_FRAME+1,PIVOT_FRAME+12,846,866,888,906,914,922,SHOTS.find(s=>s.kind==='gate').start+96,2436,2437,2610,2655,2699];
+  const cuts=[0,45,180,380,572,740,809,810,822,906,1002,1288,1481,1863,2150,2438,2724,2916,3203,3490,3776,3915,4005,4049,...SHOTS.filter(s=>s.kind==='flow').flatMap(s=>[s.start-1,s.start+12])];
   const transitions=[];
-  for(const frame of cuts){
+  for(const frame of [...new Set(cuts)].sort((a,b)=>a-b)){
     const file=`stills/music-transition-${frame}.png`;
     await renderStill({serveUrl,composition,puppeteerInstance:browser,frame,output:`delivery/${file}`,imageFormat:'png',logLevel:'error'});
     transitions.push({file,frame,label:`${frame}f / ${(frame/FPS).toFixed(3)}s`});

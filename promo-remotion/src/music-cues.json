@@ -64,128 +64,128 @@
   },
   {
     "scene": "镜10",
-    "event": "老人、学生、商户的三类核验场景",
+    "event": "三种话术轮转进入核验",
     "frame": 1002,
     "seconds": 22.266666666666666,
     "sourceSeconds": 22.02666666666667
   },
   {
     "scene": "镜11",
-    "event": "七角色有序会商",
-    "frame": 1145,
-    "seconds": 25.444444444444443,
-    "sourceSeconds": 25.204444444444448
-  },
-  {
-    "scene": "镜11",
-    "event": "角色：特征官",
-    "frame": 1145,
-    "seconds": 25.444444444444443,
-    "sourceSeconds": 25.204444444444448
-  },
-  {
-    "scene": "镜11",
-    "event": "角色：证据官",
-    "frame": 1169,
-    "seconds": 25.977777777777778,
-    "sourceSeconds": 25.73777777777778
-  },
-  {
-    "scene": "镜11",
-    "event": "角色：反方官",
-    "frame": 1193,
-    "seconds": 26.511111111111113,
-    "sourceSeconds": 26.27111111111111
-  },
-  {
-    "scene": "镜11",
-    "event": "角色：风险官",
-    "frame": 1217,
-    "seconds": 27.044444444444444,
-    "sourceSeconds": 26.804444444444442
-  },
-  {
-    "scene": "镜11",
-    "event": "角色：合规官",
-    "frame": 1241,
-    "seconds": 27.57777777777778,
-    "sourceSeconds": 27.33777777777778
-  },
-  {
-    "scene": "镜11",
-    "event": "角色：用户保护官",
-    "frame": 1265,
-    "seconds": 28.11111111111111,
-    "sourceSeconds": 27.871111111111112
-  },
-  {
-    "scene": "镜11",
-    "event": "角色：审判官",
+    "event": "话术线索逐条落卷",
     "frame": 1289,
     "seconds": 28.644444444444446,
     "sourceSeconds": 28.40444444444445
   },
   {
     "scene": "镜12",
-    "event": "高危、低危、证据不足三档建议",
-    "frame": 1336,
-    "seconds": 29.68888888888889,
-    "sourceSeconds": 29.448888888888888
+    "event": "七角色连续交叉核验",
+    "frame": 1481,
+    "seconds": 32.91111111111111,
+    "sourceSeconds": 32.67111111111112
+  },
+  {
+    "scene": "镜12",
+    "event": "角色：特征官",
+    "frame": 1481,
+    "seconds": 32.91111111111111,
+    "sourceSeconds": 32.67111111111112
+  },
+  {
+    "scene": "镜12",
+    "event": "角色：证据官",
+    "frame": 1529,
+    "seconds": 33.977777777777774,
+    "sourceSeconds": 33.73777777777778
+  },
+  {
+    "scene": "镜12",
+    "event": "角色：反方官",
+    "frame": 1577,
+    "seconds": 35.044444444444444,
+    "sourceSeconds": 34.80444444444444
+  },
+  {
+    "scene": "镜12",
+    "event": "角色：风险官",
+    "frame": 1625,
+    "seconds": 36.111111111111114,
+    "sourceSeconds": 35.87111111111112
+  },
+  {
+    "scene": "镜12",
+    "event": "角色：合规官",
+    "frame": 1672,
+    "seconds": 37.15555555555556,
+    "sourceSeconds": 36.91555555555556
+  },
+  {
+    "scene": "镜12",
+    "event": "角色：用户保护官",
+    "frame": 1720,
+    "seconds": 38.22222222222222,
+    "sourceSeconds": 37.98222222222222
+  },
+  {
+    "scene": "镜12",
+    "event": "角色：审判官",
+    "frame": 1768,
+    "seconds": 39.28888888888889,
+    "sourceSeconds": 39.0488888888889
   },
   {
     "scene": "镜13",
-    "event": "确定性规则核验",
-    "frame": 1432,
-    "seconds": 31.822222222222223,
-    "sourceSeconds": 31.582222222222228
-  },
-  {
-    "scene": "镜14",
-    "event": "编号查证，拒绝编造引用",
-    "frame": 1636,
-    "seconds": 36.355555555555554,
-    "sourceSeconds": 36.11555555555556
-  },
-  {
-    "scene": "镜15",
-    "event": "可疑话术输入，证据与提示输出",
-    "frame": 1719,
-    "seconds": 38.2,
-    "sourceSeconds": 37.96000000000001
-  },
-  {
-    "scene": "镜16",
-    "event": "把建议变成行动",
+    "event": "真实引用通过，编造引用打回",
     "frame": 1863,
     "seconds": 41.4,
     "sourceSeconds": 41.16
   },
   {
-    "scene": "镜17",
-    "event": "合成评测：66/84，78.6%",
-    "frame": 2054,
-    "seconds": 45.644444444444446,
-    "sourceSeconds": 45.40444444444445
-  },
-  {
-    "scene": "镜18",
-    "event": "0误伤，18名证据不足转人工",
+    "scene": "镜14",
+    "event": "三档结论流向本人确认",
     "frame": 2150,
     "seconds": 47.77777777777778,
     "sourceSeconds": 47.53777777777778
   },
   {
+    "scene": "镜15",
+    "event": "案卷展开为四条行动建议",
+    "frame": 2437,
+    "seconds": 54.15555555555556,
+    "sourceSeconds": 53.91555555555556
+  },
+  {
+    "scene": "镜16",
+    "event": "84个样本从案卷中展开",
+    "frame": 2724,
+    "seconds": 60.53333333333333,
+    "sourceSeconds": 60.29333333333334
+  },
+  {
+    "scene": "镜17",
+    "event": "66名指认与18名转人工分流",
+    "frame": 2916,
+    "seconds": 64.8,
+    "sourceSeconds": 64.56
+  },
+  {
+    "scene": "镜18",
+    "event": "新旧管线：违规指认36降至0",
+    "frame": 3203,
+    "seconds": 71.17777777777778,
+    "sourceSeconds": 70.93777777777778
+  },
+  {
     "scene": "镜19",
-    "event": "无关引用注入24/24打回",
-    "frame": 2293,
-    "seconds": 50.955555555555556,
-    "sourceSeconds": 50.715555555555554
+    "event": "24次无关引用连续打回",
+    "frame": 3490,
+    "seconds": 77.55555555555556,
+    "sourceSeconds": 77.31555555555556
   },
   {
     "scene": "镜20",
     "event": "从运气变成流程",
-    "frame": 2437,
-    "seconds": 54.15555555555556,
-    "sourceSeconds": 53.91555555555556
+    "frame": 3777,
+    "seconds": 83.93333333333334,
+    "sourceSeconds": 83.69333333333334
   }
 ]

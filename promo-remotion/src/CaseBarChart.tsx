@@ -13,6 +13,8 @@ const camera=(frame:number,values:number[])=>interpolate(frame,[2.4,3.5,6.311,7.
  {extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.inOut(Easing.cubic)});
 
 export function CaseBarChart({frame}:{frame:number}) {
+ const risks=['长期投资骗局','刷单返利','冒充客服','冒充公检法','熟人借款','虚假理赔'];
+ const activeRisk=Math.min(5,Math.max(0,Math.floor((frame/25-4)/(2.1333333333))));
  const morph=tween(frame,2.4*25,27);
  const scale=camera(frame,[4.4,2.5,1.15,1]);
  const sx=camera(frame,[1120,1080,820,selected.x]);
@@ -59,11 +61,15 @@ export function CaseBarChart({frame}:{frame:number}) {
     </g>
    </g>
   </Svg>
+  <div style={{opacity:tween(frame,3.8*25,18)}}>
+   {risks.map((v,i)=>{const p=tween(frame,(3.8+i*.5333333333)*25,18);return <div key={v} style={{position:'absolute',left:180+i*263,top:192,opacity:p,color:i===activeRisk?WHITE:MUTED,transform:`translateY(${(1-p)*24}px)`,fontSize:26}}><span style={{color:BLUE,marginRight:10}}>·</span>{v}</div>;})}
+  </div>
   <div style={{opacity:tween(frame,7.0*25,25)}}>
    <T x={180} y={104} size={27} color={MUTED}>美国 FTC · 消费者报告的诈骗损失</T>
    <T x={180} y={300} size={84} weight={500}>报告损失，<br/><span style={{color:BLUE}}>逐年增加。</span></T>
    <T x={180} y={575} size={28} color={MUTED}>2022—2024 年年度披露</T>
    <T x={180} y={630} size={27} color={MUTED}>单位：亿美元</T>
+   <T x={180} y={735} size={27} color={BLUE}>{risks[activeRisk]}</T>
    {stats.series.map((v,i)=><React.Fragment key={v.year}>
     <T x={centers[i]} y={800-heights[i]-73} size={40} center color={i===2?BLUE:WHITE}>{v.display}</T>
     <T x={centers[i]} y={850} size={32} center color={MUTED}>{v.year}</T>

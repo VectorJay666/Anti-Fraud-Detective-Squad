@@ -9,7 +9,7 @@ createServer(async(req,res)=>{
   try{
     const requestUrl=new URL(req.url,'http://localhost');
     const pathname=decodeURIComponent(requestUrl.pathname);
-    const name=pathname==='/'?'转账前保镖-60秒动画预览.html':pathname.replace(/^\//,'');
+    const name=pathname==='/'?'转账前保镖-90秒动画预览.html':pathname.replace(/^\//,'');
     const target=path.resolve(root,name);
     if(!target.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}
     const data=await readFile(target);
