@@ -20,7 +20,9 @@
 
 ## 声音与字幕
 
-没有旁白、没有人声采样。背景音乐《留一步》为原创程序配乐：96BPM、柔和电子脉冲、轻键音与温暖铺底；31秒低频落锁，36秒降压，54秒进入稳定和弦。48kHz立体声，最终以192kbps AAC内嵌。`public/assets/audio-report.json`记录音轨参数与段落。
+没有旁白、没有人声采样。原创专属配乐《留一步 · 逐镜配乐》沿用柔和电子脉冲、轻键音与温暖铺底，按20镜设置34个画面提示点。120BPM底层网格以60BPM的舒缓脉冲呈现：七角色对应七个轻音，25.6秒闸线落定配主落锁声，31秒真实结果留低音回声，36秒撤去鼓点，54秒进入稳定和弦。48kHz立体声，以192kbps AAC内嵌。
+
+可单独试听 `delivery/转账前保镖-专属配乐.mp3`。`MUSIC.md`说明音乐结构，`src/music-cues.json`记录画面时点，`public/assets/audio-report.json`记录对齐后的45fps帧号、音符事件与响度。
 
 字幕保留六句原文并补充使用说明；每条不超过14字，品牌尾卡承载最后一句全文。可选导入剪辑软件的字幕为 `delivery/转账前保镖-60秒字幕.srt`。
 
@@ -55,6 +57,13 @@ npm run stills
 python scripts/audio.py
 ```
 
+只改音乐时，可直接替换已有视频的音轨，保留2700帧原画面：
+
+```powershell
+npm run replace-music
+npm run build
+```
+
 `audio.py`调用当前平台的Remotion配套FFmpeg编码AAC；本交付已包含音乐，无需重新生成。Windows下生成分镜总览需Pillow：
 
 ```powershell
@@ -70,6 +79,7 @@ python scripts/contact_sheet.py
 - `src/Motion.tsx`：路径、曲线游标、spring和入场动效。
 - `src/AnimationScenes.tsx`：三种使用场景、材料归档、会商接力、规则与人工边界、行动清单、本机链路。
 - `src/Preview.tsx`、`src/preview.css`：HTML预览播放器。
+- `src/music-cues.json`、`MUSIC.md`：专属配乐的画面提示点与音乐结构。
 - `scripts/build.mjs`、`scripts/serve.mjs`：离线HTML打包与本机服务。
 - `scripts/verify.mjs`、`scripts/stills.mjs`：内容、原图、音乐、帧表和尾卡验证。
 - `delivery/60秒分镜总览.jpg`、`delivery/60秒转场校验.jpg`：画面检查图。

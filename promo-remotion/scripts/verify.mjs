@@ -22,6 +22,15 @@ for(const f of ['project_live.png','project_gate_crop.png','project_replay.png']
 }
 const report=JSON.parse(await readFile('public/assets/audio-report.json','utf8'));
 assert.equal(report.voice_tracks,0);assert.equal(report.type,'instrumental_music_only');assert.equal(report.seconds,60);assert.equal(report.channels,2);
+const cues=JSON.parse(await readFile('src/music-cues.json','utf8'));
+assert.equal(report.cue_count,cues.length);assert.equal(report.video_fps,FPS);
+for(const cue of cues){const shot=SHOTS.find(s=>s.name===cue.scene);assert(shot);assert(cue.time>=shot.start/FPS&&cue.time<shot.end/FPS);}
+for(const event of report.note_events){assert.equal(event.frame,Math.round(event.time*FPS));}
+assert(report.note_events.some(e=>e.kind==='low_gate_closure'&&Math.abs(e.time-25.6)<1/FPS));
+assert(report.note_events.every(e=>e.time<54));
+const roleHits=report.note_events.filter(e=>e.kind==='soft_key'&&e.time>=18&&e.time<21);
+assert.equal(roleHits.length,7);
+[18,18.2,18.68,19.16,19.64,20.12,20.6].forEach((time,i)=>assert(Math.abs(roleHits[i].time-time)<=.5/FPS+.000001));
 const media=JSON.parse(execFileSync('node_modules/@remotion/compositor-win32-x64-msvc/ffprobe.exe',['-v','error','-show_entries','stream=codec_name,sample_rate,channels:format=duration','-of','json','public/assets/soundtrack.m4a'],{encoding:'utf8'}));
 assert.equal(media.streams[0].channels,2);assert.equal(media.streams[0].sample_rate,'48000');assert(Math.abs(Number(media.format.duration)-60)<.03);
-console.log('PASS: 2700 frames, 45fps, 20 shots, original copy intact, 7 ordered roles, original PNGs, captions and 60s stereo instrumental music.');
+console.log('PASS: 2700 frames, 45fps, 20 shots, original copy, original PNGs, captions, 60s stereo score and 34 picture cues.');

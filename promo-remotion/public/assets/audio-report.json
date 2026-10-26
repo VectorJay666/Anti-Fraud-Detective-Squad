@@ -1,38 +1,620 @@
 {
   "type": "instrumental_music_only",
   "voice_tracks": 0,
-  "title": "留一步",
-  "composer": "Original procedural score for Transfer Guardian",
-  "bpm": 96,
+  "title": "留一步 · 逐镜配乐",
+  "composer": "Original audiovisual score for Transfer Guardian",
+  "grid_bpm": 120,
+  "felt_pulse_bpm": 60,
   "seconds": 60,
   "sample_rate": 48000,
   "channels": 2,
+  "video_fps": 45,
   "peak_dbfs": -1.51,
-  "sections": [
+  "rms_dbfs": -15.75,
+  "cue_count": 34,
+  "cue_sheet": [
     {
-      "time": "0—8",
-      "music": "Low pulse and spacious pad"
+      "time": 0,
+      "scene": "镜01",
+      "event": "转账前，先停一下",
+      "music": "低音与悬停主题，只留一口呼吸",
+      "video_frame": 0,
+      "aligned_time": 0.0
     },
     {
-      "time": "8—24",
-      "music": "Soft keys, curved stereo delays and restrained rhythm"
+      "time": 2,
+      "scene": "镜02",
+      "event": "客服催核验",
+      "music": "主题第一音，短促柔和",
+      "video_frame": 90,
+      "aligned_time": 2.0
     },
     {
-      "time": "24—36",
-      "music": "Lower register; gate accent at 31s"
+      "time": 3.32,
+      "scene": "镜02",
+      "event": "蓝色曲线抵达手机",
+      "music": "轻键音回应",
+      "video_frame": 149,
+      "aligned_time": 3.311111
     },
     {
-      "time": "36—48",
-      "music": "Release, warm chord, light rhythm"
+      "time": 4,
+      "scene": "镜03",
+      "event": "返利要补款",
+      "music": "相同节奏，改变音高",
+      "video_frame": 180,
+      "aligned_time": 4.0
     },
     {
-      "time": "48—54",
-      "music": "Measured return of the motif"
+      "time": 5.32,
+      "scene": "镜03",
+      "event": "第二条曲线抵达",
+      "music": "轻键音回应",
+      "video_frame": 239,
+      "aligned_time": 5.311111
     },
     {
-      "time": "54—60",
-      "music": "Stable F6/9 chord and gentle final release"
+      "time": 6,
+      "scene": "镜04",
+      "event": "熟人换号借钱",
+      "music": "第三次主题变奏",
+      "video_frame": 270,
+      "aligned_time": 6.0
+    },
+    {
+      "time": 7.32,
+      "scene": "镜04",
+      "event": "第三条曲线抵达",
+      "music": "回应后短暂留白",
+      "video_frame": 329,
+      "aligned_time": 7.311111
+    },
+    {
+      "time": 8,
+      "scene": "镜05",
+      "event": "产品名出现",
+      "music": "主题展开，空间稍微打开",
+      "video_frame": 360,
+      "aligned_time": 8.0
+    },
+    {
+      "time": 9,
+      "scene": "镜06",
+      "event": "聊天与转账材料进入",
+      "music": "两声分开的材料动机",
+      "video_frame": 405,
+      "aligned_time": 9.0
+    },
+    {
+      "time": 10.52,
+      "scene": "镜06",
+      "event": "第一路材料汇入",
+      "music": "双音汇合的第一音",
+      "video_frame": 473,
+      "aligned_time": 10.511111
+    },
+    {
+      "time": 10.88,
+      "scene": "镜06",
+      "event": "第二路材料汇入案卷",
+      "music": "双音汇合的第二音",
+      "video_frame": 490,
+      "aligned_time": 10.888889
+    },
+    {
+      "time": 12,
+      "scene": "镜07",
+      "event": "真实工具短暂出现",
+      "music": "温和展宽，不用冲击音",
+      "video_frame": 540,
+      "aligned_time": 12.0
+    },
+    {
+      "time": 14,
+      "scene": "镜08",
+      "event": "开始会商接力",
+      "music": "节奏进入，保留对白般的间隔",
+      "video_frame": 630,
+      "aligned_time": 14.0
+    },
+    {
+      "time": 15.36,
+      "scene": "镜08",
+      "event": "特征官路径完成",
+      "music": "第一声会商回应",
+      "video_frame": 691,
+      "aligned_time": 15.355556
+    },
+    {
+      "time": 16.08,
+      "scene": "镜08",
+      "event": "证据官路径完成",
+      "music": "第二声会商回应",
+      "video_frame": 724,
+      "aligned_time": 16.088889
+    },
+    {
+      "time": 16.8,
+      "scene": "镜08",
+      "event": "反方官路径完成",
+      "music": "第三声会商回应",
+      "video_frame": 756,
+      "aligned_time": 16.8
+    },
+    {
+      "time": 18,
+      "scene": "镜09",
+      "event": "七角色展开",
+      "music": "七次柔和拨键，按角色接力",
+      "video_frame": 810,
+      "aligned_time": 18.0
+    },
+    {
+      "time": 21.36,
+      "scene": "镜09",
+      "event": "七条路径汇成建议卷宗",
+      "music": "七音归到同一和声",
+      "video_frame": 961,
+      "aligned_time": 21.355556
+    },
+    {
+      "time": 22,
+      "scene": "镜10",
+      "event": "建议卷宗展开",
+      "music": "三项建议用下降音型呈现",
+      "video_frame": 990,
+      "aligned_time": 22.0
+    },
+    {
+      "time": 24,
+      "scene": "镜11",
+      "event": "进入确定性规则卡口",
+      "music": "低音区接管，收去高频",
+      "video_frame": 1080,
+      "aligned_time": 24.0
+    },
+    {
+      "time": 25.6,
+      "scene": "镜11",
+      "event": "红色闸线落定",
+      "music": "主落锁重音，与实际动画落点对齐",
+      "video_frame": 1152,
+      "aligned_time": 25.6
+    },
+    {
+      "time": 28,
+      "scene": "镜12",
+      "event": "查证证据与条款",
+      "music": "稀疏双声部，给核对留空间",
+      "video_frame": 1260,
+      "aligned_time": 28.0
+    },
+    {
+      "time": 29.6,
+      "scene": "镜12",
+      "event": "编造证据被指出",
+      "music": "低音色短标记",
+      "video_frame": 1332,
+      "aligned_time": 29.6
+    },
+    {
+      "time": 30.2,
+      "scene": "镜12",
+      "event": "编造条款被指出",
+      "music": "相同音色的第二次标记",
+      "video_frame": 1359,
+      "aligned_time": 30.2
+    },
+    {
+      "time": 31,
+      "scene": "镜13",
+      "event": "真实规则拒绝结果",
+      "music": "低沉确认回声，随即留白",
+      "video_frame": 1395,
+      "aligned_time": 31.0
+    },
+    {
+      "time": 33,
+      "scene": "镜14",
+      "event": "规则与人工各守一关",
+      "music": "两个关口各一声，逐渐转暖",
+      "video_frame": 1485,
+      "aligned_time": 33.0
+    },
+    {
+      "time": 36,
+      "scene": "镜15",
+      "event": "最终由用户确认",
+      "music": "撤去鼓点，和声降压",
+      "video_frame": 1620,
+      "aligned_time": 36.0
+    },
+    {
+      "time": 39,
+      "scene": "镜16",
+      "event": "本机部署与留痕",
+      "music": "三声轻键音串联本机节点",
+      "video_frame": 1755,
+      "aligned_time": 39.0
+    },
+    {
+      "time": 42,
+      "scene": "镜17",
+      "event": "四步行动清单",
+      "music": "四个清晰轻音，随后留白供阅读",
+      "video_frame": 1890,
+      "aligned_time": 42.0
+    },
+    {
+      "time": 46,
+      "scene": "镜18",
+      "event": "真实回放记录",
+      "music": "主题回声，与保留记录呼应",
+      "video_frame": 2070,
+      "aligned_time": 46.0
+    },
+    {
+      "time": 48,
+      "scene": "镜19",
+      "event": "完整核验流程归纳",
+      "music": "五音随五个流程节点递进",
+      "video_frame": 2160,
+      "aligned_time": 48.0
+    },
+    {
+      "time": 52.08,
+      "scene": "镜19",
+      "event": "贯穿曲线完成",
+      "music": "归到终止式，准备品牌卡",
+      "video_frame": 2344,
+      "aligned_time": 52.088889
+    },
+    {
+      "time": 54,
+      "scene": "镜20",
+      "event": "品牌卡完整出现",
+      "music": "稳定F6/9和弦落定，此后不再新增节奏",
+      "video_frame": 2430,
+      "aligned_time": 54.0
+    },
+    {
+      "time": 59.2,
+      "scene": "镜20",
+      "event": "最后静止收尾",
+      "music": "自然释放尾音，在60秒内结束",
+      "video_frame": 2664,
+      "aligned_time": 59.2
     }
   ],
-  "sources": "Synthesized tones only. No speech, samples, external music or network services."
+  "note_events": [
+    {
+      "time": 0.0,
+      "frame": 0,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 2.0,
+      "frame": 90,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 3.311111,
+      "frame": 149,
+      "midi": 76,
+      "kind": "soft_key"
+    },
+    {
+      "time": 4.0,
+      "frame": 180,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 5.311111,
+      "frame": 239,
+      "midi": 72,
+      "kind": "soft_key"
+    },
+    {
+      "time": 6.0,
+      "frame": 270,
+      "midi": 64,
+      "kind": "soft_key"
+    },
+    {
+      "time": 7.311111,
+      "frame": 329,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 8.0,
+      "frame": 360,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 8.244444,
+      "frame": 371,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 9.0,
+      "frame": 405,
+      "midi": 62,
+      "kind": "soft_key"
+    },
+    {
+      "time": 9.311111,
+      "frame": 419,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 10.511111,
+      "frame": 473,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 10.888889,
+      "frame": 490,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 12.0,
+      "frame": 540,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 12.244444,
+      "frame": 551,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 14.0,
+      "frame": 630,
+      "midi": 62,
+      "kind": "soft_key"
+    },
+    {
+      "time": 15.355556,
+      "frame": 691,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 16.088889,
+      "frame": 724,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 16.8,
+      "frame": 756,
+      "midi": 64,
+      "kind": "soft_key"
+    },
+    {
+      "time": 18.0,
+      "frame": 810,
+      "midi": 62,
+      "kind": "soft_key"
+    },
+    {
+      "time": 18.2,
+      "frame": 819,
+      "midi": 64,
+      "kind": "soft_key"
+    },
+    {
+      "time": 18.688889,
+      "frame": 841,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 19.155556,
+      "frame": 862,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 19.644444,
+      "frame": 884,
+      "midi": 72,
+      "kind": "soft_key"
+    },
+    {
+      "time": 20.111111,
+      "frame": 905,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 20.6,
+      "frame": 927,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 21.355556,
+      "frame": 961,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 22.844444,
+      "frame": 1028,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 23.155556,
+      "frame": 1042,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 23.488889,
+      "frame": 1057,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 24.0,
+      "frame": 1080,
+      "midi": 50,
+      "kind": "soft_key"
+    },
+    {
+      "time": 25.6,
+      "frame": 1152,
+      "kind": "low_gate_closure"
+    },
+    {
+      "time": 28.0,
+      "frame": 1260,
+      "midi": 60,
+      "kind": "soft_key"
+    },
+    {
+      "time": 29.6,
+      "frame": 1332,
+      "midi": 57,
+      "kind": "soft_key"
+    },
+    {
+      "time": 30.2,
+      "frame": 1359,
+      "midi": 55,
+      "kind": "soft_key"
+    },
+    {
+      "time": 31.0,
+      "frame": 1395,
+      "kind": "low_gate_closure"
+    },
+    {
+      "time": 33.844444,
+      "frame": 1523,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 34.755556,
+      "frame": 1564,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 36.0,
+      "frame": 1620,
+      "midi": 72,
+      "kind": "soft_key"
+    },
+    {
+      "time": 40.288889,
+      "frame": 1813,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 40.755556,
+      "frame": 1834,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 41.244444,
+      "frame": 1856,
+      "midi": 72,
+      "kind": "soft_key"
+    },
+    {
+      "time": 42.0,
+      "frame": 1890,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 42.2,
+      "frame": 1899,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 42.688889,
+      "frame": 1921,
+      "midi": 72,
+      "kind": "soft_key"
+    },
+    {
+      "time": 43.155556,
+      "frame": 1942,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 46.0,
+      "frame": 2070,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 46.488889,
+      "frame": 2092,
+      "midi": 64,
+      "kind": "soft_key"
+    },
+    {
+      "time": 48.0,
+      "frame": 2160,
+      "midi": 62,
+      "kind": "soft_key"
+    },
+    {
+      "time": 48.8,
+      "frame": 2196,
+      "midi": 65,
+      "kind": "soft_key"
+    },
+    {
+      "time": 49.6,
+      "frame": 2232,
+      "midi": 69,
+      "kind": "soft_key"
+    },
+    {
+      "time": 50.4,
+      "frame": 2268,
+      "midi": 72,
+      "kind": "soft_key"
+    },
+    {
+      "time": 51.2,
+      "frame": 2304,
+      "midi": 74,
+      "kind": "soft_key"
+    },
+    {
+      "time": 52.088889,
+      "frame": 2344,
+      "midi": 76,
+      "kind": "soft_key"
+    },
+    {
+      "time": 53.0,
+      "frame": 2385,
+      "midi": 74,
+      "kind": "soft_key"
+    }
+  ],
+  "sources": "Synthesized instruments only. No voices, samples, third-party music or network services."
 }
