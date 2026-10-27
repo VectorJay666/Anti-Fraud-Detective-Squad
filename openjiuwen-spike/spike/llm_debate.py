@@ -32,10 +32,11 @@ SECRET_ENV_KEYS = (
 )
 
 
-def load_model_env(path: Path = MODEL_ENV) -> dict[str, str]:
-    if not path.is_file():
-        raise FileNotFoundError(f"missing model env: {path}")
+def parse_model_env_file(path: Path = MODEL_ENV) -> dict[str, str]:
+    """Read model.env (or empty dict). Never raises on missing key; never prints secrets."""
     out: dict[str, str] = {}
+    if not path.is_file():
+        return out
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
@@ -43,19 +44,126 @@ def load_model_env(path: Path = MODEL_ENV) -> dict[str, str]:
         k, v = line.split("=", 1)
         k, v = k.strip(), v.strip().strip('"').strip("'")
         out[k] = v
-        # also export for any lib that reads os.environ
-        if k not in os.environ:
-            os.environ[k] = v
-    # accept alternate names from user note
     if "OPENJIUWEN_LLM_PROVIDER" not in out and "PROVIDER" in out:
         out["OPENJIUWEN_LLM_PROVIDER"] = out["PROVIDER"]
-        os.environ.setdefault("OPENJIUWEN_LLM_PROVIDER", out["PROVIDER"])
     if "OPENJIUWEN_LLM_CLIENT_ID" not in out and "CLIENT_ID" in out:
         out["OPENJIUWEN_LLM_CLIENT_ID"] = out["CLIENT_ID"]
-        os.environ.setdefault("OPENJIUWEN_LLM_CLIENT_ID", out["CLIENT_ID"])
-    if not out.get("OPENJIUWEN_LLM_API_KEY"):
+    return out
+
+
+def apply_model_env_to_process(env: dict[str, str], *, overwrite: bool = True) -> None:
+    """Push env into os.environ. overwrite=True enables settings hot-reload."""
+    for k, v in env.items():
+        if overwrite or k not in os.environ:
+            os.environ[k] = v
+
+
+def load_model_env(
+    path: Path = MODEL_ENV,
+    *,
+    require_key: bool = True,
+    overwrite_environ: bool = True,
+) -> dict[str, str]:
+    """Load spike/model.env into a dict (+ os.environ).
+
+    overwrite_environ=True so PUT /v1/settings/model hot-reload sticks for next debate.
+    require_key=False for settings GET (empty key → caller sees configured=false).
+    """
+    out = parse_model_env_file(path)
+    if not out and not path.is_file():
+        if require_key:
+            raise FileNotFoundError(f"missing model env: {path}")
+        return out
+    apply_model_env_to_process(out, overwrite=overwrite_environ)
+    if require_key and not out.get("OPENJIUWEN_LLM_API_KEY"):
         raise RuntimeError("OPENJIUWEN_LLM_API_KEY missing in model.env")
     return out
+
+
+_MODEL_ENV_KEYS = (
+    "OPENJIUWEN_LLM_API_KEY",
+    "OPENJIUWEN_LLM_API_BASE",
+    "OPENJIUWEN_LLM_MODEL",
+    "OPENJIUWEN_LLM_PROVIDER",
+    "OPENJIUWEN_LLM_CLIENT_ID",
+)
+
+
+def model_settings_public(env: dict[str, str] | None = None) -> dict[str, object]:
+    """Safe settings view — NEVER includes plaintext api_key."""
+    env = env if env is not None else parse_model_env_file()
+    key = (env.get("OPENJIUWEN_LLM_API_KEY") or "").strip()
+    base = (env.get("OPENJIUWEN_LLM_API_BASE") or "").strip()
+    model = (env.get("OPENJIUWEN_LLM_MODEL") or "").strip()
+    return {
+        "configured": bool(key),
+        "base_url": base,
+        "model": model,
+        "key_set": bool(key),
+        "provider": (env.get("OPENJIUWEN_LLM_PROVIDER") or "openai").strip() or "openai",
+        "client_id": (env.get("OPENJIUWEN_LLM_CLIENT_ID") or "glm-flash").strip() or "glm-flash",
+    }
+
+
+def write_model_env(
+    *,
+    api_key: str | None = None,
+    base_url: str | None = None,
+    model: str | None = None,
+    provider: str | None = None,
+    client_id: str | None = None,
+    path: Path = MODEL_ENV,
+) -> dict[str, object]:
+    """Merge updates into model.env (chmod 600), hot-apply to process. No key in return."""
+    cur = parse_model_env_file(path)
+    if api_key is not None:
+        cur["OPENJIUWEN_LLM_API_KEY"] = str(api_key).strip()
+    if base_url is not None:
+        cur["OPENJIUWEN_LLM_API_BASE"] = str(base_url).strip().rstrip("/")
+    if model is not None:
+        cur["OPENJIUWEN_LLM_MODEL"] = str(model).strip()
+    if provider is not None:
+        cur["OPENJIUWEN_LLM_PROVIDER"] = str(provider).strip() or "openai"
+    if client_id is not None:
+        cur["OPENJIUWEN_LLM_CLIENT_ID"] = str(client_id).strip() or "glm-flash"
+    # defaults so file is usable after first save
+    cur.setdefault("OPENJIUWEN_LLM_API_BASE", "https://open.bigmodel.cn/api/paas/v4")
+    cur.setdefault("OPENJIUWEN_LLM_MODEL", "glm-5.3-flash")
+    cur.setdefault("OPENJIUWEN_LLM_PROVIDER", "openai")
+    cur.setdefault("OPENJIUWEN_LLM_CLIENT_ID", "glm-flash")
+    cur.setdefault("OPENJIUWEN_LLM_API_KEY", "")
+
+    lines = [
+        "# Local demo model config — DO NOT commit real keys",
+        "# Written by PUT /v1/settings/model (chmod 600)",
+    ]
+    for k in _MODEL_ENV_KEYS:
+        lines.append(f"{k}={cur.get(k, '')}")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    try:
+        os.chmod(path, 0o600)
+    except OSError:
+        pass
+    apply_model_env_to_process(cur, overwrite=True)
+    return model_settings_public(cur)
+
+
+def risk_level_for_gate(gate_verdict: str | None) -> str:
+    """Backend-owned risk badge contract (FE prefers meta.risk_level).
+
+    refuse / 规则盖章拒判 → mid（不得标高风险）
+    convict → high
+    pass → low
+    None/ungated → mid
+    """
+    g = (gate_verdict or "").strip().lower()
+    if g == "convict":
+        return "high"
+    if g == "pass":
+        return "low"
+    if g == "refuse":
+        return "mid"
+    return "mid"
 
 
 def redact(text: str, secrets: list[str]) -> str:
@@ -910,6 +1018,7 @@ def force_refuse_empty_evidence(
     out["refuse_reason"] = reason
     out["events"] = events
     out["empty_evidence_refuse"] = True
+    out["risk_level"] = risk_level_for_gate("refuse")
     return out
 
 
@@ -973,13 +1082,16 @@ def build_gated_payload(
         "events": out_events,
         "source_run_id": run_id,
     }
-    return force_refuse_empty_evidence(
+    out = force_refuse_empty_evidence(
         run_id=gate_run_id,
         case_id=case_id,
         final=final,
         ungated_events=ungated_events,
         live=live,
     )
+    out = dict(out)
+    out["risk_level"] = risk_level_for_gate(out.get("gate_verdict"))
+    return out
 
 
 def build_ungated_payload(
@@ -995,6 +1107,7 @@ def build_ungated_payload(
         "case_id": case_id,
         "generated_at": now_iso(),
         "gate_verdict": None,
+        "risk_level": risk_level_for_gate(None),
         "live": True if live else False,
         "fabricate": None,
         "label": LIVE_LABEL if live else None,

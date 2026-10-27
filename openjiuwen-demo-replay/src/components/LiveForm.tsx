@@ -1,11 +1,14 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import type { LiveDebateBody } from "../types";
 import { validateLiveForm, type LiveFormInput } from "../lib/validateLive";
+import { fetchServerModelSettings } from "../lib/llmSettings";
+import { liveServiceLabel } from "../lib/liveSse";
 
 export type LiveSubmitOpts = { useSwarm: boolean };
 
 interface Props {
   running: boolean;
+  onOpenSettings?: () => void;
   onSubmit: (body: LiveDebateBody, softHint: string | undefined, opts: LiveSubmitOpts) => void;
 }
 
@@ -16,11 +19,12 @@ const DEFAULT: LiveFormInput = {
 
 const EXAMPLE = "对方：您好，我是银行客服。您的账户出现异常，需要立即处理。\n我：我应该怎么核实？\n对方：请在十分钟内把 5000 元转入我们提供的安全账户，不要告诉其他人，否则账户会被冻结。\n我：我想先拨打银行的官方客服电话确认。\n对方：来不及了，请现在就转账。";
 
-export function LiveForm({ running, onSubmit }: Props) {
+export function LiveForm({ running, onSubmit, onOpenSettings }: Props) {
   const [form, setForm] = useState<LiveFormInput>(DEFAULT);
   const [useSwarm, setUseSwarm] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
+  const [checkingSettings, setCheckingSettings] = useState(false);
   const transcriptRef = useRef<HTMLTextAreaElement>(null);
 
   const set = (key: keyof LiveFormInput) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>) => {
@@ -37,8 +41,9 @@ export function LiveForm({ running, onSubmit }: Props) {
     transcriptRef.current?.focus();
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (running || checkingSettings) return;
     const result = validateLiveForm(form);
     if (!result.ok) {
       setError(result.error);
@@ -48,7 +53,20 @@ export function LiveForm({ running, onSubmit }: Props) {
     }
     setError(null);
     setHint(result.softHint ?? null);
-    onSubmit(result.body, result.softHint, { useSwarm });
+    setCheckingSettings(true);
+    try {
+      const settings = await fetchServerModelSettings();
+      if (!settings.configured) {
+        setError("请先在模型设置中填写接口和 API Key。");
+        onOpenSettings?.();
+        return;
+      }
+      onSubmit(result.body, result.softHint, { useSwarm });
+    } catch {
+      setError(`暂时无法读取模型设置，请确认分析服务 ${liveServiceLabel()} 已启动。`);
+    } finally {
+      setCheckingSettings(false);
+    }
   };
 
   return (
@@ -88,7 +106,7 @@ export function LiveForm({ running, onSubmit }: Props) {
       {error && <div className="form-error" id="check-error" role="alert">{error}</div>}
       {hint && <div className="form-hint" role="status">{hint}</div>}
       <div className="form-actions">
-        <button type="submit" className="btn btn-primary" disabled={running}>{running && <span className="button-spinner" aria-hidden="true" />}{running ? "正在检查…" : "开始风险检查"}</button>
+        <button type="submit" className="btn btn-primary" disabled={running || checkingSettings}>{(running || checkingSettings) && <span className="button-spinner" aria-hidden="true" />}{checkingSettings ? "确认模型设置…" : running ? "正在检查…" : "开始风险检查"}</button>
         <span className="form-hint-inline">仅在点击检查后提交至分析服务</span>
       </div>
     </form>

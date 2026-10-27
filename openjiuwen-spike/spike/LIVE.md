@@ -186,3 +186,19 @@ cd /workspace/openjiuwen-spike/spike
 | `/v1/swarm/debate` 或 `engine:swarm`，且 SwarmFlow 跑通后的 `meta`/`done` | `/v1/debate/live` 默认；swarm schema 帧；启动失败的 `error` |
 | Footer 可标 SwarmFlow | 失败时 UI 诚实降级到 TeamRuntime，**勿写已接** |
 
+## 全局 API 设置（齿轮）
+
+详见 [`FE_SETTINGS_CONTRACT.md`](./FE_SETTINGS_CONTRACT.md)。
+
+```bash
+# 读（无明文 Key）
+curl -sS http://127.0.0.1:5180/v1/settings/model
+# 写 + 热加载（不必重启）
+curl -sS -X PUT http://127.0.0.1:5180/v1/settings/model \
+  -H 'Content-Type: application/json' \
+  -d '{"api_key":"YOUR_KEY","base_url":"https://…","model":"glm-5.3-flash"}'
+```
+
+- 落盘：`spike/model.env`（chmod 600）
+- 下次 `/v1/swarm/debate`、`/v1/debate/live` 直接生效
+- `done.risk_level`：`refuse→mid` / `convict→high` / `pass→low`（拒判不得标高风险）

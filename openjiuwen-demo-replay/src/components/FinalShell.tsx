@@ -7,12 +7,16 @@ export function riskFromGate(
   verdict: SideVerdict | null,
   meta?: PayloadMeta | null
 ): RiskLevel {
+  const g = (gate || "").toLowerCase();
+  // 拒判 / 规则盖章打回 ≠ 已确认「高风险诈骗」——徽章不得亮高风险
+  // Backend contract: refuse → risk_level=mid（meta.risk_level 优先）
+  if (g === "refuse" || verdict?.kind === "refuse") {
+    return "mid";
+  }
   const explicit = String(meta?.risk_level || "").toLowerCase();
   if (explicit === "high" || explicit === "mid" || explicit === "low") {
     return explicit;
   }
-  const g = (gate || "").toLowerCase();
-  const reason = String(meta?.refuse_reason || verdict?.body || "");
   if (
     g === "convict" ||
     (verdict?.kind === "ok" && /风险|定罪|暂缓|拦截/.test(verdict.title || ""))
@@ -20,11 +24,6 @@ export function riskFromGate(
     return "high";
   if (g === "pass" || (verdict?.kind === "ok" && /放行|未触发硬卡口|通过/.test(verdict.title || "")))
     return "low";
-  if (g === "refuse" || verdict?.kind === "refuse") {
-    // Severe intercept copy → high; soft "证据不足" → mid
-    if (/拦转|垫资|诱导|催转|安全账户/.test(reason)) return "high";
-    return "mid";
-  }
   if (verdict) return "mid";
   return "low";
 }

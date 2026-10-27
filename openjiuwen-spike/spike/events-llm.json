@@ -6,7 +6,7 @@
   "model_meta": {
     "client_id": "glm-flash",
     "client_provider": "OpenAI",
-    "api_base": "https://ai.xem8k5.top/v1",
+    "api_base": "https://api.example.com/v1",
     "model": "glm-5.3-flash"
   },
   "warning": "Live LLM TeamRuntime debate + deterministic fabricate inject. NOT SwarmFlow e2e.",

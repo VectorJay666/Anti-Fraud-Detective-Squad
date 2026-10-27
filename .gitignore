@@ -13,3 +13,10 @@ openjiuwen-spike/spike/swarm_live_home/
 openjiuwen-spike/spike/logs/
 openjiuwen-spike/logs/
 *.log
+
+# Local design tools and temporary inspection/build files
+.work/
+.nomi/
+.slidep/
+.workbuddy/
+ppt-inspect/

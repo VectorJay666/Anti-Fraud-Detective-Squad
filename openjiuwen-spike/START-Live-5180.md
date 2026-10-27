@@ -1,82 +1,25 @@
-# openJiuwen · Live API（5180）本机启动
+# 后端本机启动
 
-路径：`D:\GrokBot\projects\openjiuwen-spike\spike`  
-绑定默认：**127.0.0.1:5180**（CORS 默认放行 Demo `http://127.0.0.1:5174`）。
+完整环境安装、模型设置及前端启动说明见仓库根目录的 [README](../README.md)。以下命令从仓库根目录执行。
 
-5174 或 5180 被占用时不要改代码。两个进程使用同一组变量后再启动（说明见仓库根 `README.md`「端口被占用时」）：
-
-```powershell
-$env:OPENJIUWEN_DEMO_PORT = "18080"
-$env:OPENJIUWEN_LIVE_PORT = "18081"
-python live_server.py
-```
-
-前端在同一组变量下执行 `npm run dev`，浏览器打开你选的 Demo 端口。页面会请求你选的后端端口。下面的 `curl` 示例仍是默认 5180；改过端口就换成那个端口。
-
-## 口径（必读）
-
-- 页脚只写：**真 LLM 现场会商 + 本地 rule_gate**
-- 默认 `POST /v1/debate/live` = TeamRuntime（`swarmflow:false`）
-- 展示轨 `POST /v1/swarm/debate` = 真实 SwarmFlow + progress SSE
-- **材料/Demo 禁写「已接 Swarm」**，直到 Test 全口径盖章
-
-## 目录结构（期望）
-
-```
-D:\GrokBot\projects\openjiuwen-spike\
-  START-Live-5180.md
-  agent-core\          # 精简包：至少含 openjiuwen 包（脚本 sys.path 找这里）
-  spike\
-    live_server.py
-    model.env          # 含 Key，勿提交、勿外传
-    model.env.example
-    *.py / *.md / config_*.yaml / case\ / fixtures\ / rules\
-```
-
-## Windows 注意
-
-盒子上用的是 Linux `.venv`（**不能**直接拷到 Windows 用）。本机需要：
-
-1. 安装 Python 3.11+  
-2. 在 `D:\GrokBot\projects\openjiuwen-spike` 建 venv 并装依赖（至少 `aiohttp`，以及 agent-core / openjiuwen 所需包；见 `agent-core\pyproject.toml`）  
-3. 再启动 `live_server.py`
-
-若暂时搞不定 venv：**只开 Demo 回放**（5174）即可自测前端。
-
-## 启动
+Windows PowerShell，已创建虚拟环境并安装依赖时：
 
 ```powershell
-cd D:\GrokBot\projects\openjiuwen-spike\spike
-python live_server.py
+cd openjiuwen-spike\spike
+..\.venv\Scripts\python.exe live_server.py
 ```
 
-健康检查：
+macOS / Linux：
 
-```powershell
-curl http://127.0.0.1:5180/health
-# 期望 "ok":true,"live":true,"fabricate":null
+```bash
+cd openjiuwen-spike/spike
+../.venv/bin/python live_server.py
 ```
 
-Demo 另开终端：
+默认监听 `http://127.0.0.1:5180`，允许前端来源 `http://127.0.0.1:5174`。
 
-```powershell
-cd D:\GrokBot\projects\openjiuwen-demo-replay
-npm run dev
-```
+在前端「模型设置」保存接口和 Key 后，后端会更新本机 `spike/model.env` 并热加载。也可复制 `model.env.example` 手工配置。不要提交真实 Key。
 
-## 展示轨（自测 API，勿写材料口径）
+端口占用时，在 `openjiuwen-demo-replay/.env` 设置 `OPENJIUWEN_DEMO_PORT` 和 `OPENJIUWEN_LIVE_PORT`，或在启动进程的终端导出同名变量，再同时重启前后端。
 
-```powershell
-# 需 transcript；详见 FE_SWARM_CONTRACT.md / LIVE.md
-curl -N -X POST http://127.0.0.1:5180/v1/swarm/debate -H "Content-Type: application/json" -H "Accept: text/event-stream" -d "{\"gate\":true,\"transcript\":\"对方自称客服催我立刻转到安全账户，金额五千，说不转就冻结……\"}"
-```
-
-## Windows 必带目录（2026-10-21）
-
-Swarm 展示轨依赖 `spike/swarm_scripts/`，至少包含：
-
-- `guard_schema_live.py`（缺则 Demo 报 `swarm_debate_failed` 并降级 TeamRuntime）
-- `guard_schema_mini.py`
-- `mini_theme.py`
-
-拷包时不要只拷 `live_server.py` / `swarm_live.py`。材料仍禁写「已接 Swarm」。
+健康检查：`GET /health`。页面与后端地址：`GET /v1/showcase`。模型状态：`GET /v1/settings/model`，不会返回明文 Key。

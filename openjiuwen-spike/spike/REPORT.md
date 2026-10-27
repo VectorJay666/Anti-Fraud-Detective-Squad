@@ -156,12 +156,12 @@ python run_llm_debate_smoke.py
 
 - 至少三角色走真实 LLM：`特征官`、`证据官`、`反方官`。
 - 编造路径 **确定性注入** `EV-FAB-TRANSFER` + `R-99` + `human_confirm` 误放行，保证 `rule_gate` 可演示 refuse（不依赖模型是否愿意幻觉）。
-- `api_base=https://ai.xem8k5.top/v1`，`client_provider=OpenAI`（兼容端点）。
+- `api_base=https://api.example.com/v1`，`client_provider=OpenAI`（兼容端点）。
 
 ### 日志摘录（已脱敏）
 
 ```
-model=glm-5.3-flash base=https://ai.xem8k5.top/v1 client_id=glm-flash
+model=glm-5.3-flash base=https://api.example.com/v1 client_id=glm-flash
 api_key=<redacted>
 [特征官/llm] ...
 [证据官/llm] ...
@@ -239,7 +239,7 @@ PYTHONPATH=/workspace/openjiuwen-spike/agent-core \
 
 ```
 mode=direct team=spike_swarm_mini
-model=glm-5.3-flash base=https://ai.xem8k5.top/v1 api_key=<redacted>
+model=glm-5.3-flash base=https://api.example.com/v1 api_key=<redacted>
 llm_call_start ... model_name=glm-5.3-flash
 Executing tool: structured_output with args: {"theme":"金库守夜人",...}
 observer.run name=mini-theme status=completed

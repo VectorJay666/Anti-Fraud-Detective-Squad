@@ -6,9 +6,11 @@ interface NavProps {
   layer: ProductLayer;
   disabled: boolean;
   onChange: (layer: ProductLayer) => void;
+  onSettings: () => void;
+  modelConfigured: boolean;
 }
 
-export function ProductNav({ layer, disabled, onChange }: NavProps) {
+export function ProductNav({ layer, disabled, onChange, onSettings, modelConfigured }: NavProps) {
   const guide = useRef<HTMLDialogElement>(null);
   return (
     <>
@@ -20,7 +22,10 @@ export function ProductNav({ layer, disabled, onChange }: NavProps) {
             <span>转账前保镖</span>
           </button>
           <LayerTabs layer={layer} onChange={onChange} disabled={disabled} />
-          <button className="guide-link" type="button" onClick={() => guide.current?.showModal()}>使用指南 <span aria-hidden="true">↗</span></button>
+          <div className="nav-actions">
+            <button className="guide-link" type="button" onClick={onSettings} disabled={disabled} title={modelConfigured ? "模型接口已配置" : "配置分析服务的模型接口"}>模型设置</button>
+            <button className="guide-link" type="button" onClick={() => guide.current?.showModal()}>使用指南 <span aria-hidden="true">↗</span></button>
+          </div>
         </div>
       </nav>
       <dialog className="guide-dialog" ref={guide} aria-labelledby="guide-title">

@@ -66,6 +66,13 @@ export type ProductLayer = "teaching" | "live";
 
 export type Urgency = "low" | "mid" | "high";
 
+/** Model credentials from 设置栏. Sent with live POST; FE keeps a localStorage copy for demo prep. */
+export interface LiveLlmConfig {
+  api_key: string;
+  api_base: string;
+  model: string;
+}
+
 /** Frozen live submit body (04-实际层输入规格) */
 export interface LiveDebateBody {
   layer: "live";
@@ -77,6 +84,8 @@ export interface LiveDebateBody {
   case_id: string | null;
   suspect_links: string[];
   user_note: string | null;
+  /** Present when the user filled the page. Absent on teaching dual-track. */
+  llm?: LiveLlmConfig;
   /** Test-only S6 inject; omit on normal path */
   force_swarm_fail?: boolean;
 }

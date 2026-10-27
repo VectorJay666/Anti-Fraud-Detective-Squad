@@ -15,7 +15,7 @@
   "model_meta": {
     "client_id": "glm-flash",
     "client_provider": "OpenAI",
-    "api_base": "https://ai.xem8k5.top/v1",
+    "api_base": "https://api.example.com/v1",
     "model": "glm-5.3-flash"
   },
   "warning": "SwarmFlow guard-schema-mini workers + deterministic EV-FAB inject；ungated（无 rule_gate）。材料勿写「已接 Swarm 保镖 Demo」。",

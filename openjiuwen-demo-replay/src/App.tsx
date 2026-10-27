@@ -34,6 +34,8 @@ import { CheckAside, ProductNav, SafetyNotes } from "./components/ProductChrome"
 import { CasePicker } from "./components/CasePicker";
 import { TeachingMeta } from "./components/TeachingMeta";
 import { LiveForm, type LiveSubmitOpts } from "./components/LiveForm";
+import { ApiSettings } from "./components/ApiSettings";
+import { fetchServerModelSettings } from "./lib/llmSettings";
 import {
   ProgressTimeline,
   type ProgressLine,
@@ -186,6 +188,17 @@ async function loadFixturePair(
 }
 
 export default function App() {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [llmReady, setLlmReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchServerModelSettings()
+      .then(settings => { if (!cancelled) setLlmReady(settings.configured); })
+      .catch(() => { if (!cancelled) setLlmReady(false); });
+    return () => { cancelled = true; };
+  }, []);
+
   const [layer, setLayer] = useState<ProductLayer>("live");
   const [selectedCaseId, setSelectedCaseId] = useState(
     TEACHING_CASES[0].case_id
@@ -839,7 +852,10 @@ export default function App() {
         layer={layer}
         onChange={onLayerChange}
         disabled={liveRunning || actualRunning}
+        onSettings={() => setSettingsOpen(true)}
+        modelConfigured={llmReady}
       />
+      <ApiSettings open={settingsOpen} onClose={() => setSettingsOpen(false)} onSaved={setLlmReady} />
       <main id="main-content" className="page-content" tabIndex={-1}>
       <header className="top">
         <h1>{phase === "final" ? "每一份安心，都有迹可循。" : layer === "live" ? <>少一点犹豫，<span className="hero-continuation">多一份安心。</span></> : "看懂套路，转账更从容。"}</h1>
@@ -962,7 +978,7 @@ export default function App() {
       ) : (
         <div className="live-layer">
           <div className="check-layout">
-            <LiveForm running={actualRunning} onSubmit={startActualLive} />
+            <LiveForm running={actualRunning} onSubmit={startActualLive} onOpenSettings={() => setSettingsOpen(true)} />
             <CheckAside onDemo={() => onLayerChange("teaching")} disabled={actualRunning} />
           </div>
           {liveSoftHint ? (

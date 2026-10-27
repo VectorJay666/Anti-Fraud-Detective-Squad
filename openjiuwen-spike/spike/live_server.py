@@ -19,6 +19,8 @@ POST /v1/swarm/debate
 
 GET  /health
 GET  /v1/showcase
+GET  /v1/settings/model   → {configured, base_url, model, key_set} (no plaintext key)
+PUT  /v1/settings/model   → {api_key?, base_url?, model?} writes model.env (600) + hot reload
 """
 from __future__ import annotations
 
@@ -46,7 +48,10 @@ from llm_debate import (  # noqa: E402
     build_ungated_payload,
     iter_llm_debate,
     load_model_env,
+    model_settings_public,
     redact,
+    risk_level_for_gate,
+    write_model_env,
     _bootstrap_openjiuwen,
 )
 from swarm_live import (  # noqa: E402
@@ -74,7 +79,7 @@ _secrets: list[str] = []
 def _cors_headers() -> dict[str, str]:
     return {
         "Access-Control-Allow-Origin": CORS_ORIGIN,
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Accept",
         "Access-Control-Max-Age": "600",
     }
@@ -199,6 +204,95 @@ async def handle_options(request: web.Request) -> web.Response:
     return web.Response(status=204, headers=_cors_headers())
 
 
+
+def _merge_request_llm(body: dict, env: dict[str, str]) -> dict[str, str]:
+    """Optional body.llm override for a single debate (never logged)."""
+    llm = body.get("llm") if isinstance(body, dict) else None
+    if not isinstance(llm, dict):
+        return env
+    out = dict(env)
+    key = llm.get("api_key")
+    if key is not None and str(key).strip():
+        out["OPENJIUWEN_LLM_API_KEY"] = str(key).strip()
+    base = llm.get("api_base") or llm.get("base_url")
+    if base is not None and str(base).strip():
+        out["OPENJIUWEN_LLM_API_BASE"] = str(base).strip().rstrip("/")
+    model = llm.get("model")
+    if model is not None and str(model).strip():
+        out["OPENJIUWEN_LLM_MODEL"] = str(model).strip()
+    return out
+
+
+async def handle_settings_get(request: web.Request) -> web.Response:
+    """GET /v1/settings/model — public view, no plaintext key."""
+    payload = model_settings_public()
+    payload["ts"] = now_iso()
+    return web.json_response(payload, headers=_cors_headers())
+
+
+async def handle_settings_put(request: web.Request) -> web.Response:
+    """PUT /v1/settings/model — write spike/model.env (600) + in-process hot reload.
+
+    Body: {api_key?, base_url?|api_base?, model?, provider?, client_id?}
+    Empty api_key clears key → configured=false. Key never echoed, never logged.
+    """
+    try:
+        body = await request.json() if request.can_read_body else {}
+    except Exception:
+        body = {}
+    if not isinstance(body, dict):
+        body = {}
+
+    api_key = body.get("api_key", None)
+    base = body.get("base_url", None)
+    if base is None:
+        base = body.get("api_base", None)
+    model = body.get("model", None)
+    provider = body.get("provider", None)
+    client_id = body.get("client_id", None)
+
+    # Validate base_url if provided
+    if base is not None:
+        b = str(base).strip()
+        if b and not (b.startswith("http://") or b.startswith("https://")):
+            return web.json_response(
+                {"ok": False, "message": "base_url 要以 http:// 或 https:// 开头", "code": "bad_base_url"},
+                status=400,
+                headers=_cors_headers(),
+            )
+
+    kwargs = {}
+    if api_key is not None:
+        kwargs["api_key"] = api_key
+    if base is not None:
+        kwargs["base_url"] = base
+    if model is not None:
+        kwargs["model"] = model
+    if provider is not None:
+        kwargs["provider"] = provider
+    if client_id is not None:
+        kwargs["client_id"] = client_id
+
+    if not kwargs:
+        return web.json_response(
+            {"ok": False, "message": "body 需含 api_key / base_url / model 至少一项", "code": "empty_body"},
+            status=400,
+            headers=_cors_headers(),
+        )
+
+    public = write_model_env(**kwargs)
+    # Refresh process secrets list used by redact (no print)
+    global _secrets
+    from llm_debate import parse_model_env_file
+
+    env_now = parse_model_env_file()
+    _secrets = [env_now.get("OPENJIUWEN_LLM_API_KEY", "")]
+    return web.json_response(
+        {"ok": True, "hot_reload": True, "settings": public, "ts": now_iso()},
+        headers=_cors_headers(),
+    )
+
+
 async def handle_showcase(request: web.Request) -> web.Response:
     """Thin Demo entry pointer. Defaults: replay 5174 / live 5180. Not Swarm attribution."""
     payload = {
@@ -227,7 +321,8 @@ async def handle_health(request: web.Request) -> web.Response:
         "bind": f"{HOST}:{PORT}",
         "ts": now_iso(),
         "footer": f"{LIVE_LABEL} + 本地 rule_gate",
-        "note": "swarm_path=真实 SwarmFlow 展示轨；材料禁写「已接 Swarm」至 Test 盖章",
+        "settings_path": "/v1/settings/model",
+        "note": "swarm_path=真实 SwarmFlow；settings_path=全局 API 齿轮；材料可写已接 Swarm（S1–S10 PASS）",
     }
     return web.json_response(payload, headers=_cors_headers())
 
@@ -383,6 +478,7 @@ async def handle_swarm_debate(
     async with _run_lock:
         try:
             env = load_model_env()
+            env = _merge_request_llm(body, env)
             _secrets = [env.get("OPENJIUWEN_LLM_API_KEY", "")]
             if not _bootstrapped:
                 _bootstrap_openjiuwen()
@@ -424,6 +520,8 @@ async def handle_swarm_debate(
                             "live": True,
                             "gate": gate,
                             "gate_verdict": payload.get("gate_verdict"),
+                            "risk_level": payload.get("risk_level")
+                            or risk_level_for_gate(payload.get("gate_verdict")),
                             "fabricate": None,
                             "label": SWARM_LABEL,
                             "run_id": payload.get("run_id"),
@@ -539,6 +637,7 @@ async def handle_debate_live(request: web.Request) -> web.StreamResponse:
     async with _run_lock:
         try:
             env = load_model_env()
+            env = _merge_request_llm(body, env)
             _secrets = [env.get("OPENJIUWEN_LLM_API_KEY", "")]
             if not _bootstrapped:
                 _bootstrap_openjiuwen()
@@ -648,6 +747,8 @@ async def handle_debate_live(request: web.Request) -> web.StreamResponse:
                     "live": True,
                     "gate": gate,
                     "gate_verdict": final.get("gate_verdict"),
+                    "risk_level": final.get("risk_level")
+                    or risk_level_for_gate(final.get("gate_verdict")),
                     "fabricate": None,
                     "label": LIVE_LABEL,
                     "run_id": final.get("run_id"),
@@ -680,8 +781,11 @@ def main() -> None:
     app.router.add_route("OPTIONS", "/v1/debate/live", handle_options)
     app.router.add_route("OPTIONS", "/v1/swarm/debate", handle_options)
     app.router.add_route("OPTIONS", "/v1/showcase", handle_options)
+    app.router.add_route("OPTIONS", "/v1/settings/model", handle_options)
     app.router.add_get("/v1/showcase", handle_showcase)
     app.router.add_get("/health", handle_health)
+    app.router.add_get("/v1/settings/model", handle_settings_get)
+    app.router.add_put("/v1/settings/model", handle_settings_put)
     app.router.add_post("/v1/debate/live", handle_debate_live)
     app.router.add_get("/v1/debate/live", handle_debate_live)  # ?gate=true
     app.router.add_post("/v1/swarm/debate", handle_swarm_debate)

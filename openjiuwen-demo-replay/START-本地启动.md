@@ -1,9 +1,9 @@
 # openJiuwen · 转账前保镖 Demo（Vite）本地启动
 
-路径：`D:\GrokBot\projects\openjiuwen-demo-replay`  
-端口：**127.0.0.1:5174**（勿用 ICT 的 5273）
+路径：`openjiuwen-demo-replay`（相对仓库根目录）
+端口：本机回环 `5174`
 
-Live API（现场会商）：`D:\GrokBot\projects\openjiuwen-spike\spike` → **127.0.0.1:5180**
+Live API（现场会商）：`openjiuwen-spike/spike` → 本机回环 `5180`
 
 ## 这是什么
 
@@ -16,16 +16,16 @@ Live API（现场会商）：`D:\GrokBot\projects\openjiuwen-spike\spike` → **
 
 - Node 20+（本包一般已带本机 `node_modules`；若缺再 `npm install`）
 - 仅测回放：无需 Python
-- 测「现场会商」：同机还需 Live API `127.0.0.1:5180`（见下方终端 A；Key 在 spike 的 `model.env`，勿提交）
+- 测「现场会商」：同机还需 Live API 回环端口 `5180`（见下方终端 A；Key 在 spike 的 `model.env`，勿提交）
 
 ## 启动（只测回放 · 一条命令）
 
 ```powershell
-cd D:\GrokBot\projects\openjiuwen-demo-replay
+cd openjiuwen-demo-replay
 npm run dev
 ```
 
-浏览器：`http://127.0.0.1:5174/`
+浏览器：`http://localhost:5174/`
 
 若报缺依赖：先 `npm install` 再 `npm run dev`。
 
@@ -34,24 +34,24 @@ npm run dev
 终端 A（Live API）：
 
 ```powershell
-cd D:\GrokBot\projects\openjiuwen-spike\spike
-# 需本机已有 Python 依赖（盒子上用 ../.venv；Windows 需自建 venv 或装 requirements）
-# 并保证同级目录有 agent-core（脚本会找 ..\agent-core）
-python live_server.py
-# 期望绑定 127.0.0.1:5180
+cd openjiuwen-spike\spike
+# 必须用仓库根下 openjiuwen-spike\.venv（`..\` 与 `.venv` 中间无空格）
+# 同级需有 agent-core；勿用系统 python
+..\.venv\Scripts\python.exe live_server.py
+# 期望绑定回环 5180
 ```
 
 健康检查：
 
 ```powershell
-curl http://127.0.0.1:5180/health
+curl http://localhost:5180/health
 # 期望 "ok":true,"live":true
 ```
 
 终端 B（Demo）：
 
 ```powershell
-cd D:\GrokBot\projects\openjiuwen-demo-replay
+cd openjiuwen-demo-replay
 npm run dev
 ```
 
