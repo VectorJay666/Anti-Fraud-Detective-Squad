@@ -4,6 +4,7 @@ import {BLUE, FPS, MOTION_FPS, FilmAssets, MUTED, RED, ROLES, ROLE_NOTES, SHOTS,
 import {Trace, tween, Rise} from './Motion';
 import {Incoming, Masks, Pressure, Brink, Pivot} from './ThreatScenes';
 import {CreativeTransitions} from './CreativeTransitions';
+import {StageLighting} from './Depth';
 import {ContinuousStory,STORY_START} from './ContinuousStory';
 import {CaseBarChart} from './CaseBarChart';
 import {EvidenceCheck,RiskOutput,UseCases,ProductImpact,Results} from './OutcomeScenes';
@@ -228,7 +229,7 @@ export const Film: React.FC<{assets:FilmAssets}> = ({assets}) => {
     }
   };
   return <AbsoluteFill style={{background:'#000',fontFamily:font,color:WHITE,overflow:'hidden',opacity:tween(f,0,Math.round(.65*FPS))}}>
-    <Audio src={assets.sound} volume={1}/>
+    <Audio src={assets.sound} volume={1}/><StageLighting/>
     <AbsoluteFill>{SHOTS.map((s,i)=>{
       if(s.kind==='flow')return null;
       const impact=s.kind==='pivot'||s.kind==='end'||s.kind==='case-bars'||s.kind==='results';
@@ -237,7 +238,7 @@ export const Film: React.FC<{assets:FilmAssets}> = ({assets}) => {
       const leave=tween(f,s.end,transition);
       const end=s.end+(nextImpact||i===SHOTS.length-1?0:transition);
       return <Sequence key={s.name} name={`${s.name} ${s.title}`} from={s.start} durationInFrames={end-s.start} premountFor={transition}>
-        <AbsoluteFill style={{background:'#000',opacity:enter,transform:impact?'none':`translateX(${24*(1-enter)-16*leave}px)`}}>
+        <AbsoluteFill style={{background:'transparent',opacity:enter,transform:impact?'none':`translateX(${24*(1-enter)-16*leave}px)`}}>
           {scene(s.kind,(f-s.start)*MOTION_FPS/FPS)}
         </AbsoluteFill>
       </Sequence>;

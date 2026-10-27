@@ -1,4 +1,5 @@
 import React from 'react';
+import {PhysicalDossier} from './Depth';
 import {interpolate,Easing} from 'remotion';
 import {BLUE,MUTED,RED,WHITE,ROLES,ROLE_NOTES} from './timeline';
 import {CHAT,DOC,PERSON,CLOCK,FONT} from './Motion';
@@ -13,10 +14,10 @@ const mix=(a:number,b:number,p:number)=>a+(b-a)*p;
 const lerp=(t:number,knots:number[],values:number[])=>interpolate(t,knots,values,{extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.inOut(Easing.cubic)});
 const point=(p:number,a:{x:number;y:number},b:{x:number;y:number},arc=0)=>({x:mix(a.x,b.x,p),y:mix(a.y,b.y,p)-Math.sin(p*Math.PI)*arc});
 const scope='项目本地规则基线 · 私有合成评测 · v0.3.1-r7 · 2026-10-04';
-const icon=(d:string,x:number,y:number,s=1,color=WHITE)=><g transform={`translate(${x} ${y}) scale(${s})`} fill="none" stroke={color} strokeWidth={2.5/s} strokeLinecap="round" strokeLinejoin="round"><path d={d}/></g>;
+const icon=(d:string,x:number,y:number,s=1,color=WHITE)=><g transform={`translate(${x} ${y}) scale(${s})`} fill="none" stroke={color} strokeWidth={2.5/s} strokeLinecap="round" strokeLinejoin="round"><>{d===PERSON?<><ellipse cx="4" cy="50" rx="45" ry="8" fill="#000" stroke="none" opacity=".35"/><circle cx="0" cy="-25" r="17" fill="url(#flow-head)" stroke="none"/><path d="M-42 46C-41 0 41 0 42 46Q0 57 -42 46Z" fill="url(#flow-body)" stroke="none"/></>:<path d={d}/>}</></g>;
 function Txt({x,y,size=30,color=WHITE,anchor='start',children,weight=400}:{x:number;y:number;size?:number;color?:string;anchor?:'start'|'middle'|'end';children:React.ReactNode;weight?:number}){return <text x={x} y={y} fill={color} stroke="none" fontSize={size} fontWeight={weight} textAnchor={anchor}>{children}</text>;}
 function Layer({t,a,b,children}:{t:number;a:number;b:number;children:React.ReactNode}){const p=smooth(t,a)* (1-smooth(t,b-.65));return <g opacity={p} transform={`translate(0 ${18*(1-smooth(t,a))})`}>{children}</g>;}
-function Packet({x,y,label,color=BLUE,scale=1}:{x:number;y:number;label?:string;color?:string;scale?:number}){return <g transform={`translate(${x} ${y}) scale(${scale})`}><rect x={-60} y={-24} width={120} height={48} rx={5} fill="#07090f" stroke={color} strokeWidth={1.8}/>{label&&<Txt x={0} y={7} size={18} color={color} anchor="middle">{label}</Txt>}</g>;}
+function Packet({x,y,label,color=BLUE,scale=1}:{x:number;y:number;label?:string;color?:string;scale?:number}){return <g transform={`translate(${x} ${y}) scale(${scale})`}><rect x={-60} y={-24} width={120} height={48} rx={5} fill="url(#flow-card)" stroke={color} strokeWidth={1.8}/>{label&&<Txt x={0} y={7} size={18} color={color} anchor="middle">{label}</Txt>}</g>;}
 
 export function ContinuousStory({seconds:t}:{seconds:number}) {
  const c=STORY_CUTS;
@@ -31,16 +32,17 @@ export function ContinuousStory({seconds:t}:{seconds:number}) {
  const roleIndex=Math.min(6,Math.max(0,Math.floor((t-c[2])/(2*B))));
  const evalProgress=smooth(t,c[7],3.2);
  const injectCount=Math.min(24,Math.max(0,Math.floor((t-c[9])/(B/3))));
- return <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{position:'absolute',inset:0,fontFamily:FONT}} fill="none" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+ return <><svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{position:'absolute',inset:0,fontFamily:FONT}} fill="none" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+  <defs>
+   <linearGradient id="flow-card" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#2a303a"/><stop offset=".5" stopColor="#151a22"/><stop offset="1" stopColor="#090d14"/></linearGradient>
+   <radialGradient id="flow-head" cx=".3" cy=".2" r=".9"><stop stopColor="#e9edf3"/><stop offset=".4" stopColor="#a2adbd"/><stop offset="1" stopColor="#303a4b"/></radialGradient>
+   <linearGradient id="flow-body" x1="0" y1="0" x2="1" y2=".7"><stop stopColor="#c8cfda"/><stop offset=".45" stopColor="#7d899e"/><stop offset="1" stopColor="#2d3646"/></linearGradient>
+   <filter id="flow-shadow" x="-30%" y="-60%" width="170%" height="250%"><feDropShadow dx="5" dy="14" stdDeviation="12" floodColor="#000" floodOpacity=".6"/></filter>
+  </defs>
   {/* The transport rail stays on screen across every internal cut. */}
   <path d="M180 900H1740" stroke="#33343c" strokeWidth={1}/>
   <path d={`M180 900H${180+1560*clamp((t-c[0])/(c[10]-c[0]))}`} stroke={BLUE} strokeWidth={2}/>
   <circle cx={180+1560*clamp((t-c[0])/(c[10]-c[0]))} cy={900} r={4+pulse*2} fill={BLUE}/>
-  <g opacity={docOpacity} transform={`translate(${docX} ${docY}) scale(${docScale})`}>
-   <path d="M-108 -142H58L108 -92V142H-108ZM58 -142V-92H108" stroke={WHITE} fill="#000"/>
-   <path d="M-66 -45H66M-66 1H66M-66 47H28" stroke={BLUE}/>
-   <circle cx={78} cy={109} r={7+pulse*4} stroke={BLUE} opacity={.5+.5*pulse}/>
-  </g>
   <Layer t={t} a={c[0]} b={c[1]+.6}>
    <Txt x={180} y={135} size={27} color={MUTED}>同样的核验，进入不同的生活场景</Txt>
    <Txt x={180} y={258} size={72} weight={600}>一句可疑话术，先交给保镖。</Txt>
@@ -51,13 +53,13 @@ export function ContinuousStory({seconds:t}:{seconds:number}) {
     const exit=smooth(age,4*B-.5,.65);
     const x=660+mix(330,0,p)-exit*420;
     return <g key={v[0]} opacity={p*(1-exit)} transform={`translate(${x} 535) rotate(${-3*(1-p)-exit*3})`}>
-     <rect x={-470} y={-130} width={940} height={260} rx={18} stroke={active?BLUE:WHITE} fill="#08090c"/>
+     <rect x={-470} y={-130} width={940} height={260} rx={18} stroke={active?BLUE:'#566173'} fill="url(#flow-card)" filter="url(#flow-shadow)"/>
      {icon(CHAT,-360,-18,.8)}<Txt x={-270} y={-51} size={26} color={MUTED}>{v[0]}</Txt>
      <Txt x={-270} y={24} size={37}>{v[1]}</Txt><Txt x={-270} y={91} size={28} color={BLUE}>{v[2]}</Txt>
     </g>;
    })}
    <path d="M1090 550C1210 550 1160 570 1360 570" stroke={BLUE} strokeDasharray="5 10"/>
-   <Txt x={1380} y={850} size={30} anchor="middle">贴入原文</Txt>
+
    <Txt x={180} y={831} size={27} color={MUTED}>可疑短信 / 来电话术 / 聊天截图文字 · 情境示意</Txt>
   </Layer>
   <Layer t={t} a={c[1]} b={c[2]+.7}>
@@ -70,7 +72,7 @@ export function ContinuousStory({seconds:t}:{seconds:number}) {
      <Txt x={32} y={11} size={32}>{v}</Txt>
     </g>;
    })}
-   <Txt x={1420} y={823} size={29} anchor="middle">待核验案卷</Txt>
+
   </Layer>
   <Layer t={t} a={c[2]} b={c[3]+.6}>
    <Txt x={180} y={135} size={27} color={MUTED}>七角色会商建议 · 不是七个自动决策者</Txt>
@@ -154,7 +156,12 @@ export function ContinuousStory({seconds:t}:{seconds:number}) {
     const bar={x:mix(oldBar.x,newBar.x,revise),y:mix(oldBar.y,newBar.y,revise)};
     const base={x:mix(pos.x,split.x,divide),y:mix(pos.y,split.y,divide)};
     const color=join>.1?(revise>.5?(i<66?BLUE:'#777780'):(i<48?BLUE:RED)):(i<66?BLUE:mixColor(divide));
-    return <rect key={i} x={mix(base.x,bar.x,join)} y={mix(base.y,bar.y,join)} width={mix(26,i<66?12:16,join)} height={mix(26,33,join)} rx={3} fill={color} opacity={build}/>;
+    const x=mix(base.x,bar.x,join),y=mix(base.y,bar.y,join),w=mix(26,i<66?12:16,join),h=mix(26,33,join),depth=5-2*join;
+    return <g key={i} transform={`translate(${x} ${y})`} opacity={build}>
+     <path d={`M0 0L${depth} ${-depth}H${w+depth}L${w} 0Z`} fill={color} opacity={.85}/>
+     <path d={`M${w} 0L${w+depth} ${-depth}V${h-depth}L${w} ${h}Z`} fill={color} opacity={.4}/>
+     <rect width={w} height={h} rx={2} fill={color}/><path d={`M2 2H${w-2}`} stroke="#fff" strokeOpacity={.24} strokeWidth={1}/>
+    </g>;
    })}
   </g>
   <Layer t={t} a={c[7]} b={c[8]+.45}>
@@ -193,6 +200,6 @@ export function ContinuousStory({seconds:t}:{seconds:number}) {
    <Txt x={180} y={811} size={29} color={MUTED}>每条引用真实存在，并与当事人直接相关；拒绝的是无据结论</Txt>
   </Layer>
   <g opacity={smooth(t,c[6],.5)}><Txt x={180} y={973} size={22} color={MUTED}>{scope} · 不代表真实用户防骗成功率</Txt></g>
- </svg>;
+ </svg><PhysicalDossier x={docX} y={docY} scale={docScale} opacity={docOpacity} seconds={t}/></>;
 }
 function mixColor(p:number){const v=Math.round(mix(43,112,p));return `rgb(${v},${Math.round(mix(92,113,p))},${Math.round(mix(230,123,p))})`;}
