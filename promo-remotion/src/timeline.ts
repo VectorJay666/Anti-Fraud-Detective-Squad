@@ -18,13 +18,13 @@ const cut = (seconds:number)=>Math.round(seconds*FPS);
 export const MUSIC_OFFSET_FRAMES = 0;
 export const PIVOT_FRAME = 18*FPS;
 export const SHOTS = [
-  {name:'镜01',title:'长期骗局的一个受骗个例',start:0,end:2.4,kind:'case-bars'},
-  {name:'镜02',title:'人物头像快速缩为一个点',start:2.4,end:3.5,kind:'case-bars'},
-  {name:'镜03',title:'镜头拉远，露出年度柱子',start:3.5,end:6.311,kind:'case-bars'},
-  {name:'镜04',title:'头像逐步构成统计柱',start:6.311,end:8.444,kind:'case-bars'},
-  {name:'镜05',title:'三年损失，一年比一年高',start:8.444,end:12.711,kind:'case-bars'},
-  {name:'镜06',title:'长期布局，分次诱导',start:12.711,end:16.956,kind:'case-bars'},
-  {name:'镜07',title:'转账前，更需要核验',start:16.956,end:18,kind:'case-bars'},
+  {name:'镜01',title:'同一个人：长期投资骗局',start:0,end:3.189,kind:'case-bars'},
+  {name:'镜02',title:'刷单与冒充客服轮番出现',start:3.189,end:5.315,kind:'case-bars'},
+  {name:'镜03',title:'公检法、熟人借款与虚假理赔',start:5.315,end:8.504,kind:'case-bars'},
+  {name:'镜04',title:'多种骗局围绕同一个人',start:8.504,end:9.567,kind:'case-bars'},
+  {name:'镜05',title:'人物缩点，快速拉远',start:9.567,end:11.693,kind:'case-bars'},
+  {name:'镜06',title:'三年头像统计柱快速堆积',start:11.693,end:14.882,kind:'case-bars'},
+  {name:'镜07',title:'报告损失逐年升高',start:14.882,end:18,kind:'case-bars'},
   {name:'镜08',title:'但在转账前，还有核验这一步',start:18,end:20.133,kind:'pivot'},
   {name:'镜09',title:'转账前保镖',start:20.133,end:22.267,kind:'title'},
   {name:'镜10',title:'三种话术轮转进入核验',start:22.272,end:28.65,kind:'flow'},

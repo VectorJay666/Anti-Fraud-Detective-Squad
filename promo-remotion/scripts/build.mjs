@@ -7,7 +7,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 let exportReady=false;
 try{
   const manifest=JSON.parse(await readFile(path.join(root,'delivery/export-manifest.json'),'utf8'));
-  if(manifest.style==='continuous-story-90s-v3'){
+  if(manifest.style==='person-first-fast-bars-v4'){
     const video=await readFile(path.join(root,'delivery/转账前保镖-90秒-45fps.mp4'));
     exportReady=createHash('sha256').update(video).digest('hex')===manifest.sha256;
   }

@@ -1,52 +1,52 @@
 [
   {
     "scene": "镜01",
-    "event": "长期骗局的一个受骗个例",
+    "event": "同一个人：长期投资骗局",
     "frame": 0,
     "seconds": 0,
     "sourceSeconds": 0.8225
   },
   {
     "scene": "镜02",
-    "event": "人物头像快速缩为一个点",
-    "frame": 108,
-    "seconds": 2.4,
-    "sourceSeconds": 2.16
+    "event": "刷单与冒充客服轮番出现",
+    "frame": 144,
+    "seconds": 3.2,
+    "sourceSeconds": 2.96
   },
   {
     "scene": "镜03",
-    "event": "镜头拉远，露出年度柱子",
-    "frame": 158,
-    "seconds": 3.511111111111111,
-    "sourceSeconds": 3.271111111111111
+    "event": "公检法、熟人借款与虚假理赔",
+    "frame": 239,
+    "seconds": 5.311111111111111,
+    "sourceSeconds": 5.071111111111111
   },
   {
     "scene": "镜04",
-    "event": "头像逐步构成统计柱",
-    "frame": 284,
-    "seconds": 6.311111111111111,
-    "sourceSeconds": 6.071111111111111
+    "event": "多种骗局围绕同一个人",
+    "frame": 383,
+    "seconds": 8.511111111111111,
+    "sourceSeconds": 8.27111111111111
   },
   {
     "scene": "镜05",
-    "event": "三年损失，一年比一年高",
-    "frame": 380,
-    "seconds": 8.444444444444445,
-    "sourceSeconds": 8.204444444444444
+    "event": "人物缩点，快速拉远",
+    "frame": 431,
+    "seconds": 9.577777777777778,
+    "sourceSeconds": 9.337777777777777
   },
   {
     "scene": "镜06",
-    "event": "长期布局，分次诱导",
-    "frame": 572,
-    "seconds": 12.71111111111111,
-    "sourceSeconds": 12.47111111111111
+    "event": "三年头像统计柱快速堆积",
+    "frame": 526,
+    "seconds": 11.688888888888888,
+    "sourceSeconds": 11.448888888888888
   },
   {
     "scene": "镜07",
-    "event": "转账前，更需要核验",
-    "frame": 763,
-    "seconds": 16.955555555555556,
-    "sourceSeconds": 16.715555555555557
+    "event": "报告损失逐年升高",
+    "frame": 670,
+    "seconds": 14.88888888888889,
+    "sourceSeconds": 14.648888888888889
   },
   {
     "scene": "镜08",

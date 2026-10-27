@@ -18,7 +18,7 @@ assert.equal(Number(video.duration),90);assert.equal(Number(audio.duration),90);
 assert.equal(audio.channels,2);assert.equal(audio.sample_rate,'48000');
 const bytes=await readFile(target);
 await writeFile('delivery/export-manifest.json',JSON.stringify({
- style:'continuous-story-90s-v3',file:path.basename(target),sha256:createHash('sha256').update(bytes).digest('hex'),
+ style:'person-first-fast-bars-v4',file:path.basename(target),sha256:createHash('sha256').update(bytes).digest('hex'),
  bytes:bytes.length,width:1920,height:1080,fps:45,frames:4050,seconds:90,
  pivot:'但在转账前，还有核验这一步',pivotFrame:810,music:'千年之后',
 },null,2)+'\n');
