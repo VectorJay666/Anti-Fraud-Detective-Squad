@@ -342,7 +342,7 @@ export function DebateGraph({
         })}
       </svg>
       {nodes.length === 0 ? (
-        <div className="dg-empty">提交后官员会在这里逐步连线</div>
+        <div className="dg-empty">开始后，将逐步展示各角色的分析过程</div>
       ) : null}
       <div className="dg-legend" aria-hidden>
         <span>

@@ -38,7 +38,7 @@ export function Toolbar({
   return (
     <div className="toolbar">
       <span className={`mode-badge mode-${mode}`} title="典型事例展示内模式">
-        {mode === "live" ? "演示 live" : "回放"}
+        {mode === "live" ? "在线分析" : "案例回放"}
       </span>
       <button
         type="button"
@@ -72,7 +72,8 @@ export function Toolbar({
             className={`btn btn-speed${playSpeed === s ? " on" : ""}`}
             onClick={() => onSpeed(s)}
             disabled={replayDisabled && !playing}
-            title={`回放 ${s}×（仅典型事例展示 fixtures）`}
+            title={`以 ${s} 倍速度播放案例`}
+            aria-pressed={playSpeed === s}
           >
             {s}×
           </button>
@@ -84,9 +85,9 @@ export function Toolbar({
         className="btn btn-live"
         onClick={onLive}
         disabled={liveRunning}
-        title={`典型事例展示：顺序双轨调用 ${liveServiceLabel()}（非真实使用表单）`}
+        title={`使用分析服务重新检查此案例（需启动 ${liveServiceLabel()} 服务）`}
       >
-        {liveRunning ? "会商中…" : "现场会商"}
+        {liveRunning ? "正在分析…" : "在线分析此案例"}
       </button>
       {mode === "live" ? (
         <button

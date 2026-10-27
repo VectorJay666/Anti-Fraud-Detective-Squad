@@ -25,6 +25,15 @@ function kindClass(kind: string): string {
   return "prog-other";
 }
 
+function kindLabel(kind: string): string {
+  if (kind === "phase") return "分析阶段";
+  if (kind === "workflow_started") return "检查开始";
+  if (kind === "workflow_completed") return "检查完成";
+  if (kind.startsWith("agent_")) return "角色分析";
+  if (kind === "log") return "服务消息";
+  return "检查进度";
+}
+
 export function ProgressTimeline({
   lines,
   compact = false,
@@ -44,9 +53,9 @@ export function ProgressTimeline({
         aria-live="polite"
       >
         <p className="progress-label">
-          {compact ? "进度 · 边开边推" : "中间进度 · 边开边推"}
+          检查进度
         </p>
-        <p className="progress-wait">会商已启动，进度会一条条冒出来…</p>
+        <p className="progress-wait">正在准备分析，新的进度会自动显示在这里。</p>
       </div>
     );
   }
@@ -58,7 +67,7 @@ export function ProgressTimeline({
       aria-live="polite"
     >
       <p className="progress-label">
-        {compact ? "进度 · 边开边推" : "中间进度 · 边开边推"}
+        检查进度
       </p>
       <ul className="progress-list">
         {lines.map((line) => (
@@ -67,7 +76,7 @@ export function ProgressTimeline({
             className={`progress-item ${kindClass(line.kind)}`}
             data-enter="1"
           >
-            <span className="progress-kind">{line.kind}</span>
+            <span className="progress-kind" title={line.kind}>{kindLabel(line.kind)}</span>
             <span className="progress-text">{line.text}</span>
             {line.ts ? (
               <span className="progress-ts">

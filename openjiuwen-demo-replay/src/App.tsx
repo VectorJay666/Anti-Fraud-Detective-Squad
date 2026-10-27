@@ -206,6 +206,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [liveError, setLiveError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const [fixtureLoadKey, setFixtureLoadKey] = useState(0);
   const [hasFixtures, setHasFixtures] = useState(false);
   const [leftBanner, setLeftBanner] = useState<SideVerdict | null>(null);
   const [rightBanner, setRightBanner] = useState<SideVerdict | null>(null);
@@ -314,6 +315,7 @@ export default function App() {
     let cancelled = false;
     (async () => {
       setReady(false);
+      setError(null);
       setPlaying(false);
       if (timerRef.current != null) {
         window.clearInterval(timerRef.current);
@@ -338,7 +340,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [selectedCase, applyFixtures, clearFixtures]);
+  }, [selectedCase, applyFixtures, clearFixtures, fixtureLoadKey]);
 
   const stopPlay = useCallback(() => {
     setPlaying(false);
@@ -623,8 +625,8 @@ export default function App() {
       progressSeqRef.current = 0;
       setActualStatus(
         opts.useSwarm
-          ? "会商中…（走 Swarm 轨，边开边推）"
-          : "会商中…（旁路 live，非 SwarmFlow）"
+          ? "正在准备多角色分析…"
+          : "正在准备分析…"
       );
       const empty = emptySide();
       setLiveSide(empty);
@@ -641,7 +643,7 @@ export default function App() {
             return next;
           });
           if (data.progress_streaming === true) {
-            setActualStatus("会商中…（中间进度实时推）");
+            setActualStatus("正在分析，检查进度会自动更新。 ");
           }
         },
         onProgress: (data: Record<string, unknown>) => {
@@ -745,12 +747,12 @@ export default function App() {
                   setLiveFooter(FOOTER_TEAMRUNTIME);
                   setLiveEnginePath("/v1/debate/live");
                   setActualStatus(
-                    "平台 Swarm 轨失败，正在自动改走旁路会商…"
+                    "协作服务暂不可用，正在切换备用分析服务…"
                   );
                   setActualError(
                     info.hint ||
                       info.message ||
-                      "Swarm 轨失败，未完成 SwarmFlow；已自动回退旁路会商"
+                      "协作分析未完成，已切换备用服务继续检查。"
                   );
                 },
               },
@@ -765,7 +767,7 @@ export default function App() {
         setLiveEnginePath(result.path);
         if (result.downgraded) {
           setActualError(null);
-          setActualStatus("旁路会商已完成（本次非 SwarmFlow）");
+          setActualStatus("已使用备用分析服务完成检查。");
         } else {
           setActualError(null);
           setActualStatus(null);
@@ -818,15 +820,6 @@ export default function App() {
       : hasFixtures
         ? `${selectedCase.case_id} · gate refuse`
         : "无 fixtures";
-
-  if (error && layer === "teaching") {
-    return (
-      <pre className="boot-error">
-        加载失败：{error}
-        {"\n"}请用 npm run dev 打开（见 README）。
-      </pre>
-    );
-  }
 
   const teachingFinalVerdict =
     rightBanner ||
@@ -911,8 +904,15 @@ export default function App() {
           />
           <TeachingMeta meta={selectedCase} />
 
-          {!ready ? (
-            <div className="boot-loading">加载事件流…</div>
+          {error ? (
+            <section className="load-error" role="alert">
+              <h2>案例暂时没能加载。</h2>
+              <p>可以重新尝试，也可以选择其他案例或返回风险检查。</p>
+              <button type="button" className="btn btn-primary" onClick={() => setFixtureLoadKey(key => key + 1)}>重新加载</button>
+              <details><summary>错误详情</summary><p>{error}</p></details>
+            </section>
+          ) : !ready ? (
+            <div className="boot-loading" role="status">正在准备案例…</div>
           ) : (
             <>
               <Toolbar
@@ -953,8 +953,7 @@ export default function App() {
                 </div>
               ) : (
                 <div className="placeholder-panel">
-                  本案例暂无事件流 fixtures，请先阅读上方学习要点；请选{" "}
-                  <strong>CASE-SPIKE-FAB-001</strong>。
+                  本案例暂无回放，可以先阅读学习要点，或选择其他案例。
                 </div>
               )}
             </>

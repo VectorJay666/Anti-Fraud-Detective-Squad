@@ -1607,6 +1607,12 @@ img { display: block; }
 .case-picker { max-width: none; padding: 0; gap: 16px; }
 .case-card { padding: 24px; border: 1px solid transparent; border-radius: 20px; box-shadow: none; transition: border-color .2s, background .2s; }
 .case-card.active { border-color: var(--blue); background: #fafdff; box-shadow: 0 0 0 3px rgb(0 113 227 / 5%); }
+.case-number { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--bg); color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.case-card.active .case-number { background: var(--blue-soft); color: var(--blue); }
+.case-card-action { display: flex; justify-content: space-between; align-items: center; color: var(--blue); font-size: 12px; margin-top: 22px; }
+.case-card:not(.active) .case-card-action { color: var(--muted); }
+.case-card:hover:not(:disabled) .case-card-action { color: var(--blue); }
+.case-type { border-radius: 6px; font-size: 11px; }
 .case-id-chip { font-size: 9px; padding: 3px 6px; font-weight: 500; border: 0; }
 .case-title { font-size: 16px; font-weight: 500; margin: 16px 0 8px; }
 .case-one-liner { font-size: 12px; line-height: 1.8; }
@@ -1616,6 +1622,19 @@ img { display: block; }
 .teaching-meta-one { font-size: 13px; }
 .learning-points { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-bottom: 0; color: var(--muted); font-size: 12px; }
 .learning-points li { padding-right: 12px; }
+.case-record, .stage-record { color: var(--muted); font-size: 11px; margin-top: 18px; }
+.case-record summary, .stage-record summary { cursor: pointer; width: fit-content; }
+.case-record p { margin: 8px 0 0; overflow-wrap: anywhere; }
+.stage-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.stage-status { background: var(--bg); color: var(--muted); border-radius: 7px; padding: 5px 10px; font-size: 11px; white-space: nowrap; }
+.stage-status.started { color: var(--blue); background: var(--blue-soft); }
+.stage-record { margin: 10px 0 18px; }
+.stage-record .sub { margin-bottom: 0; }
+.load-error { padding: 32px; margin: 24px 0 32px; background: white; border: 1px solid var(--line); border-radius: var(--radius); }
+.load-error h2 { margin: 0 0 8px; font-size: 20px; }
+.load-error > p { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+.load-error details { margin-top: 20px; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.load-error summary { cursor: pointer; }
 .toolbar { padding: 24px 0; justify-content: flex-start; gap: 8px; }
 .toolbar .btn { padding: 8px 16px; min-height: 38px; }
 .toolbar .btn-live { background: white; color: var(--blue); border-color: var(--line); }
@@ -1724,6 +1743,9 @@ img { display: block; }
   .foot { width: calc(100% - 48px); padding: 22px 0; font-size: 10px; gap: 16px; }
   .service-details { max-width: 50%; }
   .col, .teaching-meta { padding: 22px 18px; }
+  .stage-heading { align-items: flex-start; gap: 10px; }
+  .stage-status { font-size: 10px; padding: 5px 8px; }
+  .load-error { padding: 24px; }
   .learning-points { display: block; }
   .learning-points li { margin-bottom: 6px; }
   .toolbar { gap: 8px; }

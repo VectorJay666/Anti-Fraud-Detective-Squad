@@ -54,7 +54,6 @@ export function DebateAside({
   visible,
   seen,
   valid,
-  meta,
   title,
   onClear,
   onSelect,
@@ -67,7 +66,7 @@ export function DebateAside({
     return (
       <aside className="debate-aside">
         <button type="button" className="da-back" onClick={onClear}>
-          ← 返回本轨概览
+          ← 返回分析概览
         </button>
         <div className="da-head">
           <span className="da-dot" aria-hidden />
@@ -94,7 +93,7 @@ export function DebateAside({
         ) : null}
         {ev.refuse_reason ? (
           <div className="da-callout warn">
-            拒因 · {String(ev.refuse_reason)}
+            核验说明 · {String(ev.refuse_reason)}
           </div>
         ) : null}
       </aside>
@@ -105,43 +104,44 @@ export function DebateAside({
     return (
       <aside className="debate-aside">
         <button type="button" className="da-back" onClick={onClear}>
-          ← 返回本轨概览
+          ← 返回分析概览
         </button>
         <h3>{officerLabel(selectedId)}</h3>
-        <p className="da-dim">该官尚未在本轮发言</p>
+        <p className="da-dim">该角色暂未提供分析内容。</p>
       </aside>
     );
   }
 
   const spoken = [...seen];
   const latest = visible.length > 0 ? visible[visible.length - 1] : null;
-  const gate =
-    meta?.gate_verdict ??
-    (meta?.gate !== undefined ? String(meta.gate) : undefined);
+  const citedIds = new Set(visible.flatMap(event => [
+    ...(event.evidence_ids || []),
+    ...(event.rule_ids || []),
+  ]));
 
   return (
     <aside className="debate-aside">
       <h3>{title} · 概览</h3>
-      <p className="da-dim">点左侧官员节点，查看论证全文与证据</p>
+      <p className="da-dim">选择角色节点，查看分析内容和引用依据。</p>
       <div className="da-stats">
         <div className="da-stat">
-          <b>{spoken.length}</b>已发言官
+          <b>{spoken.length}</b>参与角色
         </div>
         <div className="da-stat">
-          <b>{visible.length}</b>事件
+          <b>{visible.length}</b>分析记录
         </div>
         <div className="da-stat">
-          <b>{gate ?? "—"}</b>gate
+          <b>{citedIds.size}</b>引用依据
         </div>
       </div>
       {spoken.length > 0 ? (
         <>
-          <h4>已连线官员</h4>
+          <h4>已参与的角色</h4>
           <ul className="da-list">
             {spoken.map((id) => (
               <li key={id}>
                 <button type="button" onClick={() => onSelect(id)}>
-                  {id}
+                  {officerLabel(id)}
                 </button>
               </li>
             ))}
@@ -150,7 +150,7 @@ export function DebateAside({
       ) : null}
       {latest ? (
         <>
-          <h4>最新一句</h4>
+          <h4>最新分析</h4>
           <button
             type="button"
             className="da-latest"
@@ -166,7 +166,7 @@ export function DebateAside({
         </>
       ) : (
         <p className="da-dim" style={{ marginTop: 16 }}>
-          还没有官员发言 · 提交后这里会跟上
+          开始检查或播放案例后，这里会展示分析进度。
         </p>
       )}
     </aside>

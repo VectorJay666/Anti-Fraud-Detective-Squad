@@ -62,8 +62,8 @@ export function DebateStage({
 
   const handleSelect = (id: string | null) => {
     if (id == null) {
-      setPinned(false);
-      setSelectedId(active);
+      setPinned(true);
+      setSelectedId(null);
       return;
     }
     setPinned(true);
@@ -73,8 +73,13 @@ export function DebateStage({
   return (
     <section className={`col col-${side} debate-stage`} data-side={side}>
       <header className="col-head">
-        <h2>{title}</h2>
-        <p className="sub">{subtitle}</p>
+        <div className="stage-heading">
+          <h2>{title}</h2>
+          <span className={`stage-status${visible.length ? " started" : ""}`}>
+            {verdict ? "检查完成" : visible.length ? `已展开 ${visible.length} 条分析` : "等待开始"}
+          </span>
+        </div>
+        <details className="stage-record"><summary>运行记录</summary><p className="sub">{subtitle}</p></details>
       </header>
       <NodeRail
         seen={seen}
